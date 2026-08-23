@@ -5,13 +5,13 @@
     "semantic_hash": ""
   },
   "internal/game/career.go": {
-    "mtime": 1787500105.2990773,
-    "ast_hash": "22b6d3d448db01af466c3fc9b54a2f88",
+    "mtime": 1787489803.326066,
+    "ast_hash": "6a6c565c0e7e087f38646a6448bfcc89",
     "semantic_hash": ""
   },
   "internal/game/data/births.json": {
-    "mtime": 1787491915.2081153,
-    "ast_hash": "a18783ab7ce249ea40690f34eb6a9545",
+    "mtime": 1787488572.5766375,
+    "ast_hash": "f1bd01208135ea09c25403ed9c4caea6",
     "semantic_hash": ""
   },
   "internal/game/data/careers.json": {
@@ -50,18 +50,18 @@
     "semantic_hash": ""
   },
   "internal/game/events.go": {
-    "mtime": 1787498627.0177288,
-    "ast_hash": "b44a20a5a0a974741a58cc52d0466177",
+    "mtime": 1787490038.475299,
+    "ast_hash": "67419acf76599654eaf04781806aa046",
     "semantic_hash": ""
   },
   "internal/game/game_test.go": {
-    "mtime": 1787500186.7534583,
-    "ast_hash": "5ee04eca6d82b19fb0b6371f322f723f",
+    "mtime": 1787489826.8082888,
+    "ast_hash": "0d917508a0efa6e7c8e24d84fd381f4c",
     "semantic_hash": ""
   },
   "internal/game/run.go": {
-    "mtime": 1787499965.7274249,
-    "ast_hash": "48e5071b3c7a6dcffc59c38cbc8d13cd",
+    "mtime": 1787490223.489059,
+    "ast_hash": "5b79dbaaa475fbfc6ae173a4b25656cd",
     "semantic_hash": ""
   },
   "internal/game/trauma.go": {
@@ -70,33 +70,33 @@
     "semantic_hash": ""
   },
   "internal/llm/llm.go": {
-    "mtime": 1787500096.6293523,
-    "ast_hash": "2de55a67f055ae611ad3e18eac324040",
+    "mtime": 1787491174.2323017,
+    "ast_hash": "f0cdfd8e644756a8afd8cc9c9f048ecf",
     "semantic_hash": ""
   },
   "internal/llm/llm_test.go": {
-    "mtime": 1787501576.4709222,
-    "ast_hash": "7586a275d19e43de382086f057e0a6ef",
+    "mtime": 1787489741.7042134,
+    "ast_hash": "f5c52d005cc658ee5258636b9b2d2750",
     "semantic_hash": ""
   },
   "internal/tui/input.go": {
-    "mtime": 1787500186.7604582,
-    "ast_hash": "afa413008ff4720e69521731714d7589",
+    "mtime": 1787488478.6157346,
+    "ast_hash": "cc2be01c8bfe11f49ab60da714085ae7",
     "semantic_hash": ""
   },
   "internal/tui/input_test.go": {
-    "mtime": 1787501104.565453,
-    "ast_hash": "a669ba45442ddc6e835b57a97f951bf5",
+    "mtime": 1787489723.6953096,
+    "ast_hash": "78863d11a96d4e447bee265e1320ee88",
     "semantic_hash": ""
   },
   "main.go": {
-    "mtime": 1787501600.4257197,
-    "ast_hash": "de090ea5b667819b0fc3f0b20d47596c",
+    "mtime": 1787489298.7682748,
+    "ast_hash": "9cd22577339eac7f816338e4f812c2c9",
     "semantic_hash": ""
   },
   "CONTEXT_FOR_NEXT_AGENT.md": {
-    "mtime": 1787501639.9584236,
-    "ast_hash": "4668efaa299f9ede22822e8fba8620a0",
+    "mtime": 1787491487.4370692,
+    "ast_hash": "a62de4233784129f6edfc28a5c81239c",
     "semantic_hash": ""
   },
   "README.md": {
@@ -107,11 +107,6 @@
   "README_zh.md": {
     "mtime": 1787491456.170306,
     "ast_hash": "47032c91ff700c70242f8886319e8381",
-    "semantic_hash": ""
-  },
-  "internal/game/data/events_06_cult_children.json": {
-    "mtime": 1787493862.1184025,
-    "ast_hash": "2a22371c2a9c5b80f9aee11d4eaae7b9",
     "semantic_hash": ""
   }
 }

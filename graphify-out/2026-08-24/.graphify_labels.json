@@ -1,7 +1,7 @@
 {
-  "0": "TraumaParams",
-  "1": "Run",
-  "2": "input.go",
+  "0": "Run",
+  "1": "events.go",
+  "2": "ReadLine",
   "3": "llm.go",
   "4": "game_test.go",
   "5": "main",

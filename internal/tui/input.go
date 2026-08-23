@@ -296,6 +296,21 @@ func redraw(s string) {
 	fmt.Printf("\r\x1b[K%s", s)
 }
 
+// scanStdin is the shared stdin scanner. A fresh bufio.Scanner per call
+// would buffer ahead and swallow queued lines from pipes (found via the
+// stat-point smoke test).
+var scanStdin *bufio.Scanner
+
+func scanFallbackLine() (string, error) {
+	if scanStdin == nil {
+		scanStdin = bufio.NewScanner(os.Stdin)
+	}
+	if !scanStdin.Scan() {
+		return "", ErrCancelled
+	}
+	return strings.TrimRight(scanStdin.Text(), "\r\n"), nil
+}
+
 // ReadLine reads one line with raw-mode editing on TTYs and falls back to
 // buffered scanning otherwise. Returns ErrCancelled on Ctrl+C/Ctrl+D/EOF.
 func ReadLine(prompt string) string {
@@ -311,22 +326,14 @@ func ReadLine(prompt string) string {
 func ReadLineErr(prompt string) (string, error) {
 	if !IsTTY() {
 		fmt.Print(prompt)
-		sc := bufio.NewScanner(os.Stdin)
-		if !sc.Scan() {
-			return "", ErrCancelled
-		}
-		return strings.TrimRight(sc.Text(), "\r\n"), nil
+		return scanFallbackLine()
 	}
 
 	fd := os.Stdin.Fd()
 	old, err := makeRaw(fd)
 	if err != nil {
 		fmt.Print(prompt)
-		sc := bufio.NewScanner(os.Stdin)
-		if !sc.Scan() {
-			return "", ErrCancelled
-		}
-		return strings.TrimRight(sc.Text(), "\r\n"), nil
+		return scanFallbackLine()
 	}
 	defer ioctl(fd, ioctlWriteTermios, old)
 

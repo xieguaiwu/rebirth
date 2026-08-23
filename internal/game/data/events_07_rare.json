@@ -1,0 +1,14 @@
+[
+  {"id":"rare_lottery_jackpot","text":"彩票头奖。兑奖处的工作人员反复核对了三遍你的号码——五百万，是真的。","min_age":18,"max_age":75,"weight":0.6,"good":true,"delta":{"mny":5,"spr":2},"trauma_alpha":0.1},
+  {"id":"rare_scout_discovery","text":"街角等红灯时被星探拦下：「有没有兴趣拍杂志？」你以为是诈骗，结果合同是真的。","min_age":15,"max_age":28,"weight":0.8,"cond":{"min_chr":7},"good":true,"delta":{"chr":1.5,"mny":1}},
+  {"id":"rare_lightning_survive","text":"你在雷雨天被闪电击中并活了下来。医生说概率千万分之一；你说胸口从此有块钥匙形的疤。","min_age":8,"max_age":70,"weight":0.5,"delta":{"str":-1,"spr":-1,"int":0.3},"trauma_alpha":0.35},
+  {"id":"rare_twins_born","text":"家里添了对双胞胎弟妹。你的童年从此一半是奶粉味。","min_age":4,"max_age":14,"weight":0.9,"delta":{"spr":0.5,"mny":-0.5}},
+  {"id":"rate_inheritance_attic","text":"整理阁楼时翻出一幅落灰的旧画——鉴定为真迹。祖上有人偷偷当过画家。","min_age":20,"max_age":70,"weight":0.6,"good":true,"delta":{"mny":2.5}},
+  {"id":"rare_recommend_admission","text":"保送通知到了。不用高考的人生让全班同学看你的眼神都变了。","min_age":16,"max_age":18,"weight":0.7,"cond":{"min_int":8},"good":true,"delta":{"int":1,"spr":2}},
+  {"id":"rare_street_master","text":"公园里下棋的老头突然收你为徒——后来你才知道他是隐退的手艺人。一门手艺换一份饭碗。","min_age":10,"max_age":30,"weight":0.8,"good":true,"delta":{"int":0.8,"mny":0.5,"str":0.3},"therapy_q":0.15},
+  {"id":"rare_misdiagnosis","text":"三个月前的那张绝症诊断书是医院搞错了片子。你在这三个月里学会游泳、道了歉、辞了职——现在怎么办？","min_age":25,"max_age":70,"weight":0.5,"good":true,"therapy_q":0.35,"delta":{"spr":1.5},"trauma_alpha":0.3},
+  {"id":"rare_curio_windfall","text":"地摊五十块的旧碗经鉴定是民窑珍品。你从此相信眼缘，也从此逢人就讲这个故事。","min_age":18,"max_age":70,"weight":0.6,"good":true,"delta":{"mny":1.5,"spr":1}},
+  {"id":"rare_viral_accident","text":"随手拍的一段视频播放破亿。品牌方排队找你——你只是那天随手举了下手机。","min_age":12,"max_age":60,"weight":0.7,"good":true,"delta":{"mny":1.5,"chr":0.5,"spr":1}},
+  {"id":"rare_saving_stranger_boss","text":"你随手扶了一把摔倒的老人。一周后他儿子开的公司的offer到了——世上真有这种巧合。","min_age":18,"max_age":55,"weight":0.7,"good":true,"delta":{"mny":1,"spr":1}},
+  {"id":"rare_child_prodigy_tv","text":"你上了少儿才艺节目。全国观众记住了那个把钢琴弹错却鞠躬最标准的小孩。","min_age":5,"max_age":12,"weight":0.8,"cond":{"min_int":6},"good":true,"delta":{"chr":1,"spr":1}}
+]

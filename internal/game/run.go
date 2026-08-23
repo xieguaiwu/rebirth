@@ -39,7 +39,12 @@ type Config struct {
 	InheritTal *Talent  // bloodline-inherited talent, may be nil
 	LLM        Narrator
 	MaxAge     int       // hard age cap, default 100
-	points     []float64 // CHR/INT/STR/MNY allocation, applied at birth (unexported: set via NewConfigPoints)
+	points     []float64 // CHR/INT/STR/MNY allocation, applied at birth
+
+	// Step turns on manual advance: after every yearly line, Pause is
+	// called; returning true aborts the life gracefully. Nil-safe.
+	Step  bool
+	Pause func() bool
 }
 
 // WithPoints sets the player's attribute allocation and returns cfg for chaining.
@@ -56,6 +61,7 @@ type Result struct {
 	Pathological bool
 	Sensitivity  float64 // heritable scalar for the next generation
 	History      []string
+	Aborted      bool // player quit mid-life via the step prompt
 }
 
 // careerWindows are the ages at which a new track may be entered.
@@ -114,7 +120,8 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 
 	fortune := NewFortune(rng, 0.7)
 	var history []string
-	lastEventID := ""
+	facts := NewFacts(cfg.Birth) // storyline facts: "cult", "broken_home"...
+	used := map[string]bool{}    // lifetime event uniqueness
 	deathAge := -1
 	sprLowYears := 0
 	careerID := UnemployedID
@@ -160,7 +167,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 		}
 
 		// --- event roll ---
-		ev := PickEvent(evs, age, s, careerID, rng, luck, trauma.Pathological)
+		ev := PickEvent(evs, age, s, careerID, facts, used, rng, luck, trauma.Pathological)
 		trigger := false
 		therapyQ := 0.0
 
@@ -172,11 +179,17 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			}
 		}
 
-		if ev != nil && ev.ID == lastEventID {
-			ev = nil // no immediate repeats: a quiet year beats déjà vu
-		}
 		if ev != nil {
-			lastEventID = ev.ID
+			used[ev.ID] = true
+			if ev.Sets != "" {
+				// "!fact" clears a storyline fact (e.g. rescue ends the
+				// cult isolation and reopens ordinary social events).
+				if name := strings.TrimPrefix(ev.Sets, "!"); name != ev.Sets {
+					delete(facts, name)
+				} else {
+					facts[ev.Sets] = true
+				}
+			}
 			text := ev.Text
 			if !isNoop(cfg.LLM) && (ev.TraumaAlpha > 0 || ev.Good) {
 				text = cfg.LLM.Narrate(age,
@@ -203,6 +216,14 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			s.SPR -= 0.25 // attractor drains joy, but slower than despair
 		}
 		s.Clamp()
+
+		// Manual advance: one Enter per year of life.
+		if cfg.Step && cfg.Pause != nil && cfg.Pause() {
+			res := &Result{Age: age, Career: careerName, Stats: s,
+				Pathological: trauma.Pathological, Aborted: true}
+			fmt.Fprintf(w, "\n──── 玩家中途离开（%d 岁）────\n", age)
+			return res, nil
+		}
 
 		if s.SPR <= 0.01 {
 			sprLowYears++

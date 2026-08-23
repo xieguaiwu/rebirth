@@ -1,3 +1,26 @@
+## [0.5.0] - 2026-08-24
+
+### Added
+- Step-by-step advance mode: on interactive terminals each year waits for
+  Enter (`q` quits mid-life without recording the bloodline; `--auto` or
+  pipes stay continuous; force with `--step`).
+- Storyline fact system: events can require/conflict/establish facts, so
+  cult-childhood storylines stay coherent — a loving-home event never
+  fires in a cult household, ordinary social life is locked while inside
+  the sect and reopens after the rescue events (`sets: "!cult"`).
+- Lifetime event uniqueness: no event repeats within one life.
+- Talent overhaul: 59 talents across four rarity tiers (common / rare /
+  epic / legendary) drawn with rarity weights and one guaranteed rare+
+  per 10-pull.
+- Rare surprise events shard (`events_07_rare.json`): lottery jackpot,
+  talent-scout discovery, lightning survival, misdiagnosis reprieve and
+  more.
+
+### Fixed
+- Custom stat allocation rejected zeros ("10 0 10 0"); zeros are legal
+  again — the runtime init floor already prevents instant-death builds.
+- Non-TTY input swallowed queued stdin lines (shared bufio.Scanner).
+
 # Changelog
 
 All notable changes to this project are documented in this file.

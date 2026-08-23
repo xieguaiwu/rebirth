@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"rebirth/internal/game"
@@ -18,7 +19,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.4.0"
+var version = "0.5.0"
 
 const pointsTotal = 20
 
@@ -33,6 +34,7 @@ func main() {
 	seed := flag.Int64("seed", 0, "随机种子（0=时间播种）")
 	auto := flag.Bool("auto", false, "自动模式：所有选择取第一项")
 	noLLM := flag.Bool("no-llm", false, "禁用大语言模型叙事")
+	step := flag.Bool("step", false, "逐条推进：每条信息等回车（交互终端默认开启；--auto 时忽略）")
 	model := flag.String("model", "stealth/ox-alpha", "OpenRouter 模型名")
 	maxAge := flag.Int("max-age", 100, "寿命上限")
 	showVersion := flag.Bool("version", false, "打印版本号")
@@ -92,6 +94,24 @@ func main() {
 		MaxAge:     *maxAge,
 	}.WithPoints(stats[0], stats[1], stats[2], stats[3])
 
+	// Step mode: opt-in via --step, on by default on interactive terminals,
+	// always off in auto mode.
+	cfg.Step = !*auto && (tui.IsTTY() || *step)
+	if cfg.Step {
+		cfg.Pause = func() bool {
+			fmt.Print("\n\033[2m回车=下一年 · q=退出\033[0m ")
+			line, err := tui.ReadLineErr("")
+			if err != nil {
+				return true // Ctrl+C / Ctrl+D / EOF: leave the life
+			}
+			switch strings.TrimSpace(line) {
+			case "q", "quit", "exit", "退出":
+				return true
+			}
+			return false
+		}
+	}
+
 	res, err := game.Run(os.Stdout, cfg, evs, careers)
 	if err != nil {
 		fmt.Println("[FAIL] 模拟中断:", err)
@@ -150,9 +170,9 @@ func pickBirth(bs []game.Birth, rng *rand.Rand, auto bool) *game.Birth {
 
 func pickTalents(ts []game.Talent, rng *rand.Rand, auto bool) []game.Talent {
 	draw := game.DrawTalents(ts, 10, rng)
-	fmt.Println("\n── 抽取天赋（10 选 3）──")
+	fmt.Println("\n── 抽取天赋（10 选 3，* 为稀有，** 史诗，*** 传说）──")
 	for i, t := range draw {
-		fmt.Printf("  [%2d] %-8s %s\n", i+1, t.Name, t.Desc)
+		fmt.Printf("  [%2d] %s %-8s %s\n", i+1, game.RarityStars(t.Rarity), t.Name, t.Desc)
 	}
 	picked := make([]game.Talent, 0, 3)
 	if auto {
@@ -210,13 +230,13 @@ func allocatePoints(rng *rand.Rand, auto bool) []float64 {
 	var a, b, c, d float64
 	if n, _ := fmt.Sscanf(line, "%f %f %f %f", &a, &b, &c, &d); n == 4 {
 		sum := a + b + c + d
-		// Every stat must be positive: zero-STR builds died at age 0
-		// (momus P2-4).
-		ok := sum >= 4 && sum <= pointsTotal && a > 0 && b > 0 && c > 0 && d > 0
-		if ok {
+		// Zero is legal (dump a stat); negatives are not. The runtime
+		// init-floor keeps zeroed stats playable instead of instantly dead.
+		positive := a >= 0 && b >= 0 && c >= 0 && d >= 0
+		if positive && sum <= pointsTotal {
 			return []float64{a, b, c, d}
 		}
-		fmt.Println("[WARN] 每项须大于 0 且总和不超过 20，已回退默认分配。")
+		fmt.Println("[WARN] 数值不可为负且总和不超过 20，已回退默认分配。")
 	}
 	return []float64{5, 5, 5, 5}
 }

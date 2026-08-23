@@ -86,3 +86,32 @@ func TestEpitaphFallback(t *testing.T) {
 
 // Compile-time interface check.
 var _ game.Narrator = (*Narrator)(nil)
+
+func TestStripControlRemovesTerminalInjection(t *testing.T) {
+	in := "标题\x1b]0;pwned\x07正文\x1b[2J尾"
+	got := stripControl(in)
+	for _, bad := range []string{"\x1b", "\x07", "\x9b"} {
+		if strings.Contains(got, bad) {
+			t.Fatalf("control byte %q survived: %q", bad, got)
+		}
+	}
+	if !strings.Contains(got, "标题") || !strings.Contains(got, "正文") {
+		t.Fatalf("visible text damaged: %q", got)
+	}
+	if s := stripControl("正常中文"); s != "正常中文" {
+		t.Fatalf("clean text mutated: %q", s)
+	}
+}
+
+func TestFateEventTextStripped(t *testing.T) {
+	srv := mockServer(t, `{"text":"事件A\u001b]0;hack\u0007结束","good":true}`, 200)
+	defer srv.Close()
+	n := NewNarrator(&Client{BaseURL: srv.URL, Model: "test", APIKey: "test-key"})
+	ev, ok := n.FateEvent(30, "s")
+	if !ok {
+		t.Fatal("valid payload rejected")
+	}
+	if strings.ContainsAny(ev.Text, "\x1b\x07") {
+		t.Fatalf("escape bytes leaked into event text: %q", ev.Text)
+	}
+}

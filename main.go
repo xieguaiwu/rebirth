@@ -18,7 +18,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.3.0"
+var version = "0.4.0"
 
 const pointsTotal = 20
 
@@ -78,10 +78,14 @@ func main() {
 	talentsPick := pickTalents(talents, rng, *auto)
 	stats := allocatePoints(rng, *auto)
 
+	// Current generation = stored ancestors + 1. LoadBloodline no longer
+	// increments (momus P1-1: the old double-increment skipped every even
+	// generation).
+	curGen := bloodline.Generation + 1
 	cfg := game.Config{
 		Seed:       *seed,
 		Birth:      birth,
-		Bloodline:  bloodline,
+		Bloodline:  &game.Bloodline{Generation: curGen, Sensitivity: bloodline.Sensitivity, InheritedTal: bloodline.InheritedTal},
 		Talents:    talentsPick,
 		InheritTal: inheritTalent(talents, bloodline),
 		LLM:        narrator,
@@ -95,7 +99,7 @@ func main() {
 	}
 
 	next := &game.Bloodline{
-		Generation:  bloodline.Generation + 1,
+		Generation:  curGen,
 		Sensitivity: game.InheritSensitivity(res.Sensitivity, (rng.Float64()*2-1)*0.1, 0.7),
 	}
 	if len(talentsPick) > 0 && talentsPick[0].Inheritable {
@@ -134,7 +138,12 @@ func pickBirth(bs []game.Birth, rng *rand.Rand, auto bool) *game.Birth {
 	if auto {
 		fmt.Println("  [auto] 选定第 1 项")
 	} else {
-		idx = tui.Choose("你的出身是", len(draw))
+		var err error
+		idx, err = tui.Choose("你的出身是", len(draw))
+		if err != nil {
+			fmt.Println("\n已退出。")
+			os.Exit(0)
+		}
 	}
 	return &draw[idx-1]
 }
@@ -147,14 +156,19 @@ func pickTalents(ts []game.Talent, rng *rand.Rand, auto bool) []game.Talent {
 	}
 	picked := make([]game.Talent, 0, 3)
 	if auto {
-		picked = append(picked, draw[:3]...)
+		n := min(3, len(draw)) // momus P3-10: never slice past len(draw)
+		picked = append(picked, draw[:n]...)
 		for _, t := range picked {
 			fmt.Printf("  [auto] 选定：%s\n", t.Name)
 		}
 		return picked
 	}
-	for len(picked) < 3 {
-		idx := tui.Choose(fmt.Sprintf("选第 %d 个天赋", len(picked)+1), 10)
+	for len(picked) < 3 && len(picked) < len(draw) {
+		idx, err := tui.Choose(fmt.Sprintf("选第 %d 个天赋", len(picked)+1), len(draw))
+		if err != nil {
+			fmt.Println("\n已退出。")
+			os.Exit(0)
+		}
 		t := draw[idx-1]
 		dup := false
 		for _, p := range picked {
@@ -196,10 +210,13 @@ func allocatePoints(rng *rand.Rand, auto bool) []float64 {
 	var a, b, c, d float64
 	if n, _ := fmt.Sscanf(line, "%f %f %f %f", &a, &b, &c, &d); n == 4 {
 		sum := a + b + c + d
-		if sum >= 0 && sum <= pointsTotal {
+		// Every stat must be positive: zero-STR builds died at age 0
+		// (momus P2-4).
+		ok := sum >= 4 && sum <= pointsTotal && a > 0 && b > 0 && c > 0 && d > 0
+		if ok {
 			return []float64{a, b, c, d}
 		}
-		fmt.Println("[WARN] 总和须为 20 以内，已回退默认分配。")
+		fmt.Println("[WARN] 每项须大于 0 且总和不超过 20，已回退默认分配。")
 	}
 	return []float64{5, 5, 5, 5}
 }

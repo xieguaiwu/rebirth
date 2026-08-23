@@ -1,0 +1,22 @@
+[
+  {"id":"cult_child_worldly_evil","text":"你学会的第一个世界观只有两种人：教内的家人，和等着下地狱的外人。","min_age":3,"max_age":12,"weight":8,"delta":{"spr":-1,"int":-0.3},"trauma_alpha":0.2},
+  {"id":"cult_child_no_birthday","text":"生日、春节、中秋都是「异教的污秽」。别的孩子拆礼物的时候，你在跪着祷告。","min_age":4,"max_age":14,"weight":7,"delta":{"spr":-1.5},"trauma_alpha":0.25},
+  {"id":"cult_child_donation","text":"爸妈把你的学费「奉献」给了教会，全家开始一周两天的绝食祈祷。饥饿比神迹来得真实。","min_age":6,"max_age":15,"weight":6,"delta":{"str":-1,"int":-0.5,"spr":-1},"trauma_alpha":0.3},
+  {"id":"cult_child_school","text":"你就读的「学校」是道场地下室，课本是教主语录的手抄复印册。","min_age":6,"max_age":15,"weight":7,"delta":{"int":-1,"chr":-0.3},"trauma_alpha":0.25},
+  {"id":"cult_child_confession","text":"八岁的你站在忏悔大会上，当众承认自己「心怀不敬」。台下两百个人齐声为你惋惜。","min_age":5,"max_age":13,"weight":6,"delta":{"spr":-2},"trauma_alpha":0.45},
+  {"id":"cult_child_denounce_kin","text":"父母举报了不信教的舅舅。从此家里再不许提他的名字——他教你骑自行车的事也没人提了。","min_age":6,"max_age":16,"weight":5,"delta":{"spr":-2},"trauma_alpha":0.5},
+  {"id":"cult_child_prayer_medicine","text":"高烧四十度，父母守着你唱了一整夜赞美诗。药是魔鬼的陷阱。你活了下来，但耳朵留下了后遗症。","min_age":2,"max_age":12,"weight":5,"delta":{"str":-1.5,"spr":-1.5},"trauma_alpha":0.5},
+  {"id":"cult_child_betrothal","text":"十四岁生日那天你收到的礼物是一纸婚约：长老的儿子，「主的安排」。","min_age":13,"max_age":17,"weight":4,"delta":{"spr":-2.5},"trauma_alpha":0.55},
+  {"id":"cult_child_forbidden_book","text":"你偷偷读完了一本「魔书」——其实是一本初中物理。原来云不是神的呼吸。世界裂开了一道缝。","min_age":10,"max_age":17,"weight":4,"good":true,"delta":{"int":1.5,"spr":0.5},"therapy_q":0.15},
+  {"id":"cult_child_public_shame","text":"逃学被抓回来后，你在全体集会上被点了名。三百双眼睛像三百根针。","min_age":8,"max_age":16,"weight":4,"delta":{"spr":-2},"trauma_alpha":0.4},
+  {"id":"cult_child_leader_portrait","text":"床头挂着教主的画像，睡前祷词的最后一句永远是他的名字。很多年后你才知道这叫个人崇拜。","min_age":4,"max_age":14,"weight":6,"delta":{"spr":-1,"int":-0.2},"trauma_alpha":0.2},
+  {"id":"cult_child_shunning_sibling","text":"姐姐因为「背弃真道」被逐出教会。全家人从她的人生里集体退场——包括八岁的你。","min_age":5,"max_age":17,"weight":5,"delta":{"spr":-2.5},"trauma_alpha":0.5},
+  {"id":"cult_child_police_rescue","text":"警灯照亮道场那晚，你在收容站第一次吃到巧克力。工作人员蹲下来问你叫什么——没人问过你这个。","min_age":6,"max_age":16,"weight":3,"good":true,"therapy_q":0.35,"delta":{"spr":1},"trauma_alpha":0.3},
+  {"id":"cult_child_back_to_school","text":"解救后插班进公立学校。十二岁的你坐在三年级教室里，数学卷子上画满了看不懂的符号。","min_age":8,"max_age":17,"weight":4,"delta":{"int":0.3,"spr":-1},"therapy_q":0.1,"trauma_alpha":0.15},
+  {"id":"cult_child_deprogramming","text":"反邪教志愿者陪你做了两年脱敏辅导。第一次直呼教主名字时，你等了很久——雷没有劈下来。","min_age":8,"max_age":18,"weight":4,"good":true,"therapy_q":0.5,"delta":{"spr":2,"int":0.5}},
+  {"id":"cult_child_normal_friend","text":"同桌把耳机分给你一只。流行歌的歌词毫无意义，但那是你听过最自由的三分钟。","min_age":8,"max_age":17,"weight":5,"good":true,"therapy_q":0.3,"delta":{"spr":1.5}},
+  {"id":"cult_child_birthday_first","text":"十八岁那年朋友替你补办了人生第一个生日蛋糕。蜡烛点起来的时候你哭了，不知道为什么。","min_age":17,"max_age":19,"weight":2,"good":true,"therapy_q":0.4,"delta":{"spr":2.5}},
+  {"id":"cult_adult_address","text":"办理身份证时你才发现：出生证明上的「家庭住址」填的是道场房间号。","min_age":18,"max_age":30,"weight":3,"delta":{"spr":-1,"int":0.2},"trauma_alpha":0.2},
+  {"id":"cult_adult_hypervigilance","text":"成年后的你仍然会在有人齐声说话时心跳骤停。咨询师说这叫条件性恐惧反应，不叫软弱。","min_age":18,"max_age":60,"weight":4,"delta":{"spr":-1.5},"trauma_alpha":0.3,"therapy_q":0.25},
+  {"id":"cult_adult_reunite_sibling","text":"你找到了被逐出的姐姐。她开门看到你的第一句话是：「他们放你走了？」你们抱在一起哭到天亮。","min_age":20,"max_age":50,"weight":3,"good":true,"therapy_q":0.45,"delta":{"spr":2.5}}
+]

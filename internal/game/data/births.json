@@ -22,5 +22,7 @@
   {"id":"military_family","name":"军人世家","desc":"被子要叠成豆腐块，眼泪要咽回去。","weight":5,
    "bonus":{"str":4,"spr":-1},"sensitivity_add":0.05},
   {"id":"mountain","name":"偏远山区","desc":"上学要走两小时山路，但星空免费。","weight":10,
-   "bonus":{"str":2,"int":1}}
+   "bonus":{"str":2,"int":1}},
+  {"id":"cult_family","name":"邪教家庭","desc":"你出生在道场而不是医院；摇篮曲是祷文，「外面的人」都是未得救的迷羊。你的杏仁核在学会说话前就学会了恐惧。","weight":2,
+   "bonus":{"int":-1,"spr":-2},"sensitivity_add":0.25}
 ]

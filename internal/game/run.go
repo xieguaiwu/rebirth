@@ -104,6 +104,13 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 		fmt.Fprintf(w, "[血脉天赋] %s —— %s\n", cfg.InheritTal.Name, cfg.InheritTal.Desc)
 	}
 	s.Clamp()
+	// Nobody starts dead: birth/talent negatives may not zero a stat
+	// (momus P2-4: orphan build used to die at age 0).
+	s.CHR = maxF(s.CHR, 1)
+	s.INT = maxF(s.INT, 1)
+	s.STR = maxF(s.STR, 1)
+	s.MNY = maxF(s.MNY, 0)
+	s.SPR = maxF(s.SPR, 1)
 
 	fortune := NewFortune(rng, 0.7)
 	var history []string
@@ -222,9 +229,12 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	}
 
 	status := "安详离世"
-	if s.STR <= 0.01 {
+	switch {
+	case res.Age <= 5:
+		status = "幼年夭折" // momus P2-4: toddlers are not "chronically depressed"
+	case s.STR <= 0.01:
 		status = "身体耗竭"
-	} else if sprLowYears >= 5 {
+	case sprLowYears >= 5:
 		status = "长期抑郁"
 	}
 	if res.Pathological {
@@ -261,6 +271,8 @@ func careerQuitCheck(c *Career, s Stats) bool {
 		return s.INT < c.QuitBelow
 	case "spr":
 		return s.SPR < c.QuitBelow
+	case "mny": // momus P1-2: digital nomad's quit rule was silently dead
+		return s.MNY < c.QuitBelow
 	default:
 		return false
 	}
@@ -312,4 +324,11 @@ func stateSummary(age int, s Stats, t *TraumaState, career string, p TraumaParam
 		b.WriteString(" [病理态]")
 	}
 	return b.String()
+}
+
+func maxF(a, b float64) float64 {
+	if a > b {
+		return a
+	}
+	return b
 }

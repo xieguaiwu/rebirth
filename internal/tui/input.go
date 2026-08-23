@@ -1,16 +1,25 @@
 // Package tui provides a zero-dependency, rune-safe terminal line editor
 // and simple menu helpers. All cursor arithmetic is in runes (Gate 12).
+//
+// Input parsing is chunk-safe: incomplete escape sequences and partial
+// UTF-8 runes are carried across os.Stdin.Read boundaries instead of being
+// dropped or injected as literal text (momus P2-6/P2-7/P3-11).
 package tui
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"syscall"
+	"unicode/utf8"
 	"unsafe"
 )
+
+// ErrCancelled reports that the user aborted input (Ctrl+C, Ctrl+D, EOF).
+var ErrCancelled = errors.New("input cancelled")
 
 // termios mirrors the kernel struct for ioctl TCGETS/TCSETS.
 type termios struct {
@@ -116,144 +125,145 @@ func (e *LineEditor) KillWordBack() {
 // String renders the current buffer.
 func (e *LineEditor) String() string { return string(e.Runes) }
 
-// ReadLine reads one line with raw-mode editing on TTYs and falls back to
-// buffered scanning otherwise. Supported: ←→↑↓ Home End Delete Backspace,
-// Ctrl+A/E/U/K/W/H. History navigation is intentionally omitted (menus only
-// need single lines); ↑/↓ are accepted as no-ops.
-func ReadLine(prompt string) string {
-	if !IsTTY() {
-		fmt.Print(prompt)
-		sc := bufio.NewScanner(os.Stdin)
-		if !sc.Scan() {
-			return ""
-		}
-		return strings.TrimRight(sc.Text(), "\r\n")
-	}
+type lineAction int
 
-	fd := os.Stdin.Fd()
-	old, err := makeRaw(fd)
-	if err != nil {
-		fmt.Print(prompt)
-		sc := bufio.NewScanner(os.Stdin)
-		sc.Scan()
-		return strings.TrimRight(sc.Text(), "\r\n")
-	}
-	defer ioctl(fd, ioctlWriteTermios, old)
+const (
+	actionNone   lineAction = iota
+	actionSubmit            // Enter pressed
+	actionCancel            // Ctrl+C or Ctrl+D
+)
 
-	fmt.Print(prompt)
-	e := &LineEditor{}
-	buf := make([]byte, 32)
-	for {
-		n, err := os.Stdin.Read(buf)
-		if err != nil || n == 0 {
-			break
-		}
-		done := false
-		for i := 0; i < n && !done; {
-			b := buf[i]
-			switch {
-			case b == '\r' || b == '\n':
-				done = true
-			case b == 0x7f || b == 0x08: // Backspace / Ctrl+H
-				e.Backward()
-			case b == 0x15: // Ctrl+U
-				e.KillBefore()
-			case b == 0x0b: // Ctrl+K
-				e.KillAfter()
-			case b == 0x17: // Ctrl+W
-				e.KillWordBack()
-			case b == 0x01: // Ctrl+A
-				e.Cursor = 0
-			case b == 0x05: // Ctrl+E
-				e.Cursor = len(e.Runes)
-			case b == 0x03: // Ctrl+C: cancel line
-				fmt.Println("^C")
-				e.Runes = nil
-				done = true
-			case b == 0x1b && i+2 < n && buf[i+1] == '[':
-				i += handleCSI(e, buf[i+2:n]) + 2
-			case b == 0x1b && i+2 < n && buf[i+1] == 'O':
-				i += handleSS3(e, buf[i+2]) + 2
-			case b == 0x1b:
-				// Lone Esc: ignore (no pending sequence within this chunk).
-			default:
-				// Collect a full UTF-8 rune from possibly-split bytes.
-				r, size := decodeRune(buf[i:n])
-				if size > 0 {
-					e.Insert([]rune{r})
-					i += size - 1
-				}
-			}
+// rawCarry holds bytes that belong to the NEXT ReadLine call: the tail of
+// a paste after an embedded Enter (momus P3-11), never lost silently.
+var rawCarry []byte
+
+// feed applies one chunk of raw terminal bytes to the editor. It returns
+// the unconsumed tail — an incomplete escape sequence, a partial UTF-8
+// rune, or bytes following an embedded Enter — to be processed later.
+func feed(e *LineEditor, data []byte) (rest []byte, act lineAction) {
+	i := 0
+	for i < len(data) {
+		b := data[i]
+		switch {
+		case b == '\r' || b == '\n':
+			return cloneBytes(data[i+1:]), actionSubmit
+		case b == 0x7f || b == 0x08:
+			e.Backward()
 			i++
-		}
-		redraw(e.String())
-		if done {
-			fmt.Println()
-			return e.String()
+		case b == 0x15: // Ctrl+U
+			e.KillBefore()
+			i++
+		case b == 0x0b: // Ctrl+K
+			e.KillAfter()
+			i++
+		case b == 0x17: // Ctrl+W
+			e.KillWordBack()
+			i++
+		case b == 0x01: // Ctrl+A
+			e.Cursor = 0
+			i++
+		case b == 0x05: // Ctrl+E
+			e.Cursor = len(e.Runes)
+			i++
+		case b == 0x03 || b == 0x04: // Ctrl+C / Ctrl+D cancel (P2-8)
+			return nil, actionCancel
+		case b == 0x1b:
+			consumed, complete := parseEscape(e, data[i:])
+			if !complete {
+				// Incomplete sequence: carry until more bytes arrive.
+				return cloneBytes(data[i:]), actionNone
+			}
+			i += consumed
+		default:
+			if !utf8.FullRune(data[i:]) {
+				// Rune straddles the chunk boundary: carry, never drop.
+				return cloneBytes(data[i:]), actionNone
+			}
+			r, size := utf8.DecodeRune(data[i:])
+			if r == utf8.RuneError && size <= 1 {
+				i++ // invalid byte: skip rather than corrupt the line
+				continue
+			}
+			e.Insert([]rune{r})
+			i += size
 		}
 	}
-	return e.String()
+	return nil, actionNone
 }
 
-// decodeRune decodes one UTF-8 rune starting at buf[0]; returns size 0 when
-// the bytes are invalid.
-func decodeRune(buf []byte) (rune, int) {
-	if len(buf) == 0 {
-		return 0, 0
+func cloneBytes(b []byte) []byte {
+	if len(b) == 0 {
+		return nil
 	}
-	rs := []rune(string(buf))
-	if len(rs) == 0 {
-		return 0, 0
-	}
-	size := len(string(rs[0]))
-	if size == 0 || size > len(buf) {
-		return 0, 0
-	}
-	return rs[0], size
+	out := make([]byte, len(b))
+	copy(out, b)
+	return out
 }
 
-// handleCSI applies a CSI arrow/home/end/delete sequence; returns consumed
-// bytes after "\x1b[".
-func handleCSI(e *LineEditor, seq []byte) int {
-	if len(seq) == 0 {
-		return 0
+// parseEscape handles one escape sequence at seq[0]=='\x1b'. It returns
+// the consumed byte count, or ok=false when the sequence is incomplete
+// and needs more input.
+func parseEscape(e *LineEditor, seq []byte) (int, bool) {
+	if len(seq) < 2 {
+		return 0, false
 	}
-	switch seq[0] {
-	case 'A', 'B': // up/down: no history, no-op
-	case 'C': // right
+	switch seq[1] {
+	case '[':
+		for j := 2; j < len(seq); j++ {
+			if seq[j] >= 0x40 && seq[j] <= 0x7e {
+				dispatchCSI(e, seq[2:j], seq[j])
+				return j + 1, true
+			}
+		}
+		return 0, false // no terminator yet
+	case 'O':
+		if len(seq) < 3 {
+			return 0, false
+		}
+		applyFinalByte(e, seq[2])
+		return 3, true
+	default:
+		return 1, true // lone Esc: ignore
+	}
+}
+
+// dispatchCSI interprets one CSI sequence: inner params + final byte.
+// Modified-arrow variants (ESC[1;5C etc.) move like their unmodified
+// base key instead of wiping the cursor (momus P2-5).
+func dispatchCSI(e *LineEditor, inner []byte, final byte) {
+	switch final {
+	case 'A', 'B': // up/down: no history in single-line mode
+	case 'C':
 		if e.Cursor < len(e.Runes) {
 			e.Cursor++
 		}
-	case 'D': // left
+	case 'D':
 		if e.Cursor > 0 {
 			e.Cursor--
 		}
-	case 'H': // home
-		e.Cursor = 0
-	case 'F': // end
-		e.Cursor = len(e.Runes)
-	case '3':
-		if len(seq) >= 2 && seq[1] == '~' {
-			e.Forward()
-			return 1
-		}
-	case '1', '7':
-		if len(seq) >= 2 && (seq[1] == '~' || seq[1] == ';') { // home variants
+	case 'H', 'F':
+		if final == 'H' {
 			e.Cursor = 0
-			return skipToTerminator(seq)
-		}
-	case '4', '8':
-		if len(seq) >= 2 && seq[1] == '~' { // end variants
+		} else {
 			e.Cursor = len(e.Runes)
-			return 1
 		}
-	case '5', '6': // page up/down: no-op in single-line mode
+	case '~':
+		n := leadingDigits(inner)
+		switch n {
+		case 3:
+			e.Forward() // Delete
+		case 1, 7:
+			e.Cursor = 0 // Home variants
+		case 4, 8:
+			e.Cursor = len(e.Runes) // End variants
+		} // 5/6 PageUp/Down: no-op
+	default:
+		// Unknown final byte: ignore.
 	}
-	return skipToTerminator(seq)
 }
 
-// handleSS3 handles application-cursor-mode arrows.
-func handleSS3(e *LineEditor, c byte) int {
+// applyFinalByte handles SS3 application-cursor-mode keys.
+func applyFinalByte(e *LineEditor, c byte) {
 	switch c {
 	case 'C':
 		if e.Cursor < len(e.Runes) {
@@ -268,16 +278,17 @@ func handleSS3(e *LineEditor, c byte) int {
 	case 'F':
 		e.Cursor = len(e.Runes)
 	}
-	return 1
 }
 
-func skipToTerminator(seq []byte) int {
-	for j, b := range seq {
-		if b >= 0x40 && b <= 0x7e {
-			return j
+func leadingDigits(b []byte) int {
+	n := 0
+	for _, c := range b {
+		if c < '0' || c > '9' {
+			break
 		}
+		n = n*10 + int(c-'0')
 	}
-	return len(seq) - 1
+	return n
 }
 
 // redraw rewrites the edited line in place.
@@ -285,22 +296,88 @@ func redraw(s string) {
 	fmt.Printf("\r\x1b[K%s", s)
 }
 
+// ReadLine reads one line with raw-mode editing on TTYs and falls back to
+// buffered scanning otherwise. Returns ErrCancelled on Ctrl+C/Ctrl+D/EOF.
+func ReadLine(prompt string) string {
+	s, err := ReadLineErr(prompt)
+	if err != nil {
+		return ""
+	}
+	return s
+}
+
+// ReadLineErr is ReadLine with an explicit cancellation signal so callers
+// can distinguish "empty line" from "player aborted" (momus P2-8).
+func ReadLineErr(prompt string) (string, error) {
+	if !IsTTY() {
+		fmt.Print(prompt)
+		sc := bufio.NewScanner(os.Stdin)
+		if !sc.Scan() {
+			return "", ErrCancelled
+		}
+		return strings.TrimRight(sc.Text(), "\r\n"), nil
+	}
+
+	fd := os.Stdin.Fd()
+	old, err := makeRaw(fd)
+	if err != nil {
+		fmt.Print(prompt)
+		sc := bufio.NewScanner(os.Stdin)
+		if !sc.Scan() {
+			return "", ErrCancelled
+		}
+		return strings.TrimRight(sc.Text(), "\r\n"), nil
+	}
+	defer ioctl(fd, ioctlWriteTermios, old)
+
+	fmt.Print(prompt)
+	e := &LineEditor{}
+	pendingIn := rawCarry
+	rawCarry = nil
+	buf := make([]byte, 256)
+	for {
+		if len(pendingIn) == 0 {
+			n, rerr := os.Stdin.Read(buf)
+			if rerr != nil || n == 0 {
+				fmt.Println()
+				return "", ErrCancelled
+			}
+			pendingIn = append(pendingIn, buf[:n]...)
+		}
+		rest, act := feed(e, pendingIn)
+		rawCarry = rest
+		pendingIn = nil
+		redraw(e.String())
+		switch act {
+		case actionSubmit:
+			fmt.Println()
+			return e.String(), nil
+		case actionCancel:
+			fmt.Println("^C")
+			return "", ErrCancelled
+		}
+	}
+}
+
 // Choose prints prompt + numbered options and reads a valid choice in
-// [1, options]. Non-TTY input and parse errors re-prompt; EOF returns 1.
-func Choose(prompt string, options int) int {
+// [1, options]. Parse errors re-prompt; cancellation propagates.
+func Choose(prompt string, options int) (int, error) {
 	for {
 		fmt.Printf("%s [1-%d] > ", prompt, options)
-		line := ReadLine("")
+		line, err := ReadLineErr("")
+		if err != nil {
+			return 0, err
+		}
 		s := strings.TrimSpace(line)
 		if s == "" {
 			continue
 		}
-		v, err := strconv.Atoi(s)
-		if err != nil || v < 1 || v > options {
+		v, perr := strconv.Atoi(s)
+		if perr != nil || v < 1 || v > options {
 			fmt.Println("无效选项，请输入数字。")
 			continue
 		}
-		return v
+		return v, nil
 	}
 }
 

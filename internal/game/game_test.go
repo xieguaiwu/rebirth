@@ -183,3 +183,14 @@ func TestFullAutoRun(t *testing.T) {
 type discard struct{}
 
 func (discard) Write(p []byte) (int, error) { return len(p), nil }
+
+func TestNomadQuitsWhenBroke(t *testing.T) {
+	// momus P1-2 regression: quit_if_stat "mny" was silently dead.
+	c := Career{QuitIfStat: "mny", QuitBelow: 0.5}
+	if !careerQuitCheck(&c, Stats{MNY: 0.1}) {
+		t.Fatal("nomad should lose the track when MNY < 0.5")
+	}
+	if careerQuitCheck(&c, Stats{MNY: 1}) {
+		t.Fatal("nomad should keep the track when MNY >= 0.5")
+	}
+}

@@ -203,7 +203,7 @@ trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
 	if !extractJSON(out, &p) {
 		return game.Event{}, false
 	}
-	text := strings.TrimSpace(p.Text)
+	text := strings.TrimSpace(stripControl(p.Text))
 	if len([]rune(text)) < 4 {
 		return game.Event{}, false
 	}
@@ -258,7 +258,26 @@ func sanitizeLine(s string) string {
 	}
 	s = strings.Trim(s, "{\"}`* \t")
 	s = strings.TrimPrefix(strings.TrimPrefix(strings.TrimSpace(s), "text"), ":")
-	return s
+	return stripControl(s)
+}
+
+// stripControl removes all C0/C1 control bytes (ESC, BEL and friends) from
+// model output. Without this a prompt-injected reply could execute OSC
+// sequences on the player's terminal (momus P1-3).
+func stripControl(s string) string {
+	if !strings.ContainsFunc(s, func(r rune) bool {
+		return r < 0x20 || (r >= 0x7f && r < 0xa1)
+	}) {
+		return s
+	}
+	var b strings.Builder
+	b.Grow(len(s))
+	for _, r := range s {
+		if r >= 0x20 && !(r >= 0x7f && r < 0xa1) {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
 }
 
 // extractJSON pulls the first JSON object out of a possibly chatty response.

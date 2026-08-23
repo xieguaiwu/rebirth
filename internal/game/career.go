@@ -90,6 +90,7 @@ func PickCareer(cs []*Career, age int, s Stats, traumaLoad float64, rng *rand.Ra
 		return nil
 	}
 	r := rng.Float64() * total
+	var last *Career
 	for _, c := range cs {
 		if !c.eligible(age, s, traumaLoad) {
 			continue
@@ -98,16 +99,13 @@ func PickCareer(cs []*Career, age int, s Stats, traumaLoad float64, rng *rand.Ra
 		if w <= 0 {
 			continue
 		}
+		last = c // momus P3-9: rounding guard must hit a real candidate
 		r -= w
 		if r <= 0 {
 			return c
 		}
 	}
-	last := cs[len(cs)-1]
-	if last.eligible(age, s, traumaLoad) {
-		return last
-	}
-	return nil
+	return last
 }
 
 // Birth is a starting background drawn at character creation. It shapes the

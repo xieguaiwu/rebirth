@@ -243,17 +243,17 @@ type Bloodline struct {
 	InheritedTal string  `json:"inherited_talent"`
 }
 
-// LoadBloodline reads the save file; missing file returns generation 1.
+// LoadBloodline reads the save file; missing file returns generation 0
+// (no ancestors). The counter is NOT incremented here — main owns that.
 func LoadBloodline(path string) (*Bloodline, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
-		return &Bloodline{Generation: 1}, nil
+		return &Bloodline{Generation: 0}, nil
 	}
 	var b Bloodline
 	if err := json.Unmarshal(raw, &b); err != nil {
-		return &Bloodline{Generation: 1}, fmt.Errorf("parse bloodline save: %w", err)
+		return &Bloodline{Generation: 0}, fmt.Errorf("parse bloodline save: %w", err)
 	}
-	b.Generation++
 	return &b, nil
 }
 

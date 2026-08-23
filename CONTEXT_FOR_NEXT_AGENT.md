@@ -1,12 +1,22 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-23 22:40
+最后更新: 2026-08-23 23:30
 
 ## 项目当前状态
 
-rebirth v0.3.0 —— Go 终端人生重开模拟器，**可玩、已部署、全部测试通过**。
+rebirth v0.4.0 —— Go 终端人生重开模拟器，**可玩、已部署、全部测试通过**。
 
 二进制: `~/.local/bin/rebirth`（每次改动后需重新构建部署）。
+
+## v0.4.0 变更（momus 审查轮，3×P1 + 5×P2 + 3×P3 全部修复）
+
+- **P1 代数双递增**：LoadBloodline 不再 ++，main 统一 `curGen = stored+1`（回归：连续两局显示第 1 代→第 2 代）
+- **P1 数字游民 mny 退出条件失效**：careerQuitCheck 补 case "mny"（与历史 Cond-tag 同类 bug）
+- **P1 终端转义注入**：新增 stripControl() 剥离 C0/C1 控制字节，覆盖 Narrate/Epitaph/FateEvent 全部输出路径
+- **P2**：初始属性下限 1（孤儿流不再 0 岁夭折）、≤5 岁死亡标「幼年夭折」、属性点校验每项>0、修改箭头键（Ctrl+←→）不再误触 Home、ESC 序列跨 read 块拼接、UTF-8 rune 跨块重组、Ctrl+C/Ctrl+D 显式取消（ErrCancelled 传播出 Choose）、粘贴跨行字节保留到下次 ReadLine（rawCarry）
+- **P3**：PickCareer 舍入兜底指向真实候选、draw[:3] 防越界
+- **架构**：input.go 重写为 feed() 纯函数解析（可单测），ReadLineErr 返回 (string, error)
+- 新数据：邪教家庭出身（sensitivity_add 0.25）+ events_06_cult_children.json 20 条第二代邪教成员童年/成年事件
 
 ## 架构
 

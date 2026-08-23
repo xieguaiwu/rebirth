@@ -5,3 +5,4 @@ rebirth
 # secrets / local saves
 *.env
 bloodline.json
+graphify-out/

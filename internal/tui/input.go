@@ -8,6 +8,7 @@ package tui
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -144,6 +145,11 @@ const (
 // a paste after an embedded Enter (momus P3-11), never lost silently.
 var rawCarry []byte
 
+// carrySkipNL records that the previous call submitted on a bare '\r' that
+// ended its chunk, so a leading '\n' in the next chunk is the same Enter's
+// other half - strip it instead of phantom-submitting an empty line.
+var carrySkipNL bool
+
 // feed applies one chunk of raw terminal bytes to the editor. It returns
 // the unconsumed tail — an incomplete escape sequence, a partial UTF-8
 // rune, or bytes following an embedded Enter — to be processed later.
@@ -182,8 +188,14 @@ func feed(e *LineEditor, data []byte) (rest []byte, act lineAction) {
 		case b == 0x1b:
 			consumed, complete := parseEscape(e, data[i:])
 			if !complete {
+				tail := cloneBytes(data[i:])
+				// A Ctrl+C inside a half-carried CSI must still cancel:
+				// real terminals never put 0x03 in CSI params.
+				if bytes.ContainsRune(tail, 0x03) {
+					return nil, actionCancel
+				}
 				// Incomplete sequence: carry until more bytes arrive.
-				return cloneBytes(data[i:]), actionNone
+				return tail, actionNone
 			}
 			i += consumed
 		default:
@@ -353,22 +365,38 @@ func ReadLineErr(prompt string) (string, error) {
 	e := &LineEditor{}
 	data := rawCarry
 	rawCarry = nil
+	skipNL := carrySkipNL
+	carrySkipNL = false
 	buf := make([]byte, 256)
 	for {
 		if len(data) == 0 {
 			n, rerr := os.Stdin.Read(buf)
 			if rerr != nil || n == 0 {
+				carrySkipNL = false
 				fmt.Println()
 				return "", ErrCancelled
 			}
 			data = append(data, buf[:n]...)
+			if skipNL && len(data) > 0 && data[0] == '\n' {
+				data = data[1:] // other half of a split CRLF: swallow
+			}
+			skipNL = false
 		}
+		tailCR := len(data) > 0 && data[len(data)-1] == '\r'
 		rest, act := feed(e, data)
 		data = nil
 		redraw(e.String())
 		switch act {
 		case actionSubmit:
+			// Bare \r consumed to the chunk end: its \n partner may arrive
+			// next call - remember to swallow it (oracle round-2).
+			carrySkipNL = tailCR && len(rest) == 0
 			rawCarry = rest // paste tail belongs to the next line
+			// An \r submitted at chunk end leaves an orphan \n head in the
+			// tail; strip it so the next call does not phantom-submit.
+			if len(rawCarry) > 0 && rawCarry[0] == '\n' {
+				rawCarry = rawCarry[1:]
+			}
 			fmt.Println()
 			return e.String(), nil
 		case actionCancel:

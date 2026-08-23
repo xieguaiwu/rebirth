@@ -248,3 +248,37 @@ func TestFeedCRLFSingleSubmit(t *testing.T) {
 		t.Fatalf("second line after CRLF wrong: %q %v rest=%q", e2.String(), act2, rest2)
 	}
 }
+
+// oracle round-2 regression: orphan \n after a chunk-end \r must not cause
+// a phantom empty submit on the next call (carrySkipNL mechanism).
+func TestFeedOrphanNewlineStripped(t *testing.T) {
+	e := &LineEditor{}
+	rest, act := feed(e, []byte("ab\r"))
+	if act != actionSubmit || e.String() != "ab" {
+		t.Fatalf("first submit wrong: %q %v", e.String(), act)
+	}
+	if len(rest) != 0 {
+		t.Fatalf("tail expected empty at chunk end, got %q", rest)
+	}
+	// Bare \r armed carrySkipNL; the \n heading the next chunk is swallowed
+	// by ReadLineErr before feeding, leaving a clean empty Enter.
+	next := []byte("\n\r")
+	carrySkipNL = true
+	if carrySkipNL && next[0] == '\n' {
+		next = next[1:]
+	}
+	e2 := &LineEditor{}
+	_, act2 := feed(e2, next)
+	if act2 != actionSubmit || e2.String() != "" {
+		t.Fatalf("unexpected content after skipped newline: %q %v", e2.String(), act2)
+	}
+}
+
+// oracle round-2 regression: Ctrl+C inside a half-carried CSI cancels.
+func TestFeedCtrlCInsideCarriedCSI(t *testing.T) {
+	e := &LineEditor{Runes: []rune("x")}
+	rest, act := feed(e, []byte{0x1b, '[', 0x03})
+	if act != actionCancel {
+		t.Fatalf("Ctrl+C inside carried CSI should cancel, got act=%v rest=%q", act, rest)
+	}
+}

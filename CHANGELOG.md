@@ -1,3 +1,14 @@
+### Fixed (oracle verification round)
+- Bloodline inherited-talent is seeded from the previous save (only a
+  picked inheritable talent overrides it) — the wipe survived round 1's
+  incomplete fix and was empirically reproduced by oracle.
+- Orphan "\n" after a chunk-end Enter no longer phantom-submits an empty
+  line (carrySkipNL hand-off between calls).
+- Ctrl+C inside a half-carried CSI sequence now cancels instead of being
+  swallowed as a CSI parameter byte.
+- PTY suite: B_step_count pinned to a seed; H_rapid_paste supplies enough
+  Enters to finish a life and fails on hangs.
+
 ## [0.7.0] - 2026-08-24
 
 ### Fixed (momus audit round 2 — all 9 findings, each reproduced before fixing)

@@ -19,7 +19,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.7.0"
+var version = "0.7.1"
 
 const pointsTotal = 20
 
@@ -126,8 +126,9 @@ func main() {
 	}
 
 	next := &game.Bloodline{
-		Generation:  curGen,
-		Sensitivity: game.InheritSensitivity(res.Sensitivity, (rng.Float64()*2-1)*0.1, 0.7),
+		Generation:   curGen,
+		Sensitivity:  game.InheritSensitivity(res.Sensitivity, (rng.Float64()*2-1)*0.1, 0.7),
+		InheritedTal: bloodline.InheritedTal, // oracle round-2: keep old talent unless a pick overrides
 	}
 	// Inherit the first INHERITABLE talent among all three picks; if none,
 	// keep the bloodline's existing one instead of wiping it (momus P3).

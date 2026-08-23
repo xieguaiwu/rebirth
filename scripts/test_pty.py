@@ -83,7 +83,7 @@ def _(rep):
 
 @case("B_step_count")
 def _(rep):
-    m, p = spawn(["--no-llm"])
+    m, p = spawn(["--seed", "31", "--no-llm"])
     out = b""
     for prompt, answer in [("你的出身是", b"1\r"), ("选第 1 个", b"1\r"),
                            ("选第 2 个", b"2\r"), ("选第 3 个", b"3\r"),
@@ -199,7 +199,8 @@ def _(rep):
 
 @case("H_rapid_paste")
 def _(rep):
-    blob = b"1\r1\r2\r3\r\r" * 1 + b"\r" * 60
+    # enough Enters to walk any life to its end (max-age 100 needs ~105)
+    blob = b"1\r1\r2\r3\r" + b"\r" * 250
     m, p = spawn(["--seed", "9", "--no-llm"])
     send(m, blob)
     out = b""
@@ -211,7 +212,10 @@ def _(rep):
         if "人生结束".encode() in out:
             break
     alive = p.poll() is None
+    finished = "人生结束".encode() in out
     p.kill(); os.close(m)
+    if alive and not finished:
+        return rep("process hung without finishing")
     if "\ufffd" in out.decode(errors="replace"):
         return rep("replacement char in output")
     if not out:

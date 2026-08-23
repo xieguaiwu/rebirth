@@ -235,7 +235,11 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	case s.STR <= 0.01:
 		status = "身体耗竭"
 	case sprLowYears >= 5:
-		status = "长期抑郁"
+		if res.Age < 18 {
+			status = "未成年早逝"
+		} else {
+			status = "长期抑郁"
+		}
 	}
 	if res.Pathological {
 		status += "（终生生处于创伤病理态）"

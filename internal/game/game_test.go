@@ -385,3 +385,67 @@ func TestRarityStars(t *testing.T) {
 		}
 	}
 }
+
+func TestSuperstitionArcGated(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	s := Stats{CHR: 5, INT: 5, STR: 5, MNY: 5, SPR: 5}
+	rng := rand.New(rand.NewSource(3))
+	// Without the fact, dependence/threat/awakening events never fire.
+	for age := 0; age <= 100; age++ {
+		for roll := 0; roll < 40; roll++ {
+			ev := PickEvent(evs, age, s, UnemployedID, Facts{}, nil, rng, 0, false)
+			if ev != nil && len(ev.Requires) > 0 && hasRequires(ev, "superstition") {
+				t.Fatalf("superstition-dependent event %s fired without the fact", ev.ID)
+			}
+		}
+	}
+}
+
+func TestAllEventCareerRefsResolve(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	careers, err := LoadCareers()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	ids := map[string]bool{}
+	for _, c := range careers {
+		ids[c.ID] = true
+	}
+	for _, e := range evs {
+		if e.Career != "" && !ids[e.Career] {
+			t.Fatalf("event %s references unknown career %q", e.ID, e.Career)
+		}
+	}
+}
+
+func TestFaithArcReachable(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	careers, _ := LoadCareers()
+	// A full-life run should occasionally touch the faith storyline.
+	reached := false
+	for seed := int64(1); seed <= 60 && !reached; seed++ {
+		var out bytes.Buffer
+		res, err := Run(&out, Config{Seed: seed, Bloodline: &Bloodline{}, LLM: Noop}.WithPoints(5, 5, 5, 5), evs, careers)
+		if err != nil {
+			t.Fatalf("seed %d: %v", seed, err)
+		}
+		for _, h := range res.History {
+			if strings.Contains(h, "寺庙") || strings.Contains(h, "卦") || strings.Contains(h, "功德") {
+				reached = true
+				break
+			}
+		}
+	}
+	if !reached {
+		t.Fatal("faith arc never reached in 60 seeded lives")
+	}
+}

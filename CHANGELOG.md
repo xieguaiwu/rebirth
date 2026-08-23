@@ -1,3 +1,25 @@
+## [0.6.0] - 2026-08-24
+
+### Added
+- Belief system expansion with three storylines driven by the fact engine:
+  - **Faith arc** (`faith`): temple visits, small donations, volunteering,
+    refuge — steady small comfort buffs; incense-economy satire.
+  - **Superstition arc** (`superstition`): street fortune-telling ->
+    pay-to-upgrade dependency -> "blood disaster" extortion -> info-gap
+    reveal or broke awakening; dark mirror path as the scamming teller.
+  - **Pseudo-science arc**: qigong cancer-cure masters and quantum speed-
+    reading classes, both ending in exposure (based on real prosecuted
+    cases).
+- Two new careers: 算命先生/大师 (fortune teller) and 出家人 (monk, with
+  tonsure/morning-bell/family-visit/return-to-world chain).
+- 45 new events across `events_08_faith.json` and `events_09_streets2.json`,
+  adapted from documented stories of Chinese documentary storytellers:
+  Sanhe geopolitics seminars, the 15-yuan bunk, viral-fame arc (chosen ->
+  crowded -> backlash -> gone), Myawaddy scam-park trap/escape, gambling
+  spiral (first win -> KFC leftovers -> rehab day 30), massage-parlor scam,
+  blind masseur, sugar-boss crash, and the "understands heaven and earth"
+  sage NPC bridging the belief arcs.
+
 ## [0.5.0] - 2026-08-24
 
 ### Added

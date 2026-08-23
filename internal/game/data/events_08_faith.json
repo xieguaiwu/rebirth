@@ -1,0 +1,29 @@
+[
+  {"id":"faith_temple_first","text":"你走进一座寺庙。五十块的门票，三支免费的香——那天的安静是真的。","min_age":16,"max_age":80,"weight":4,"good":true,"context":"faith","therapy_q":0.2,"delta":{"spr":1}},
+  {"id":"faith_incense_head","text":"除夕夜的头香拍到六万八。你站在人群外看着，分不清那是信仰还是拍卖会。","min_age":18,"max_age":80,"weight":3,"delta":{"spr":-0.3,"int":0.2}},
+  {"id":"faith_small_donation","text":"功德箱里投了十块钱。不求回报的那种投法。当晚你睡得意外地沉。","min_age":16,"max_age":85,"weight":5,"good":true,"context":"faith","therapy_q":0.15,"delta":{"mny":-0.1,"spr":0.8}},
+  {"id":"faith_fake_relic_scam","text":"「大师开过光」的手串三千八。半年后你在批发市场看到了同款，九块九包邮。","min_age":18,"max_age":80,"weight":4,"good":false,"context":"faith","delta":{"mny":-0.8,"spr":-1},"trauma_alpha":0.15},
+  {"id":"faith_volunteer_temple","text":"你在寺院做义工，扫地、择菜、给香客指路。体力活意外地治心累。","min_age":18,"max_age":75,"weight":4,"good":true,"context":"faith","therapy_q":0.3,"delta":{"str":0.3,"spr":1.5}},
+  {"id":"faith_refuge","text":"皈依那天你领了法名。师父说：信不是求，是学着放下。你似懂非懂，但记住了。","min_age":20,"max_age":70,"weight":2,"good":true,"context":"faith","therapy_q":0.4,"delta":{"spr":2}},
+
+  {"id":"super_fortune_50","text":"巷口摆摊的先生说你印堂发黑，五十块给你解一卦。你笑了，但还是坐下了。","min_age":16,"max_age":75,"weight":4,"cond":{"max_mny":6},"context":"superstition","delta":{"mny":-0.1},"trauma_alpha":0.05},
+  {"id":"super_master_upsell","text":"「这卦只算了命，没算运。」大师说改运要加钱，一千八。你犹豫的那三秒里想起了所有不顺的事。","min_age":18,"max_age":75,"weight":5,"requires":["superstition"],"delta":{"mny":-0.8,"spr":0.3},"trauma_alpha":0.1},
+  {"id":"super_blood_threat","text":"「你女儿近期有血光之灾。」直播间里的督导师兄说，破财才能消灾——课程只要三千九百九。","min_age":25,"max_age":70,"weight":4,"requires":["superstition"],"delta":{"mny":-1.5,"spr":-1.5},"trauma_alpha":0.35},
+  {"id":"super_info_gap_reveal","text":"警察上门那天你才明白：大师的「神准」，来自美容院前台递出去的你的身份证号。","min_age":20,"max_age":75,"weight":3,"requires":["superstition"],"good":true,"delta":{"int":0.8,"spr":-1},"trauma_alpha":0.25,"therapy_q":0.2},
+  {"id":"super_broke_awake","text":"积蓄见底的那个下午，你把「转运符」扔进了垃圾桶。垃圾桶满了，你的人生还剩半杯。","min_age":18,"max_age":75,"weight":3,"requires":["superstition"],"good":true,"therapy_q":0.3,"delta":{"spr":1.5}},
+  {"id":"super_teller_guilt","text":"你自己坐进了卦摊。第一次骗到钱时手在抖；第十次时手很稳——这让你半夜睡不着。","min_age":20,"max_age":65,"weight":4,"career":"fortune_teller","context":"scammer","delta":{"mny":1,"spr":-1.5},"trauma_alpha":0.3},
+  {"id":"super_teller_caught","text":"便衣亮证的时候你正在给人算「血劫」。涉案金额两千余万，你是团伙里最底层的那个。","min_age":22,"max_age":68,"weight":4,"career":"fortune_teller","delta":{"mny":-2,"spr":-3},"trauma_alpha":0.5},
+
+  {"id":"pseudo_qigong_master","text":"气功大师说刀片能隔空切肿瘤，月费一百万。病急的人什么都会信一次。","min_age":30,"max_age":80,"weight":3,"delta":{"mny":-2,"spr":-1},"trauma_alpha":0.4},
+  {"id":"pseudo_qigong_exposed","text":"大师被判了十二年。你看着新闻里的刀片道具，摸了摸自己还没好利索的手术疤。","min_age":32,"max_age":82,"weight":3,"good":true,"therapy_q":0.25,"delta":{"spr":-0.5,"int":0.5},"trauma_alpha":0.15},
+  {"id":"pseudo_quantum_kids","text":"「量子波动速读」班两万六，孩子蒙着眼翻书。你在家长群里问了一句，被移出了群聊。","min_age":26,"max_age":50,"weight":3,"delta":{"mny":-1,"int":0.3},"trauma_alpha":0.1},
+  {"id":"pseudo_quantum_busted","text":"孩子当众穿帮的那天，培训班卷款跑路。你排在维权队伍的中段，前面还有四百个家长。","min_age":26,"max_age":52,"weight":3,"delta":{"mny":-1.5,"spr":-2},"trauma_alpha":0.3},
+
+  {"id":"faith_sage_meetup","text":"深夜大排档，邻座的大学生从紫微斗数讲到罗马帝国衰亡。你听傻了：他是先知，还是病人？","min_age":16,"max_age":60,"weight":2,"context":"met_sage","delta":{"int":0.5,"spr":0.5},"trauma_alpha":0.05},
+  {"id":"faith_sage_truth","text":"你又遇到了那位「通晓天地」的同学。这次他在翻一本精神科的药盒——原来两种解释都对。","min_age":16,"max_age":62,"weight":3,"requires":["met_sage"],"good":true,"therapy_q":0.2,"delta":{"spr":0.5,"int":0.5}},
+
+  {"id":"monk_tonsure","text":"剃度那天很冷。师父问你为什么来，你说想找个不会塌的地方待着。他说：这里也会塌，塌的是执念。","min_age":18,"max_age":55,"weight":3,"career":"monk","good":true,"context":"faith","therapy_q":0.5,"delta":{"spr":2.5,"mny":-0.5}},
+  {"id":"monk_morning_bell","text":"凌晨四点的早课。三百天后的某个清晨，你突然发现自己已经很久没做噩梦了。","min_age":18,"max_age":70,"weight":4,"career":"monk","good":true,"therapy_q":0.45,"delta":{"spr":2}},
+  {"id":"monk_family_visit","text":"母亲来看你，隔着斋堂的桌子哭。你递纸巾的手很稳——稳得让她哭得更凶了。","min_age":19,"max_age":70,"weight":4,"career":"monk","delta":{"spr":-1},"trauma_alpha":0.25,"therapy_q":0.15},
+  {"id":"monk_return_world","text":"你还俗了。带着十年的安静走进地铁站，人潮的声音像另一个星球的海。","min_age":25,"max_age":65,"weight":3,"career":"monk","good":true,"delta":{"spr":1,"chr":0.2}}
+]

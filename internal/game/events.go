@@ -1,6 +1,7 @@
 package game
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"fmt"
@@ -75,6 +76,9 @@ type Event struct {
 	Conflicts []string `json:"conflict,omitempty"`
 	// Sets is the storyline fact established when this event fires.
 	Sets string `json:"sets,omitempty"`
+	// Context is an alias of Sets kept because the v0.6.0 data shards were
+	// written with the "context" key; both establish the fact on fire.
+	Context string `json:"context,omitempty"`
 	// LLMGenerated marks events injected at runtime by the model.
 	LLMGenerated bool `json:"-"`
 }
@@ -127,7 +131,9 @@ func LoadEvents() ([]Event, error) {
 			return nil, fmt.Errorf("read %s: %w", m, err)
 		}
 		var shard []Event
-		if err := json.Unmarshal(raw, &shard); err != nil {
+		dec := json.NewDecoder(bytes.NewReader(raw))
+		dec.DisallowUnknownFields()
+		if err := dec.Decode(&shard); err != nil {
 			return nil, fmt.Errorf("parse %s: %w", m, err)
 		}
 		evs = append(evs, shard...)

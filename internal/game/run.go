@@ -152,7 +152,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 		// --- career decision window ---
 		cur := findCareer(careers, careerID)
 		if cur == nil || cur.ID == UnemployedID {
-			if careerWindows[age] && age <= 55 {
+			if careerWindows[age] {
 				load := trauma.Load(params)
 				if c := PickCareer(careers, age, s, load, rng, luck); c != nil {
 					careerID = c.ID
@@ -202,13 +202,17 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 
 		if ev != nil {
 			used[ev.ID] = true
-			if ev.Sets != "" {
+			established := ev.Sets
+			if ev.Context != "" {
+				established = ev.Context // v0.6.0 shards use the context key
+			}
+			if established != "" {
 				// "!fact" clears a storyline fact (e.g. rescue ends the
 				// cult isolation and reopens ordinary social events).
-				if name := strings.TrimPrefix(ev.Sets, "!"); name != ev.Sets {
+				if name := strings.TrimPrefix(established, "!"); name != established {
 					delete(facts, name)
 				} else {
-					facts[ev.Sets] = true
+					facts[established] = true
 				}
 			}
 			text := ev.Text
@@ -216,10 +220,10 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 				if cfg.Hints {
 					fmt.Fprint(w, hintPending)
 				}
-				clearHint(w, cfg.Hints)
 				text = cfg.LLM.Narrate(age,
 					fmt.Sprintf("事件:%s 职业:%s 属性:%+v 负荷:%.2f", ev.ID, careerName, s, trauma.Load(params)),
 					text)
+				clearHint(w, cfg.Hints)
 			}
 			line := fmt.Sprintf("[%3d 岁] %s", age, text)
 			record(line)
@@ -244,8 +248,13 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 
 		// Manual advance: one Enter per year of life.
 		if cfg.Step && cfg.Pause != nil && cfg.Pause() {
+			// Keep the Result contract whole even on quit (momus P1: main
+			// used to read a zero Sensitivity and corrupt the lineage save).
 			res := &Result{Age: age, Career: careerName, Stats: s,
-				Pathological: trauma.Pathological, Aborted: true}
+				Pathological: trauma.Pathological,
+				Sensitivity:  EndingSensitivity(trauma, params),
+				History:      history,
+				Aborted:      true}
 			fmt.Fprintf(w, "\n──── 玩家中途离开（%d 岁）────\n", age)
 			return res, nil
 		}

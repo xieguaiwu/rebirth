@@ -64,6 +64,13 @@ func IsTTY() bool {
 	return ioctl(os.Stdin.Fd(), ioctlReadTermios, &t) == nil
 }
 
+// IsStdoutTTY reports whether stdout is an interactive terminal — the right
+// probe before emitting transient ANSI indicators (momus P3).
+func IsStdoutTTY() bool {
+	var t termios
+	return ioctl(os.Stdout.Fd(), ioctlReadTermios, &t) == nil
+}
+
 // LineEditor holds a rune buffer with a rune-index cursor (skill §1.6).
 type LineEditor struct {
 	Runes  []rune
@@ -146,6 +153,11 @@ func feed(e *LineEditor, data []byte) (rest []byte, act lineAction) {
 		b := data[i]
 		switch {
 		case b == '\r' || b == '\n':
+			// CRLF pastes count as ONE Enter; eating both prevents a
+			// phantom empty submission on the next call.
+			if b == '\r' && i+1 < len(data) && data[i+1] == '\n' {
+				return cloneBytes(data[i+2:]), actionSubmit
+			}
 			return cloneBytes(data[i+1:]), actionSubmit
 		case b == 0x7f || b == 0x08:
 			e.Backward()
@@ -339,29 +351,39 @@ func ReadLineErr(prompt string) (string, error) {
 
 	fmt.Print(prompt)
 	e := &LineEditor{}
-	pendingIn := rawCarry
+	data := rawCarry
 	rawCarry = nil
 	buf := make([]byte, 256)
 	for {
-		if len(pendingIn) == 0 {
+		if len(data) == 0 {
 			n, rerr := os.Stdin.Read(buf)
 			if rerr != nil || n == 0 {
 				fmt.Println()
 				return "", ErrCancelled
 			}
-			pendingIn = append(pendingIn, buf[:n]...)
+			data = append(data, buf[:n]...)
 		}
-		rest, act := feed(e, pendingIn)
-		rawCarry = rest
-		pendingIn = nil
+		rest, act := feed(e, data)
+		data = nil
 		redraw(e.String())
 		switch act {
 		case actionSubmit:
+			rawCarry = rest // paste tail belongs to the next line
 			fmt.Println()
 			return e.String(), nil
 		case actionCancel:
 			fmt.Println("^C")
 			return "", ErrCancelled
+		default:
+			// Incomplete escape sequence or partial rune: keep the tail and
+			// BLOCK for its continuation. Re-feeding the tail alone would
+			// spin forever; dropping it would corrupt input (momus P1-3).
+			n, rerr := os.Stdin.Read(buf)
+			if rerr != nil || n == 0 {
+				fmt.Println()
+				return "", ErrCancelled
+			}
+			data = append(rest, buf[:n]...)
 		}
 	}
 }

@@ -19,7 +19,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.6.0"
+var version = "0.7.0"
 
 const pointsTotal = 20
 
@@ -97,7 +97,7 @@ func main() {
 	// Step mode: opt-in via --step, on by default on interactive terminals,
 	// always off in auto mode.
 	cfg.Step = !*auto && (tui.IsTTY() || *step)
-	cfg.Hints = tui.IsTTY()
+	cfg.Hints = tui.IsStdoutTTY()
 	if cfg.Step {
 		cfg.Pause = func() bool {
 			fmt.Print("\n\033[2m回车=下一年 · q=退出\033[0m ")
@@ -118,13 +118,24 @@ func main() {
 		fmt.Println("[FAIL] 模拟中断:", err)
 		os.Exit(1)
 	}
+	if res.Aborted {
+		// Quitting mid-life must NOT touch the lineage save (momus P1:
+		// the old path overwrote sensitivity with 0 and bumped generation).
+		fmt.Println("\n[OK] 已离开这一世，血统存档保持不变。")
+		return
+	}
 
 	next := &game.Bloodline{
 		Generation:  curGen,
 		Sensitivity: game.InheritSensitivity(res.Sensitivity, (rng.Float64()*2-1)*0.1, 0.7),
 	}
-	if len(talentsPick) > 0 && talentsPick[0].Inheritable {
-		next.InheritedTal = talentsPick[0].Name
+	// Inherit the first INHERITABLE talent among all three picks; if none,
+	// keep the bloodline's existing one instead of wiping it (momus P3).
+	for _, t := range talentsPick {
+		if t.Inheritable {
+			next.InheritedTal = t.Name
+			break
+		}
 	}
 	if err := next.Save(savePath()); err != nil {
 		fmt.Println("[WARN] 存档失败:", err)

@@ -1,3 +1,30 @@
+## [0.7.0] - 2026-08-24
+
+### Fixed (momus audit round 2 — all 9 findings, each reproduced before fixing)
+- **P1** Quitting mid-life corrupted the lineage save (zero sensitivity +
+  generation bump written). Abort now fills a full Result and main skips
+  the save entirely.
+- **P1** The v0.6.0 shards used a `context` JSON key the Event struct never
+  declared — 12 storyline events were unreachable at runtime. Context is
+  now an alias of Sets, and LoadEvents decodes with
+  DisallowUnknownFields so key drift fails loudly at startup.
+- **P1** ReadLineErr dropped feed()'s carried tail between os.Stdin.Read
+  chunks and could re-feed identical bytes forever; the loop now blocks
+  for the continuation and prepends it (split escapes / CJK runes safe).
+- **P2** CRLF paste no longer double-submits; hint is cleared AFTER the
+  blocking narrator call returns (was cleared before, hiding it).
+- **P2/P3** Hints probe stdout (not stdin); bloodline inherits the first
+  inheritable talent among all picks instead of only pick #1 and no longer
+  wipes an existing entry; dead `age <= 55` condition removed; stale
+  comments updated.
+- New regression gates: fact-reachability audit over all shards,
+  context-key survival, chunk-boundary loop replay tests.
+
+### Added
+- scripts/test_pty.py: 8-case PTY end-to-end suite (full flow, step
+  counting, q-quit, Ctrl+C cancel, pipe mode, seed determinism, CJK input,
+  rapid paste) — 8/8 green.
+
 ## [0.6.0] - 2026-08-24
 
 ### Added

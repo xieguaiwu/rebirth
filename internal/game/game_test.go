@@ -449,3 +449,70 @@ func TestFaithArcReachable(t *testing.T) {
 		t.Fatal("faith arc never reached in 60 seeded lives")
 	}
 }
+
+// TestFactReachability is the anti-recurrence gate for momus P1 (context-key
+// drift): every fact required or conflicted by any event must be producible
+// by some event's Sets/Context or a birth preset.
+func TestFactReachability(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	producible := map[string]bool{}
+	for _, b := range []Birth{{ID: "cult_family"}, {ID: "single_parent"}, {ID: "orphan"}, {ID: "war_zone"}} {
+		for f := range NewFacts(&b) {
+			producible[f] = true
+		}
+	}
+	for _, e := range evs {
+		if e.Sets != "" {
+			producible[strings.TrimPrefix(e.Sets, "!")] = true
+		}
+		if e.Context != "" {
+			producible[strings.TrimPrefix(e.Context, "!")] = true
+		}
+	}
+	bad := map[string]string{}
+	for _, e := range evs {
+		for _, r := range e.Requires {
+			if !producible[r] {
+				bad[e.ID+"/requires/"+r] = "unreachable"
+			}
+		}
+		for _, c := range e.Conflicts {
+			if !producible[c] {
+				bad[e.ID+"/conflict/"+c] = "unreachable"
+			}
+		}
+	}
+	for k, v := range bad {
+		t.Errorf("%s: %v", k, v)
+	}
+}
+
+func TestContextKeyEventsLoadSets(t *testing.T) {
+	// momus P1 regression: the v0.6.0 shards say "context" — the field must
+	// survive decoding and establish the fact at fire time.
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	var super, gamble *Event
+	for i := range evs {
+		if evs[i].ID == "super_fortune_50" {
+			super = &evs[i]
+		}
+		if evs[i].ID == "gamble_first_win" {
+			gamble = &evs[i]
+		}
+	}
+	if super == nil || gamble == nil {
+		t.Fatal("shard events missing")
+	}
+	if super.Context != "superstition" && super.Sets != "superstition" {
+		t.Fatalf("super_fortune_50 lost its establishing fact: sets=%q context=%q", super.Sets, super.Context)
+	}
+	if gamble.Context != "gambler" && gamble.Sets != "gambler" {
+		t.Fatalf("gamble_first_win lost its establishing fact")
+	}
+}

@@ -162,3 +162,89 @@ func TestLeadingDigits(t *testing.T) {
 		}
 	}
 }
+
+// chunkFeeder simulates an os.Stdin that delivers bytes in arbitrary chunk
+// sizes, driving the same loop structure ReadLineErr uses.
+type chunkFeeder struct {
+	chunks [][]byte
+	i      int
+}
+
+func (f *chunkFeeder) read() []byte {
+	if f.i >= len(f.chunks) {
+		return nil
+	}
+	c := f.chunks[f.i]
+	f.i++
+	return c
+}
+
+// driveLoop replays the ReadLineErr loop body against split chunks.
+func driveLoop(e *LineEditor, f *chunkFeeder) (string, lineAction) {
+	var data []byte
+	readMore := func() bool {
+		c := f.read()
+		if c == nil {
+			return false
+		}
+		data = append(data, c...)
+		return true
+	}
+	if !readMore() {
+		return "", actionCancel
+	}
+	for {
+		rest, act := feed(e, data)
+		data = nil
+		switch act {
+		case actionSubmit:
+			return e.String(), act
+		case actionCancel:
+			return e.String(), act
+		default:
+			// Mirror production: carry tail, then block for continuation
+			// and PREPEND the tail before the new bytes.
+			c := f.read()
+			if c == nil {
+				return e.String(), actionCancel
+			}
+			data = append(append([]byte(nil), rest...), c...)
+		}
+	}
+}
+
+// momus P1-3 regression: ESC[1;5C split across chunks must move the cursor,
+// never inject "C" as literal text.
+func TestLoopSplitEscapeNoInjection(t *testing.T) {
+	e := &LineEditor{Runes: []rune("ab"), Cursor: 2}
+	f := &chunkFeeder{chunks: [][]byte{{0x1b}, {'[', '1', ';', '5'}, {'C'}, {'a', 'b', '\r'}}}
+	line, _ := driveLoop(e, f)
+	if line != "abab" {
+		t.Fatalf("split escape injected garbage: %q", line)
+	}
+}
+
+// momus P1-3 regression: a CJK rune straddling chunks survives intact.
+func TestLoopSplitRuneCJK(t *testing.T) {
+	e := &LineEditor{}
+	zh := []byte("中")
+	f := &chunkFeeder{chunks: [][]byte{zh[:1], zh[1:2], zh[2:], {'x', '\r'}}}
+	line, _ := driveLoop(e, f)
+	if line != "中x" {
+		t.Fatalf("split CJK rune lost: %q", line)
+	}
+}
+
+// momus P2 regression: CRLF counts as one Enter, no phantom empty submit.
+func TestFeedCRLFSingleSubmit(t *testing.T) {
+	e := &LineEditor{}
+	rest, act := feed(e, []byte("ab\r\ncd\r"))
+	if act != actionSubmit || e.String() != "ab" {
+		t.Fatalf("first submit wrong: %q %v", e.String(), act)
+	}
+	e2 := &LineEditor{}
+	rest2, act2 := feed(e2, rest)
+	if act2 != actionSubmit || e2.String() != "cd" || len(rest2) != 0 {
+		t.Fatalf("second line after CRLF wrong: %q %v rest=%q", e2.String(), act2, rest2)
+	}
+}

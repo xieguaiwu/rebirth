@@ -45,6 +45,20 @@ type Config struct {
 	// called; returning true aborts the life gracefully. Nil-safe.
 	Step  bool
 	Pause func() bool
+
+	// Hints enables transient terminal indicators (e.g. "LLM thinking")
+	// shown while a blocking narrator call is in flight. Set when stdout
+	// is an interactive TTY; indicators would otherwise pollute pipes.
+	Hints bool
+}
+
+const hintPending = "\033[2m…… 命运编织中，稍等片刻 \033[0m"
+
+// clearHint erases the pending-indicator once real content arrives.
+func clearHint(w io.Writer, hints bool) {
+	if hints {
+		fmt.Fprint(w, "\r\033[K")
+	}
 }
 
 // WithPoints sets the player's attribute allocation and returns cfg for chaining.
@@ -174,8 +188,15 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 		// Once per decade past 20, the model may weave a unique fate event.
 		if age >= 20 && age%10 == 0 && !isNoop(cfg.LLM) {
 			summary := stateSummary(age, s, trauma, careerName, params)
+			if cfg.Hints {
+				fmt.Fprint(w, hintPending)
+			}
 			if fate, ok := cfg.LLM.FateEvent(age, summary); ok {
+				clearHint(w, cfg.Hints)
 				ev = &fate
+				used[ev.ID] = true // fate events also never repeat
+			} else {
+				clearHint(w, cfg.Hints)
 			}
 		}
 
@@ -192,6 +213,10 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			}
 			text := ev.Text
 			if !isNoop(cfg.LLM) && (ev.TraumaAlpha > 0 || ev.Good) {
+				if cfg.Hints {
+					fmt.Fprint(w, hintPending)
+				}
+				clearHint(w, cfg.Hints)
 				text = cfg.LLM.Narrate(age,
 					fmt.Sprintf("事件:%s 职业:%s 属性:%+v 负荷:%.2f", ev.ID, careerName, s, trauma.Load(params)),
 					text)
@@ -268,6 +293,10 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	fmt.Fprintf(w, "\n──── 人生结束：%d 岁 · 职业：%s · %s ────\n", res.Age, res.Career, status)
 
 	if !isNoop(cfg.LLM) {
+		if cfg.Hints {
+			fmt.Fprint(w, hintPending)
+		}
+		clearHint(w, cfg.Hints)
 		fmt.Fprintln(w, "墓志铭："+cfg.LLM.Epitaph(stateSummary(res.Age, s, trauma, careerName, params)))
 	}
 	return res, nil

@@ -42,6 +42,10 @@
 - Custom stat allocation rejected zeros ("10 0 10 0"); zeros are legal
   again — the runtime init floor already prevents instant-death builds.
 - Non-TTY input swallowed queued stdin lines (shared bufio.Scanner).
+- Step mode felt dead with the LLM layer on: each narrated year blocked on
+  the model call (up to 12 s of silence). A transient "命运编织中" hint now
+  shows while the narrator works; PTY-verified that one Enter advances
+  exactly one year.
 
 # Changelog
 

@@ -97,6 +97,7 @@ func main() {
 	// Step mode: opt-in via --step, on by default on interactive terminals,
 	// always off in auto mode.
 	cfg.Step = !*auto && (tui.IsTTY() || *step)
+	cfg.Hints = tui.IsTTY()
 	if cfg.Step {
 		cfg.Pause = func() bool {
 			fmt.Print("\n\033[2m回车=下一年 · q=退出\033[0m ")

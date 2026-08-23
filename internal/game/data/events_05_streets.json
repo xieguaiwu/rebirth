@@ -1,0 +1,47 @@
+[
+  {"id":"sanhe_rijie","text":"你成了日结大神：干一天玩三天。五块钱的挂逼面管饱，两升的大水够喝一天。","min_age":18,"max_age":40,"weight":5,"cond":{"max_mny":2,"max_int":6},"delta":{"mny":-0.3,"spr":0.8,"str":-0.2},"trauma_alpha":0.1},
+  {"id":"sanhe_id_taken","text":"身份证被「老乡」借走办了网贷。你在网吧躺了一周，用别人的名字活着。","min_age":18,"max_age":45,"weight":4,"cond":{"max_mny":3},"delta":{"mny":-1,"spr":-2},"trauma_alpha":0.35},
+  {"id":"sanhe_wangba_night","text":"八块钱的网吧通宵是你的家。屏幕的光比路灯暖，游戏里的兄弟比现实多。","min_age":16,"max_age":40,"weight":5,"cond":{"max_mny":3},"delta":{"spr":-0.5,"str":-0.3}},
+  {"id":"sanhe_huijia","text":"母亲打来电话问你过年回不回。你说车票难买——其实你只是不敢让她看到你的手。","min_age":18,"max_age":45,"weight":4,"cond":{"max_mny":3},"delta":{"spr":-1},"trauma_alpha":0.25},
+  {"id":"sanhe_zhao_gongzuo","text":"中介说包吃住月薪八千。到了才发现是东莞的黑厂，护照手机都被「保管」了。","min_age":17,"max_age":40,"weight":3,"cond":{"max_mny":3},"delta":{"mny":-1.5,"spr":-2.5},"trauma_alpha":0.5},
+  {"id":"sanhe_dakaren","text":"你蹲在人力资源市场门口，和几百人一起等天亮。天亮了就有活，有活就有饭。","min_age":18,"max_age":50,"weight":4,"cond":{"max_mny":3},"delta":{"str":0.3,"spr":-0.5}},
+
+  {"id":"gongdi_lai_le_jiu_shi_gan","text":"安全帽一扣，钢筋一扛。工头问你会不会，你说：来了就是干！","min_age":18,"max_age":55,"weight":6,"cond":{"min_str":5,"max_mny":4},"good":true,"delta":{"str":0.5,"mny":0.6}},
+  {"id":"gongdi_su_she","text":"十二人间的工棚，泡面味、脚臭味和此起彼伏的鼾声。睡前视频里老婆问：啥时候回来？","min_age":18,"max_age":55,"weight":5,"cond":{"min_str":4},"delta":{"spr":-0.5,"str":0.2}},
+  {"id":"gongdi_weixian_shigu","text":"三楼的钢管滑了。安全网接住了你，没接住你的半月板。","min_age":18,"max_age":55,"weight":3,"cond":{"min_str":4},"delta":{"str":-2,"mny":-0.5},"trauma_alpha":0.4},
+  {"id":"gongdi_nianzhong_taowxin","text":"年底讨薪。你爬上了塔吊——不是想跳，是想让欠薪的人抬头看看你。","min_age":20,"max_age":60,"weight":3,"cond":{"min_str":4,"max_mny":4},"delta":{"mny":1,"spr":-2},"trauma_alpha":0.4},
+
+  {"id":"anquan_ai_bing_baoan","text":"你是小区保安，也是肺癌晚期患者。物业不知道，业主不知道，你知道自己还剩多少个早班。","min_age":45,"max_age":70,"weight":3,"delta":{"str":-2,"spr":-1.5},"trauma_alpha":0.45},
+  {"id":"aizheng_paichu_ct","text":"复查结果出来了：肿瘤没长大。你在医院楼下抽了这辈子最后一支烟。","min_age":30,"max_age":75,"weight":2,"good":true,"therapy_q":0.3,"delta":{"spr":2}},
+  {"id":"yiyuzheng_laoge","text":"你三年没出门了。今天终于下楼扔垃圾，邻居说：「好久不见。」你差点哭出来。","min_age":18,"max_age":60,"weight":3,"delta":{"spr":-2},"trauma_alpha":0.3,"therapy_q":0.2},
+  {"id":"qiaodong_lusuozhe","text":"桥洞下你用纸箱隔开了风。路过的大学生停下来和你聊了半小时，还留下了面包。","min_age":25,"max_age":70,"weight":3,"cond":{"max_mny":2},"delta":{"spr":-1,"str":-0.5},"therapy_q":0.15,"trauma_alpha":0.2},
+  {"id":"shamate_jiazu","text":"你加入了杀马特家族。五彩的头发是这个灰色世界里你唯一能自己做主的颜色。","min_age":14,"max_age":25,"weight":3,"cond":{"max_mny":4},"good":true,"delta":{"chr":1,"spr":1.5}},
+  {"id":"shamate_jianfa","text":"工厂主管说：剪掉头发，或者滚。你看着镜子里的彩虹色，剪了。","min_age":16,"max_age":28,"weight":3,"delta":{"chr":-1,"spr":-2},"trauma_alpha":0.35},
+  {"id":"liulang_ge_shou","text":"你在地下通道唱歌。琴盒里的硬币不多，但有个人听完整首歌才走。","min_age":16,"max_age":50,"weight":3,"delta":{"spr":0.5,"mny":0.2},"therapy_q":0.1},
+  {"id":"feiji_cheng_ke","text":"你花光积蓄买了张机票去见网友。机场等来的只有拉黑提示音。","min_age":18,"max_age":40,"weight":3,"cond":{"max_chr":7},"delta":{"mny":-2.5,"spr":-3},"trauma_alpha":0.45},
+
+  {"id":"modi_yezong","text":"深夜的摩的生意开始了。凌晨的城市只属于代驾、代驾的客户、和你这样的野摩的。","min_age":18,"max_age":55,"weight":4,"cond":{"max_mny":5},"good":true,"delta":{"mny":0.8,"str":-0.2}},
+  {"id":"modi_zuijiu_passenger","text":"醉酒的乘客把头靠在你背上，突然开始哭。你没说话，只是骑得很稳。","min_age":18,"max_age":60,"weight":4,"delta":{"spr":0.5},"therapy_q":0.1,"trauma_alpha":0.05},
+  {"id":"modi_xiangqin_nv","text":"后座的大姐被骗光了积蓄来投奔网友。你绕了三条街，最后把她送到了派出所门口而不是旅馆。","min_age":18,"max_age":60,"weight":3,"good":true,"delta":{"mny":0.3,"spr":1},"therapy_q":0.2},
+  {"id":"modi_xuansue_dasheng","text":"今晚的乘客是个大学生，一路上给你讲紫微斗数。他说你命里有贵人——收钱的时候他少给了五块。","min_age":18,"max_age":45,"weight":3,"delta":{"spr":0.5,"int":0.2}},
+  {"id":"modi_dama_chuzou","text":"56岁的女乘客让你开去高铁站。她说：孩子上大学了，我的人生该开始了。你免了她的零头。","min_age":40,"max_age":65,"weight":3,"good":true,"delta":{"spr":1.5},"therapy_q":0.2},
+  {"id":"modi_chengguan","text":"交警扣了你的车。半个月收入没了，你蹲在路边算了算这个月怎么过。","min_age":18,"max_age":55,"weight":4,"cond":{"max_mny":4},"delta":{"mny":-1.5,"spr":-1.5},"trauma_alpha":0.25},
+  {"id":"modi_laoliu","text":"老刘又坐你的车了。三年了他总说「下周就回老家」，可每周五晚上他还是出现在老地方。","min_age":18,"max_age":60,"weight":3,"delta":{"spr":-0.5},"trauma_alpha":0.1},
+
+  {"id":"tougao_gay_chugui","text":"投稿的故事里那个男孩说：我给爸妈发了一段很长的话。爸爸回了一个字：「哦」。妈妈回了三个：「吃饭没」。","min_age":16,"max_age":30,"weight":2,"delta":{"spr":-0.5,"int":0.2},"therapy_q":0.1,"trauma_alpha":0.15},
+  {"id":"tougao_zhinan_weiji","text":"故事里那个直男室友喝醉后抱着他说了很多话，第二天装作什么都没发生。有些暧昧只能活在酒后。","min_age":16,"max_age":32,"weight":2,"delta":{"spr":-0.5},"trauma_alpha":0.15},
+  {"id":"tougao_yidi_lian_pianju","text":"投稿人说她为异地恋人转了八万。见面那天，车站出口人潮汹涌，没有一个人朝她走来。","min_age":18,"max_age":45,"weight":3,"delta":{"mny":-2,"spr":-2.5},"trauma_alpha":0.4},
+  {"id":"tougao_gaokao_fudu","text":"一个复读生的投稿：查分那晚全家守着手机，分数比去年低了11分。妈妈先哭了，他反而笑了。","min_age":18,"max_age":22,"weight":2,"delta":{"spr":-1.5},"trauma_alpha":0.25},
+  {"id":"tougao_yeban_muqin","text":"投稿里的母亲在电子厂上夜班二十年。儿子在作文里写：我妈的手比砂纸糙，但摸我头的时候很轻。","min_age":10,"max_age":80,"weight":2,"good":true,"therapy_q":0.2,"delta":{"spr":1.5}},
+
+  {"id":"documentary_interview","text":"一个举着自拍杆的博主拦住了你：「哥，聊聊？」你对着镜头讲了半辈子没讲过的事，弹幕说你活得像部电影。","min_age":18,"max_age":70,"weight":2,"delta":{"spr":0.8,"chr":0.3},"therapy_q":0.15,"trauma_alpha":0.1},
+  {"id":"documentary_viral","text":"你的采访视频爆了。百万人在评论区替你规划人生——但没有一个人转账。","min_age":18,"max_age":70,"weight":2,"delta":{"chr":0.5,"spr":-0.5},"trauma_alpha":0.1},
+  {"id":"documentary_donation","text":"看完你的片子，一位观众真的寄来了药和钱。你第一次觉得被镜头拍到不是坏事。","min_age":18,"max_age":70,"weight":2,"good":true,"delta":{"mny":0.5,"spr":1.5},"therapy_q":0.25},
+
+  {"id":"kuaidi_shuangshiyi","text":"双十一你一天送了三百单。电梯里的镜子照出你的脸：口罩勒痕比皱纹深。","min_age":18,"max_age":55,"weight":4,"career":"","delta":{"str":-0.5,"mny":0.5}},
+  {"id":"waibo_rensheng","text":"你开始在工地直播。工友们笑你，但打赏的钱是真的，女儿的学费也是真的。","min_age":18,"max_age":55,"weight":3,"good":true,"delta":{"mny":0.8,"spr":0.5}},
+  {"id":"chengzhongxiang_cunwan","text":"城中村的握手楼里，你数得清对面窗户里每户人家的电视频道。","min_age":18,"max_age":60,"weight":4,"cond":{"max_mny":3},"delta":{"spr":-0.5}},
+  {"id":"chunyun_piao","text":"春运抢票第7天，你终于抢到一张站票。回家的十四个小时，你靠着车厢连接处数过了三个省。","min_age":16,"max_age":60,"weight":3,"delta":{"str":-0.5,"spr":0.5},"therapy_q":0.1},
+  {"id":"liuxiang_er_tong","text":"父母又在电话里说「明年就回来」。你已经学会了不在期待里过年。","min_age":8,"max_age":16,"weight":3,"cond":{"max_mny":4},"delta":{"spr":-1.5},"trauma_alpha":0.3},
+  {"id":"laonian_dagong","text":"七十岁你在小区看大门。子女的城市容不下你，老家的村子只剩你和狗。","min_age":65,"max_age":90,"weight":3,"cond":{"max_mny":4},"delta":{"str":-0.5,"spr":-1},"trauma_alpha":0.2}
+]

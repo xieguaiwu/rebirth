@@ -1,0 +1,7 @@
+# binaries
+rebirth
+*.test
+
+# secrets / local saves
+*.env
+bloodline.json

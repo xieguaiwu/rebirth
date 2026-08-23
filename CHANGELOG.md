@@ -1,3 +1,5 @@
+## [0.7.1] - 2026-08-24
+
 ### Fixed (oracle verification round)
 - Bloodline inherited-talent is seeded from the previous save (only a
   picked inheritable talent overrides it) — the wipe survived round 1's

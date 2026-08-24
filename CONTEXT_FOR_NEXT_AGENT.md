@@ -1,6 +1,6 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-24 15:30
+最后更新: 2026-08-24 15:45
 
 ## 项目当前状态
 
@@ -69,7 +69,7 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
 - [ ] 交互模式完整人工测试（目前仅 PTY 自动化覆盖）
 - [x] 病理态占比偏高（~60% 局）——v0.7.2 已标定至 28%（TestPathologicalRateBand 闸门 <50%，防复发）
 - [x] LLM FateEvent 真实 API 成功路径——v0.7.4 用 DEEPSEEK_API_KEY 实测通过（墓志铭/命运/润色均真实生成）
-- [ ] 安卓移植架构方案（docs/plans/）——ultrabrain 调研中
+- [x] 安卓移植架构方案——docs/plans/2026-08-24-rebirth-android-port-plan.md（ultrabrain：方案 C Go进程+JSON协议 推荐，7~10 人日）
 - [ ] 属性点交互较简陋（一行四数字）；PTY 行编辑键位 e2e 已补（case I），全键位矩阵仍可加深
 - [ ] graphify-out 已 gitignore，本地图谱需 `graphify update .` 手动重建
 

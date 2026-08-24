@@ -1,0 +1,141 @@
+[
+  {
+    "id": "slum",
+    "name": "Slum",
+    "desc": "A childhood under a tin roof, with violence and scarcity as the daily background noise.",
+    "weight": 8,
+    "bonus": {
+      "str": 1,
+      "spr": -1,
+      "mny": 0
+    },
+    "sensitivity_add": 0.15
+  },
+  {
+    "id": "rural",
+    "name": "Rural Village",
+    "desc": "Fields, farming seasons, and a childhood of waiting for parents away in the cities.",
+    "weight": 12,
+    "bonus": {
+      "str": 2,
+      "mny": 1
+    }
+  },
+  {
+    "id": "small_town",
+    "name": "Small Town",
+    "desc": "In a town where everyone knows you, everyone knows your report card too.",
+    "weight": 12,
+    "bonus": {
+      "int": 1,
+      "str": 1,
+      "mny": 1
+    }
+  },
+  {
+    "id": "urban_middle",
+    "name": "Urban Middle Class",
+    "desc": "The standard script: school-district apartments and after-school tutoring.",
+    "weight": 12,
+    "bonus": {
+      "int": 1,
+      "mny": 5
+    }
+  },
+  {
+    "id": "wealthy",
+    "name": "Wealthy Family",
+    "desc": "Born with a silver spoon in your mouth—and the family's expectations right beside it.",
+    "weight": 3,
+    "bonus": {
+      "mny": 9,
+      "chr": 2
+    }
+  },
+  {
+    "id": "scholarly",
+    "name": "Scholarly Family",
+    "desc": "More bookshelves than toys; philosophy at the dinner table.",
+    "weight": 5,
+    "bonus": {
+      "int": 4,
+      "mny": 3
+    }
+  },
+  {
+    "id": "single_parent",
+    "name": "Single-Parent Family",
+    "desc": "One person carrying love enough for two; the cracks hide in the silence.",
+    "weight": 8,
+    "bonus": {
+      "mny": 2,
+      "spr": -1
+    },
+    "sensitivity_add": 0.1
+  },
+  {
+    "id": "orphan",
+    "name": "Street Orphan",
+    "desc": "A beginning with no surname; the first thing the world teaches you is hunger.",
+    "weight": 4,
+    "bonus": {
+      "str": -1,
+      "int": -1,
+      "spr": -2
+    },
+    "sensitivity_add": 0.2
+  },
+  {
+    "id": "war_zone",
+    "name": "War Zone",
+    "desc": "The white noise of childhood is distant shelling—your HPA axis was rewired before you learned to walk.",
+    "weight": 3,
+    "bonus": {
+      "str": 1,
+      "spr": -2
+    },
+    "sensitivity_add": 0.3
+  },
+  {
+    "id": "artist_family",
+    "name": "Opera / Showbiz Family",
+    "desc": "Voice training at three, on stage at five; beauty is the family motto.",
+    "weight": 4,
+    "bonus": {
+      "chr": 4,
+      "mny": 2
+    }
+  },
+  {
+    "id": "military_family",
+    "name": "Military Family",
+    "desc": "Blankets folded into perfect blocks, tears swallowed back down.",
+    "weight": 5,
+    "bonus": {
+      "str": 4,
+      "spr": -1
+    },
+    "sensitivity_add": 0.05
+  },
+  {
+    "id": "mountain",
+    "name": "Remote Mountains",
+    "desc": "Two hours of mountain roads to school—but the starry sky is free.",
+    "weight": 10,
+    "bonus": {
+      "str": 2,
+      "int": 1
+    }
+  },
+  {
+    "id": "cult_family",
+    "name": "Cult Family",
+    "desc": "You were born in a temple compound, not a hospital; your lullabies were prayers, and the \"people outside\" were lost sheep awaiting salvation. Your amygdala learned fear before you learned to speak.",
+    "weight": 2,
+    "bonus": {
+      "int": -1,
+      "spr": -2
+    },
+    "sensitivity_add": 0.25
+  }
+]

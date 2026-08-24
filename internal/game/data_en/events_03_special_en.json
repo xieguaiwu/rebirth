@@ -1,0 +1,834 @@
+[
+  {
+    "id": "star_debut",
+    "text": "Your debut blew up. Overnight, the whole world was chanting your name.",
+    "min_age": 17,
+    "max_age": 35,
+    "weight": 6,
+    "career": "star",
+    "good": true,
+    "delta": {
+      "chr": 1,
+      "mny": 2,
+      "spr": 1
+    }
+  },
+  {
+    "id": "star_scandal",
+    "text": "A paparazzo's telephoto lens caught the night you should not have had. It trended for three days.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 6,
+    "career": "star",
+    "delta": {
+      "chr": -1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "star_sasaeng",
+    "text": "A sasaeng fan picked your door lock. You began to dread the sound of knocking and moved three times.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 5,
+    "career": "star",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "star_award",
+    "text": "On the awards stage, you thanked everyone who once doubted you.",
+    "min_age": 25,
+    "max_age": 60,
+    "weight": 4,
+    "career": "star",
+    "good": true,
+    "delta": {
+      "spr": 2,
+      "mny": 2
+    }
+  },
+  {
+    "id": "star_typecast",
+    "text": "The agency packaged you as the \"pinnacle of innocent allure.\" The roles you want never come your way.",
+    "min_age": 20,
+    "max_age": 40,
+    "weight": 5,
+    "career": "star",
+    "delta": {
+      "spr": -1
+    }
+  },
+  {
+    "id": "star_plastic_surgery",
+    "text": "The face in the mirror grows more standard by the year—and less and less like you.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 5,
+    "career": "star",
+    "delta": {
+      "chr": 0.5,
+      "spr": -1
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "star_fan_letter",
+    "text": "A fan letter: \"Your dramas got me through chemo.\" You taped it to your vanity mirror.",
+    "min_age": 20,
+    "max_age": 55,
+    "weight": 4,
+    "career": "star",
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "model_runway",
+    "text": "Milan Fashion Week—you closed the show. The shutter sounds came in like a tide.",
+    "min_age": 18,
+    "max_age": 38,
+    "weight": 6,
+    "career": "male_model",
+    "good": true,
+    "delta": {
+      "mny": 1.5,
+      "chr": 0.5
+    }
+  },
+  {
+    "id": "model_age_shame",
+    "text": "The casting director said it in front of everyone: \"Too old.\" You are 29.",
+    "min_age": 28,
+    "max_age": 42,
+    "weight": 6,
+    "career": "male_model",
+    "delta": {
+      "chr": -0.5,
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "model_body_control",
+    "text": "Body fat percentage, measurements, every inch of skin in the mirror—your body became an asset under constant audit.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 6,
+    "career": "male_model",
+    "delta": {
+      "str": 0.5,
+      "spr": -1
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "model_pervert_photographer",
+    "text": "In the fitting room, that hand was \"adjusting the clothes.\" You did not say no. The scene kept replaying afterward.",
+    "min_age": 18,
+    "max_age": 30,
+    "weight": 4,
+    "career": "male_model",
+    "delta": {
+      "spr": -3
+    },
+    "trauma_alpha": 0.6
+  },
+  {
+    "id": "sw_first_night",
+    "text": "After the first night, you washed for a long time in the bathroom. The water was scalding; you still felt cold.",
+    "min_age": 18,
+    "max_age": 30,
+    "weight": 6,
+    "career": "sex_worker",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "sw_regular_client",
+    "text": "One regular client only talks. He says: it is quiet here, and your voice is pleasant. The world makes exceptions, sometimes.",
+    "min_age": 19,
+    "max_age": 50,
+    "weight": 5,
+    "career": "sex_worker",
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "sw_client_night",
+    "text": "Tonight's client had been drinking. You counted the cracks in the ceiling until dawn.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 8,
+    "career": "sex_worker",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "sw_violence_client",
+    "text": "This time you did not get away unscathed. Bruises can be covered; a trembling voice cannot fool the mirror.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 4,
+    "career": "sex_worker",
+    "delta": {
+      "spr": -3,
+      "str": -1
+    },
+    "trauma_alpha": 0.6
+  },
+  {
+    "id": "sw_stigma",
+    "text": "At a relative's wedding banquet, someone recognized you. The stares from the whole table stung like disinfectant.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 6,
+    "career": "sex_worker",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "sw_health_check",
+    "text": "The monthly checkup is like opening a blind box. This month: negative. You bought yourself an expensive bubble tea.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 6,
+    "career": "sex_worker",
+    "delta": {
+      "spr": -0.5
+    },
+    "therapy_q": 0.05
+  },
+  {
+    "id": "sw_save_money",
+    "text": "You split every payment in two: one to live on, one to escape with. The escape pile keeps growing.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 5,
+    "career": "sex_worker",
+    "good": true,
+    "delta": {
+      "mny": 1,
+      "spr": 0.5
+    },
+    "therapy_q": 0.1
+  },
+  {
+    "id": "sw_union_friends",
+    "text": "The girls built a mutual-aid group: shared blacklists, distress signals, legal advice. A match burns extra bright in the dark.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 4,
+    "career": "sex_worker",
+    "good": true,
+    "therapy_q": 0.25,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "sw_police_raid",
+    "text": "A raid. You were taken in, fined, put on record—while the client just gave a statement.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 4,
+    "career": "sex_worker",
+    "delta": {
+      "mny": -1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "sw_exit_path",
+    "text": "The day your night-school diploma arrived, you deleted every number from the work phone.",
+    "min_age": 22,
+    "max_age": 50,
+    "weight": 3,
+    "career": "sex_worker",
+    "good": true,
+    "delta": {
+      "spr": 2
+    },
+    "therapy_q": 0.3
+  },
+  {
+    "id": "sw_decriminalize_debate",
+    "text": "On TV they debate decriminalizing sex work. Watching, you think: not one worker at that table.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 3,
+    "career": "sex_worker",
+    "delta": {
+      "int": 0.3
+    }
+  },
+  {
+    "id": "af_audition_pass",
+    "text": "You passed the casting. Clause 14 of the contract covers safety protocols and the right to stop mid-shoot—you read it word by word.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "career": "adult_film",
+    "good": true,
+    "delta": {
+      "mny": 1,
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "af_shoot_day",
+    "text": "The set is more professional than you imagined: the gaffer yawns, the script supervisor chews gum. Sex here is just a job.",
+    "min_age": 18,
+    "max_age": 42,
+    "weight": 7,
+    "career": "adult_film",
+    "delta": {
+      "spr": -0.5,
+      "mny": 0.8
+    }
+  },
+  {
+    "id": "af_fame_leak",
+    "text": "Screenshots of your work are circulating in your cousin's class group chat. The family chat exploded.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "career": "adult_film",
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "af_sti_protocol",
+    "text": "Weekly testing, vaccines, barrier protocols. You get checked more often than anyone in the family.",
+    "min_age": 18,
+    "max_age": 42,
+    "weight": 6,
+    "career": "adult_film",
+    "delta": {
+      "spr": -0.3
+    },
+    "therapy_q": 0.05
+  },
+  {
+    "id": "af_dissociation",
+    "text": "When the red light is on, you \"go to work\"; when it is off, you return to your body. The switch gets slower each time.",
+    "min_age": 19,
+    "max_age": 42,
+    "weight": 5,
+    "career": "adult_film",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "af_director_cross_line",
+    "text": "The director demanded content outside the contract. You invoked Clause 14—then changed agencies.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 4,
+    "career": "adult_film",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.3,
+    "therapy_q": 0.15
+  },
+  {
+    "id": "af_retire_graceful",
+    "text": "At the peak of your popularity you announced retirement and became a sex-ed blogger. The comments went to war; you left them open.",
+    "min_age": 28,
+    "max_age": 45,
+    "weight": 3,
+    "career": "adult_film",
+    "good": true,
+    "delta": {
+      "spr": 1.5,
+      "chr": 0.3
+    }
+  },
+  {
+    "id": "hostess_first_shift",
+    "text": "The first night taught you three things: pour without spilling, talk without gaps, and leave the smile at work.",
+    "min_age": 18,
+    "max_age": 30,
+    "weight": 6,
+    "career": "hostess",
+    "delta": {
+      "spr": -1,
+      "chr": 0.3
+    }
+  },
+  {
+    "id": "hostess_big_tipper",
+    "text": "That client ordered the most expensive bottle in the house just to hear stories of your childhood.",
+    "min_age": 18,
+    "max_age": 42,
+    "weight": 5,
+    "career": "hostess",
+    "good": true,
+    "delta": {
+      "mny": 1.5,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "hostess_drunk_violence",
+    "text": "A drunk guest smashed a glass; the shards grazed your forearm. The manager said: keep it quiet.",
+    "min_age": 18,
+    "max_age": 42,
+    "weight": 5,
+    "career": "hostess",
+    "delta": {
+      "str": -0.5,
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "hostess_double_life",
+    "text": "By day you are the good daughter your mother sees; by night you are \"Sweetie\" in the KTV booth. Both of you are tired.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "career": "hostess",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "hostess_escape_fund",
+    "text": "You saved quietly and earned an accounting certificate. The club's lights are bright, but they cannot light up a future—a certificate can.",
+    "min_age": 20,
+    "max_age": 40,
+    "weight": 4,
+    "career": "hostess",
+    "good": true,
+    "delta": {
+      "mny": 0.5,
+      "int": 0.5,
+      "spr": 1
+    }
+  },
+  {
+    "id": "gigolo_first_client",
+    "text": "Your first client was a widow living alone. She did not want sex—she wanted one hour of being truly looked at.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "career": "gigolo",
+    "delta": {
+      "spr": -0.5,
+      "mny": 1
+    }
+  },
+  {
+    "id": "gigolo_body_business",
+    "text": "Gym, skincare, posture classes—you have turned yourself into a commodity that holds its value.",
+    "min_age": 18,
+    "max_age": 42,
+    "weight": 6,
+    "career": "gigolo",
+    "delta": {
+      "chr": 0.3,
+      "str": 0.3,
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "gigolo_stalker_woman",
+    "text": "A client fell in love with you and started appearing outside your building. \"I paid for you\" was her favorite line.",
+    "min_age": 19,
+    "max_age": 42,
+    "weight": 4,
+    "career": "gigolo",
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "gigolo_identity_blur",
+    "text": "Sold so long, you can no longer tell real feeling from service script—even your own.",
+    "min_age": 20,
+    "max_age": 42,
+    "weight": 5,
+    "career": "gigolo",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "gigolo_exit_club",
+    "text": "With your savings you took over a small bar. Now you are the one who listens to stories.",
+    "min_age": 28,
+    "max_age": 44,
+    "weight": 3,
+    "career": "gigolo",
+    "good": true,
+    "delta": {
+      "mny": -1,
+      "spr": 2
+    }
+  },
+  {
+    "id": "ceo_ipo",
+    "text": "At the bell-ringing, champagne, camera flashes, and the equity-dilution agreement all opened at once.",
+    "min_age": 28,
+    "max_age": 65,
+    "weight": 5,
+    "career": "ceo",
+    "good": true,
+    "delta": {
+      "mny": 3,
+      "spr": 1
+    }
+  },
+  {
+    "id": "ceo_layoff_order",
+    "text": "You signed off on the layoff list. It includes people you personally hired three years ago.",
+    "min_age": 28,
+    "max_age": 65,
+    "weight": 6,
+    "career": "ceo",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "ceo_burnout",
+    "text": "In the office at 3 a.m., you realize your heartbeat follows the rhythm of quarterly reports.",
+    "min_age": 28,
+    "max_age": 65,
+    "weight": 6,
+    "career": "ceo",
+    "delta": {
+      "str": -1,
+      "spr": -1
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "ceo_hostile_takeover",
+    "text": "The board staged a coup. You were escorted out of the company by the CFO you hired.",
+    "min_age": 30,
+    "max_age": 65,
+    "weight": 4,
+    "career": "ceo",
+    "delta": {
+      "mny": -3,
+      "spr": -3
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "ceo_ethics_dilemma",
+    "text": "Fudging the numbers could save the quarter. You went silent in the meeting room for ten seconds—ten seconds worth three hundred million.",
+    "min_age": 28,
+    "max_age": 65,
+    "weight": 4,
+    "career": "ceo",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "sci_breakthrough",
+    "text": "The experimental group shows significant results! You jumped in the lab, and security thought there had been an accident.",
+    "min_age": 23,
+    "max_age": 70,
+    "weight": 5,
+    "career": "genius_scientist",
+    "good": true,
+    "delta": {
+      "int": 1,
+      "spr": 2
+    }
+  },
+  {
+    "id": "sci_rejected",
+    "text": "Reviewer #2 rejected you again. Comment: \"lacks novelty.\" You stared at that sentence for an hour.",
+    "min_age": 23,
+    "max_age": 70,
+    "weight": 6,
+    "career": "genius_scientist",
+    "delta": {
+      "spr": -1
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "sci_nobel_whiff",
+    "text": "Your work was cited in a Nobel-caliber paper—your name absent from the acknowledgments.",
+    "min_age": 30,
+    "max_age": 75,
+    "weight": 4,
+    "career": "genius_scientist",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "sci_ethics_redline",
+    "text": "Your advisor asked you to \"polish\" a set of data. You realized for the first time that science has its sewers too.",
+    "min_age": 23,
+    "max_age": 60,
+    "weight": 4,
+    "career": "genius_scientist",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "cult_first_disciple",
+    "text": "The first follower knelt. You suddenly understood: people do not want the truth—they want someone to suffer in their place.",
+    "min_age": 25,
+    "max_age": 60,
+    "weight": 5,
+    "career": "cult_leader",
+    "good": true,
+    "delta": {
+      "mny": 1,
+      "spr": 1
+    }
+  },
+  {
+    "id": "cult_donation",
+    "text": "Followers donated property. Your doctrine grows longer; your conscience grows shorter.",
+    "min_age": 26,
+    "max_age": 65,
+    "weight": 6,
+    "career": "cult_leader",
+    "delta": {
+      "mny": 2,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "cult_doubt_night",
+    "text": "Late at night, practicing your sermon in the mirror, you suddenly do not recognize the face—it is the face of the person you hated most.",
+    "min_age": 27,
+    "max_age": 65,
+    "weight": 5,
+    "career": "cult_leader",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "cult_sexual_control",
+    "text": "Under the name of a \"purification rite,\" you crossed a line that must not be crossed. The doctrine calls it a blessing; you know it is a sin.",
+    "min_age": 26,
+    "max_age": 62,
+    "weight": 4,
+    "career": "cult_leader",
+    "delta": {
+      "spr": -1,
+      "chr": 0.2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "cult_raid",
+    "text": "Police lights flooded the compound. The click of the handcuffs sounded like a verdict arriving late.",
+    "min_age": 28,
+    "max_age": 68,
+    "weight": 5,
+    "career": "cult_leader",
+    "delta": {
+      "mny": -3,
+      "spr": -3
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "worker_injury",
+    "text": "The punch press caught your glove. Your left hand has been missing a finger ever since.",
+    "min_age": 16,
+    "max_age": 55,
+    "weight": 6,
+    "career": "worker",
+    "delta": {
+      "str": -2,
+      "mny": -0.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "farmer_harvest",
+    "text": "A year of perfect weather. The granary is full, and you dare buy your son a new schoolbag.",
+    "min_age": 20,
+    "max_age": 65,
+    "weight": 6,
+    "career": "farmer",
+    "good": true,
+    "delta": {
+      "mny": 1,
+      "spr": 1
+    }
+  },
+  {
+    "id": "farmer_drought",
+    "text": "A great drought. The cracks in the fields are like mouths you never opened to anyone.",
+    "min_age": 20,
+    "max_age": 70,
+    "weight": 5,
+    "career": "farmer",
+    "delta": {
+      "mny": -2,
+      "spr": -1
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "teacher_student_letter",
+    "text": "A letter from a student ten years on: \"Teacher, I stand at the lectern now too.\"",
+    "min_age": 25,
+    "max_age": 65,
+    "weight": 5,
+    "career": "teacher",
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    },
+    "therapy_q": 0.15
+  },
+  {
+    "id": "programmer_996",
+    "text": "The 30th day in a row clocking out at ten. In the subway window, the balding man is you.",
+    "min_age": 19,
+    "max_age": 45,
+    "weight": 6,
+    "career": "programmer",
+    "delta": {
+      "str": -0.5,
+      "spr": -1,
+      "mny": 0.5
+    }
+  },
+  {
+    "id": "doctor_night_shift_loss",
+    "text": "Tonight you could not win back the nineteen-year-old. The family's crying will follow you off shift.",
+    "min_age": 25,
+    "max_age": 60,
+    "weight": 6,
+    "career": "doctor",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "civil_exam_pass",
+    "text": "You made it ashore. The family chat exploded, and your aunt started lining up blind dates.",
+    "min_age": 21,
+    "max_age": 32,
+    "weight": 5,
+    "career": "civil_servant",
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "merchant_windfall",
+    "text": "The wind of fortune turned; your stall's daily revenue quintupled.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 5,
+    "career": "merchant",
+    "good": true,
+    "delta": {
+      "mny": 1.5
+    }
+  },
+  {
+    "id": "athlete_gold",
+    "text": "At the moment of victory, the anthem rose, and the tears in the stands tasted sweet.",
+    "min_age": 16,
+    "max_age": 36,
+    "weight": 4,
+    "career": "athlete",
+    "good": true,
+    "delta": {
+      "spr": 3,
+      "chr": 1,
+      "mny": 2
+    }
+  },
+  {
+    "id": "soldier_combat",
+    "text": "Before the evacuation order came, the blast of the vehicle behind you lodged itself in your ears forever.",
+    "min_age": 17,
+    "max_age": 45,
+    "weight": 6,
+    "career": "soldier",
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.55
+  },
+  {
+    "id": "streamer_viral",
+    "text": "A clip went viral. Half a million followers overnight.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 5,
+    "career": "streamer",
+    "good": true,
+    "delta": {
+      "mny": 1.5,
+      "spr": 1
+    }
+  },
+  {
+    "id": "esports_championship",
+    "text": "Game five of the finals: in the golden burst of the exploding nexus are all your nineteen-year-old names.",
+    "min_age": 16,
+    "max_age": 28,
+    "weight": 5,
+    "career": "esports",
+    "good": true,
+    "delta": {
+      "spr": 3,
+      "mny": 2
+    }
+  },
+  {
+    "id": "esports_hand_injury",
+    "text": "The day the wrist tendinitis was diagnosed, the coach's eyes retired you before you could.",
+    "min_age": 17,
+    "max_age": 30,
+    "weight": 6,
+    "career": "esports",
+    "delta": {
+      "str": -1,
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.3
+  }
+]

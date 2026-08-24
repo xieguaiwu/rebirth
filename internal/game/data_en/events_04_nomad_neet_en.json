@@ -1,0 +1,505 @@
+[
+  {
+    "id": "nomad_first_ticket",
+    "text": "You gave up the rental and bought a one-way ticket. A 26-inch suitcase; from now on, life is billed weekly.",
+    "min_age": 19,
+    "max_age": 35,
+    "weight": 6,
+    "career": "digital_nomad",
+    "good": true,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "nomad_bali_villa",
+    "text": "A shared villa in Bali: pool, WiFi, and eleven \"family members\" who do not know each other's real names.",
+    "min_age": 19,
+    "max_age": 40,
+    "weight": 6,
+    "career": "digital_nomad",
+    "good": true,
+    "delta": {
+      "spr": 1.5,
+      "int": 0.3
+    }
+  },
+  {
+    "id": "nomad_visa_run",
+    "text": "Your fourth visa run. On the border bus you do the math: half this month's income went to immigration.",
+    "min_age": 19,
+    "max_age": 45,
+    "weight": 6,
+    "career": "digital_nomad",
+    "delta": {
+      "mny": -0.5,
+      "spr": -1
+    }
+  },
+  {
+    "id": "nomad_timezone_hell",
+    "text": "Client in New York, teammate in Berlin, you in Chiang Mai. At the 3 a.m. meeting you say \"got it, thanks.\"",
+    "min_age": 19,
+    "max_age": 45,
+    "weight": 6,
+    "career": "digital_nomad",
+    "delta": {
+      "str": -0.5,
+      "spr": -1.5
+    }
+  },
+  {
+    "id": "nomad_laptop_thief",
+    "text": "A motorbike rider snatched your backpack—your whole office, your photo albums, your life, all inside.",
+    "min_age": 19,
+    "max_age": 45,
+    "weight": 4,
+    "career": "digital_nomad",
+    "delta": {
+      "mny": -2,
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "nomad_loneliness",
+    "text": "Your fourteenth hostel. You click with everyone and will never see any of them again. You start to miss the word \"permanent.\"",
+    "min_age": 19,
+    "max_age": 45,
+    "weight": 6,
+    "career": "digital_nomad",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "nomad_romance_border",
+    "text": "You met in Laos and parted when the visas expired. You loved like a border stamp: crisp, brief, pressed onto the heart.",
+    "min_age": 19,
+    "max_age": 40,
+    "weight": 4,
+    "career": "digital_nomad",
+    "delta": {
+      "spr": 1
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "nomad_remote_layoff",
+    "text": "An \"organizational restructuring\" email cost you your job in a foreign country. The landlord's bills do not speak English.",
+    "min_age": 19,
+    "max_age": 45,
+    "weight": 4,
+    "career": "digital_nomad",
+    "delta": {
+      "mny": -2,
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "nomad_settle_down",
+    "text": "In a seaside town you signed a long-term lease—not settling, just \"staying a few more years for now.\" Five years later, you are still there.",
+    "min_age": 28,
+    "max_age": 50,
+    "weight": 3,
+    "career": "digital_nomad",
+    "good": true,
+    "delta": {
+      "spr": 2,
+      "mny": -0.5
+    },
+    "therapy_q": 0.2
+  },
+  {
+    "id": "nomad_digital_detox",
+    "text": "You locked your phone in the safe for a week. By day three, the birdsong was deafening.",
+    "min_age": 19,
+    "max_age": 50,
+    "weight": 3,
+    "career": "digital_nomad",
+    "good": true,
+    "therapy_q": 0.3,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "neet_declaration",
+    "text": "You officially withdrew from the rat race. Résumé deleted, alarm off, the world no longer your business—in theory.",
+    "min_age": 18,
+    "max_age": 35,
+    "weight": 6,
+    "career": "neet",
+    "delta": {
+      "spr": 1,
+      "mny": -0.5
+    }
+  },
+  {
+    "id": "neet_hikikomori",
+    "text": "Day 400 without leaving home. The world beyond the curtains charges by the hour; you are free.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 6,
+    "career": "neet",
+    "delta": {
+      "spr": -2,
+      "str": -0.5
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "neet_parents_silence",
+    "text": "No one at the dinner table asks about the job hunt anymore. That gentleness weighs more than any scolding.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 6,
+    "career": "neet",
+    "delta": {
+      "spr": -1
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "neet_gacha_debt",
+    "text": "You took online loans to fund your gacha pulls. The SSR characters never converted into anything real.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 4,
+    "career": "neet",
+    "delta": {
+      "mny": -1.5,
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "neet_night_shift_body",
+    "text": "Three years of inverted days and nights. You have seen every version of 4 a.m.—and none of the morning version of yourself.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 5,
+    "career": "neet",
+    "delta": {
+      "str": -1,
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "neet_side_hustle",
+    "text": "You started picking up online gigs: data labeling, boosting, translation. Not much money—but all of it yours.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 5,
+    "career": "neet",
+    "good": true,
+    "delta": {
+      "mny": 0.5,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "neet_shame_spiral",
+    "text": "You read the class-reunion invitation ten times, then threw it in the trash—then fished it out and tore it up.",
+    "min_age": 20,
+    "max_age": 40,
+    "weight": 5,
+    "career": "neet",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "neet_reentry",
+    "text": "You sent out your first résumé in three years. After clicking send, you threw up—but it went through.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 3,
+    "career": "neet",
+    "good": true,
+    "delta": {
+      "spr": 2,
+      "mny": 0.5
+    },
+    "therapy_q": 0.2
+  },
+  {
+    "id": "neet_therapy_online",
+    "text": "Online counseling is cheaper. In session eight, you said it for the first time: \"I actually want to get better.\"",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 4,
+    "career": "neet",
+    "good": true,
+    "therapy_q": 0.4,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "neet_lying_flat_peace",
+    "text": "You finally made peace with your own pace: gardening, reading, zero social life. Low desire is not a disease.",
+    "min_age": 25,
+    "max_age": 50,
+    "weight": 3,
+    "career": "neet",
+    "good": true,
+    "therapy_q": 0.25,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "erotica_first_novel",
+    "text": "Your first erotic novel went on sale. The editor said: more honest than most people write.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 6,
+    "career": "erotica_writer",
+    "good": true,
+    "delta": {
+      "mny": 0.5,
+      "spr": 1
+    }
+  },
+  {
+    "id": "erotica_readers_letters",
+    "text": "A reader's letter: \"Your book made me realize, for the first time, that my body is nothing to be ashamed of.\" You saved a screenshot.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 5,
+    "career": "erotica_writer",
+    "good": true,
+    "therapy_q": 0.15,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "erotica_platform_ban",
+    "text": "The platform purged adult content overnight. Three years of work turned into \"content unavailable.\"",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 5,
+    "career": "erotica_writer",
+    "delta": {
+      "mny": -1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "erotica_family_discover",
+    "text": "Your mother searched your pen name. That night's family conversation was the longest forty minutes of your life.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 4,
+    "career": "erotica_writer",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "erotica_research",
+    "text": "For authenticity you did extensive \"field research.\" Readers praise the realistic details; you smile and say nothing.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 5,
+    "career": "erotica_writer",
+    "delta": {
+      "mny": 0.3,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "erotica_top_rank",
+    "text": "Your book hit #1 on the bestseller list. Your entire award speech: \"Desire is nothing to be ashamed of.\"",
+    "min_age": 20,
+    "max_age": 55,
+    "weight": 4,
+    "career": "erotica_writer",
+    "good": true,
+    "delta": {
+      "mny": 1.5,
+      "spr": 2
+    }
+  },
+  {
+    "id": "sexther_first_case",
+    "text": "Your first couple broke down crying in front of you—they had simply never told anyone what they wanted.",
+    "min_age": 26,
+    "max_age": 60,
+    "weight": 5,
+    "career": "sex_therapist",
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "sexther_training",
+    "text": "You completed certification training. Chapter one of the textbook: human sexuality is far more diverse than imagined—and all of it normal.",
+    "min_age": 26,
+    "max_age": 60,
+    "weight": 5,
+    "career": "sex_therapist",
+    "good": true,
+    "delta": {
+      "int": 0.8
+    }
+  },
+  {
+    "id": "sexther_vicarious",
+    "text": "Three trauma cases today. After work you sat in the car for a long time before you had the strength to drive.",
+    "min_age": 26,
+    "max_age": 60,
+    "weight": 5,
+    "career": "sex_therapist",
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.2,
+    "therapy_q": 0.1
+  },
+  {
+    "id": "sexther_stigma_colleague",
+    "text": "At a colleagues' gathering someone called you \"that kind of doctor.\" You raised your glass: \"Yes. That kind.\"",
+    "min_age": 26,
+    "max_age": 60,
+    "weight": 4,
+    "career": "sex_therapist",
+    "delta": {
+      "spr": -1,
+      "chr": 0.2
+    }
+  },
+  {
+    "id": "sexther_breakthrough",
+    "text": "A client who had long struggled with low desire sent a wedding invitation ten years later. The note: \"Thank you for teaching me my body is something I can love.\"",
+    "min_age": 28,
+    "max_age": 65,
+    "weight": 4,
+    "career": "sex_therapist",
+    "good": true,
+    "therapy_q": 0.3,
+    "delta": {
+      "spr": 2.5
+    }
+  },
+  {
+    "id": "worker_strike",
+    "text": "You organized a strike. Three days later the factory caved—so numbers really do work.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 4,
+    "career": "worker",
+    "good": true,
+    "delta": {
+      "spr": 2,
+      "mny": 0.5
+    }
+  },
+  {
+    "id": "teacher_burnout",
+    "text": "You caught yourself shouting at students, just like the teacher you once hated most.",
+    "min_age": 28,
+    "max_age": 55,
+    "weight": 5,
+    "career": "teacher",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "programmer_open_source",
+    "text": "A big company adopted the open-source library you maintain. The night the stars passed ten thousand, you treated yourself to a fine meal.",
+    "min_age": 19,
+    "max_age": 50,
+    "weight": 4,
+    "career": "programmer",
+    "good": true,
+    "delta": {
+      "int": 0.5,
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "doctor_malpractice_suit",
+    "text": "Through six months of the malpractice suit, your hands shook before every surgery.",
+    "min_age": 26,
+    "max_age": 60,
+    "weight": 4,
+    "career": "doctor",
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "civil_promotion_stuck",
+    "text": "Year ten, and you are still in the same seat. The office pothos has been replaced three times.",
+    "min_age": 30,
+    "max_age": 55,
+    "weight": 5,
+    "career": "civil_servant",
+    "delta": {
+      "spr": -1
+    }
+  },
+  {
+    "id": "merchant_market_crash",
+    "text": "The whole street's shops folded one after another. You pulled down the rolling shutter last.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 4,
+    "career": "merchant",
+    "delta": {
+      "mny": -2.5,
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "athlete_doping_test",
+    "text": "The positive doping test came in. You swear you never touched anything—but samples do not lie; the team doctor does.",
+    "min_age": 16,
+    "max_age": 36,
+    "weight": 3,
+    "career": "athlete",
+    "delta": {
+      "spr": -3
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "soldier_ptsd_diagnosis",
+    "text": "The military doctor wrote three letters on the form: PTSD. You stared at them like a strange medal.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 4,
+    "career": "soldier",
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.35,
+    "therapy_q": 0.15
+  },
+  {
+    "id": "streamer_cancel",
+    "text": "A joke from three years ago got dug up. Brands dropped you, fans unfollowed, and you trended at number one.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 4,
+    "career": "streamer",
+    "delta": {
+      "mny": -2,
+      "spr": -3
+    },
+    "trauma_alpha": 0.45
+  }
+]

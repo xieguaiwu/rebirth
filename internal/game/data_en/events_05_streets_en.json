@@ -1,0 +1,522 @@
+[
+  {
+    "id": "sanhe_rijie",
+    "text": "You became a master of daily-wage gigs: work a day, live for three. A five-yuan packet of noodles fills you up, and a two-liter jug of water lasts the day.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "cond": {
+      "max_mny": 2,
+      "max_int": 6
+    },
+    "delta": {
+      "mny": -0.3,
+      "spr": 0.8,
+      "str": -0.2
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "sanhe_id_taken",
+    "text": "A \"fellow townsman\" borrowed your ID card and took out online loans with it. You lay low in an internet café for a week, living under someone else's name.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 4,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "mny": -1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "sanhe_wangba_night",
+    "text": "An eight-yuan all-nighter at the internet café is home. The screen's glow is warmer than the streetlights, and you have more brothers in-game than in life.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 5,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "spr": -0.5,
+      "str": -0.3
+    }
+  },
+  {
+    "id": "sanhe_huijia",
+    "text": "Your mother calls to ask if you are coming home for New Year. You say tickets are hard to get—really, you just cannot bear to let her see your hands.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 4,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "spr": -1
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "sanhe_zhao_gongzuo",
+    "text": "The agent promised food, lodging, eight thousand a month. You arrived to find a black factory in Dongguan—passport and phone both \"safekept.\"",
+    "min_age": 17,
+    "max_age": 40,
+    "weight": 3,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "mny": -1.5,
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "sanhe_dakaren",
+    "text": "You squat at the labor market gate with hundreds of others, waiting for dawn. When day breaks there is work; with work there is food.",
+    "min_age": 18,
+    "max_age": 50,
+    "weight": 4,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "str": 0.3,
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "gongdi_lai_le_jiu_shi_gan",
+    "text": "Hard hat on, rebar on your shoulder. The foreman asks if you know the work; you say: \"I'm here—so I work!\"",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 6,
+    "cond": {
+      "min_str": 5,
+      "max_mny": 4
+    },
+    "good": true,
+    "delta": {
+      "str": 0.5,
+      "mny": 0.6
+    }
+  },
+  {
+    "id": "gongdi_su_she",
+    "text": "A twelve-man bunkhouse: instant-noodle smell, foot stench, snoring in waves. On the nightly video call, your wife asks: when are you coming home?",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 5,
+    "cond": {
+      "min_str": 4
+    },
+    "delta": {
+      "spr": -0.5,
+      "str": 0.2
+    }
+  },
+  {
+    "id": "gongdi_weixian_shigu",
+    "text": "A steel pipe slipped on the third floor. The safety net caught you—but not your meniscus.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 3,
+    "cond": {
+      "min_str": 4
+    },
+    "delta": {
+      "str": -2,
+      "mny": -0.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "gongdi_nianzhong_taowxin",
+    "text": "Year-end wage demand. You climbed the tower crane—not to jump, but to make the people who owe you look up.",
+    "min_age": 20,
+    "max_age": 60,
+    "weight": 3,
+    "cond": {
+      "min_str": 4,
+      "max_mny": 4
+    },
+    "delta": {
+      "mny": 1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "anquan_ai_bing_baoan",
+    "text": "You are a housing-complex security guard—and a terminal lung-cancer patient. The property office does not know, the residents do not know, and you know exactly how many morning shifts you have left.",
+    "min_age": 45,
+    "max_age": 70,
+    "weight": 3,
+    "delta": {
+      "str": -2,
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "aizheng_paichu_ct",
+    "text": "The scan results came back: the tumor has not grown. Outside the hospital you smoked what you swore would be the last cigarette of your life.",
+    "min_age": 30,
+    "max_age": 75,
+    "weight": 2,
+    "good": true,
+    "therapy_q": 0.3,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "yiyuzheng_laoge",
+    "text": "Three years without leaving home. Today you finally went down to take out the trash, and a neighbor said \"long time no see.\" You nearly cried.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 3,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.3,
+    "therapy_q": 0.2
+  },
+  {
+    "id": "qiaodong_lusuozhe",
+    "text": "Under the bridge, cardboard boxes break the wind. A passing college student stopped to talk for half an hour—and left you the bread.",
+    "min_age": 25,
+    "max_age": 70,
+    "weight": 3,
+    "cond": {
+      "max_mny": 2
+    },
+    "delta": {
+      "spr": -1,
+      "str": -0.5
+    },
+    "therapy_q": 0.15,
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "shamate_jiazu",
+    "text": "You joined a Shamate family. The rainbow hair is the one color in this gray world you get to choose for yourself.",
+    "min_age": 14,
+    "max_age": 25,
+    "weight": 3,
+    "cond": {
+      "max_mny": 4
+    },
+    "good": true,
+    "delta": {
+      "chr": 1,
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "shamate_jianfa",
+    "text": "The factory supervisor said: cut the hair, or get out. You looked at the rainbow in the mirror—and cut it.",
+    "min_age": 16,
+    "max_age": 28,
+    "weight": 3,
+    "delta": {
+      "chr": -1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "liulang_ge_shou",
+    "text": "You sing in the underpass. The coins in the guitar case are few, but one person stayed for the whole song before leaving.",
+    "min_age": 16,
+    "max_age": 50,
+    "weight": 3,
+    "delta": {
+      "spr": 0.5,
+      "mny": 0.2
+    },
+    "therapy_q": 0.1
+  },
+  {
+    "id": "feiji_cheng_ke",
+    "text": "You spent your savings on a plane ticket to meet an online friend. At the airport, all that came was the blocked-contact notification.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 3,
+    "cond": {
+      "max_chr": 7
+    },
+    "delta": {
+      "mny": -2.5,
+      "spr": -3
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "modi_yezong",
+    "text": "The midnight moto-taxi trade begins. The 3 a.m. city belongs only to designated drivers, their clients, and unlicensed riders like you.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 4,
+    "cond": {
+      "max_mny": 5
+    },
+    "good": true,
+    "delta": {
+      "mny": 0.8,
+      "str": -0.2
+    }
+  },
+  {
+    "id": "modi_zuijiu_passenger",
+    "text": "The drunk passenger leans their head against your back and suddenly starts to cry. You say nothing—you just ride very steady.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 4,
+    "delta": {
+      "spr": 0.5
+    },
+    "therapy_q": 0.1,
+    "trauma_alpha": 0.05
+  },
+  {
+    "id": "modi_xiangqin_nv",
+    "text": "The woman on your back seat had been cheated out of her savings coming to meet an online lover. You circled three blocks and finally dropped her at the police station, not the hotel.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 3,
+    "good": true,
+    "delta": {
+      "mny": 0.3,
+      "spr": 1
+    },
+    "therapy_q": 0.2
+  },
+  {
+    "id": "modi_xuansue_dasheng",
+    "text": "Tonight's passenger is a college kid lecturing you on Zi Wei astrology the whole ride. He says a benefactor awaits you in your fate—and shortchanges you five yuan when paying.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 3,
+    "delta": {
+      "spr": 0.5,
+      "int": 0.2
+    }
+  },
+  {
+    "id": "modi_dama_chuzou",
+    "text": "A 56-year-old passenger asks for the high-speed rail station. She says: the kid is in college now—time for my life to start. You waive the small change.",
+    "min_age": 40,
+    "max_age": 65,
+    "weight": 3,
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    },
+    "therapy_q": 0.2
+  },
+  {
+    "id": "modi_chengguan",
+    "text": "Traffic police impounded your bike. Half a month's income gone; you crouch by the roadside and do the math on how to survive the month.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 4,
+    "cond": {
+      "max_mny": 4
+    },
+    "delta": {
+      "mny": -1.5,
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "modi_laoliu",
+    "text": "Old Liu rides with you again. For three years he has said \"I'm going home next week,\" yet every Friday night he is there at the old spot.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 3,
+    "delta": {
+      "spr": -0.5
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "tougao_gay_chugui",
+    "text": "In the submitted story, the boy says: I sent my parents a long message. Dad replied with one character: \"Oh.\" Mom replied with three: \"Have you eaten?\"",
+    "min_age": 16,
+    "max_age": 30,
+    "weight": 2,
+    "delta": {
+      "spr": -0.5,
+      "int": 0.2
+    },
+    "therapy_q": 0.1,
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "tougao_zhinan_weiji",
+    "text": "In the story, the straight roommate, drunk, held him and said many things—and the next day pretended nothing happened. Some ambiguity can only live after alcohol.",
+    "min_age": 16,
+    "max_age": 32,
+    "weight": 2,
+    "delta": {
+      "spr": -0.5
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "tougao_yidi_lian_pianju",
+    "text": "The contributor says she transferred eighty thousand to her long-distance lover. On the day they were to meet, the station exit was a flood of people—and no one walked toward her.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 3,
+    "delta": {
+      "mny": -2,
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "tougao_gaokao_fudu",
+    "text": "A repeater's submission: on score-release night the whole family huddled around the phone. Eleven points lower than last year. His mother cried first; he was the one who laughed.",
+    "min_age": 18,
+    "max_age": 22,
+    "weight": 2,
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "tougao_yeban_muqin",
+    "text": "The mother in this submission has worked night shifts at an electronics factory for twenty years. In his essay, her son writes: \"Mom's hands are rougher than sandpaper, but they are gentle when she strokes my hair.\"",
+    "min_age": 10,
+    "max_age": 80,
+    "weight": 2,
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "documentary_interview",
+    "text": "A vlogger with a selfie stick stops you: \"Bro, tell me your story?\" You told the camera things you had never told anyone in half a lifetime. The comments said your life was like a movie.",
+    "min_age": 18,
+    "max_age": 70,
+    "weight": 2,
+    "delta": {
+      "spr": 0.8,
+      "chr": 0.3
+    },
+    "therapy_q": 0.15,
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "documentary_viral",
+    "text": "Your interview went viral. A million people planned your life in the comments—not one of them sent money.",
+    "min_age": 18,
+    "max_age": 70,
+    "weight": 2,
+    "delta": {
+      "chr": 0.5,
+      "spr": -0.5
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "documentary_donation",
+    "text": "After watching your film, one viewer actually sent medicine and money. For the first time, being caught on camera did not feel bad.",
+    "min_age": 18,
+    "max_age": 70,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "mny": 0.5,
+      "spr": 1.5
+    },
+    "therapy_q": 0.25
+  },
+  {
+    "id": "kuaidi_shuangshiyi",
+    "text": "On Singles' Day you delivered three hundred orders. The elevator mirror shows your face: mask lines deeper than wrinkles.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 4,
+    "career": "",
+    "delta": {
+      "str": -0.5,
+      "mny": 0.5
+    }
+  },
+  {
+    "id": "waibo_rensheng",
+    "text": "You started livestreaming from the construction site. The crew laughs at you, but the tips are real—and so is your daughter's tuition.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 3,
+    "good": true,
+    "delta": {
+      "mny": 0.8,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "chengzhongxiang_cunwan",
+    "text": "In the urban village's handshake buildings, you can count the TV channels of every family in the windows across the way.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 4,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "chunyun_piao",
+    "text": "Seven days of fighting for a Spring Festival ticket, and you finally got standing room. Fourteen hours home, leaning at the carriage coupling, counting three provinces pass by.",
+    "min_age": 16,
+    "max_age": 60,
+    "weight": 3,
+    "delta": {
+      "str": -0.5,
+      "spr": 0.5
+    },
+    "therapy_q": 0.1
+  },
+  {
+    "id": "liuxiang_er_tong",
+    "text": "Your parents say on the phone again: \"We'll be back next year.\" You have learned to spend New Year without expectation.",
+    "min_age": 8,
+    "max_age": 16,
+    "weight": 3,
+    "cond": {
+      "max_mny": 4
+    },
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "laonian_dagong",
+    "text": "At seventy you guard a housing complex's gate. Your children's city has no room for you, and the home village holds only you and the dog.",
+    "min_age": 65,
+    "max_age": 90,
+    "weight": 3,
+    "cond": {
+      "max_mny": 4
+    },
+    "delta": {
+      "str": -0.5,
+      "spr": -1
+    },
+    "trauma_alpha": 0.2
+  }
+]

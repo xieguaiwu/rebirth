@@ -1,0 +1,970 @@
+[
+  {
+    "id": "born_healthy",
+    "text": "You were born healthy.",
+    "min_age": 0,
+    "max_age": 0,
+    "weight": 20,
+    "good": true,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "born_sick",
+    "text": "You were born with a congenital heart defect; the incubator was your first home.",
+    "min_age": 0,
+    "max_age": 0,
+    "weight": 6,
+    "delta": {
+      "str": -2,
+      "spr": -1
+    },
+    "trauma_alpha": 0.15
+  },
+  {
+    "id": "abandoned",
+    "text": "You were left at the orphanage gate with only half a bag of formula in your swaddle.",
+    "min_age": 0,
+    "max_age": 2,
+    "weight": 3,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "loved_child",
+    "text": "You are the apple of the family's eye; love laid your foundations deep and solid.",
+    "min_age": 0,
+    "max_age": 5,
+    "weight": 10,
+    "good": true,
+    "delta": {
+      "spr": 2
+    },
+    "therapy_q": 0.15,
+    "conflict": [
+      "cult"
+    ],
+    "sets": "loving_home"
+  },
+  {
+    "id": "first_words",
+    "text": "You spoke your first complete word; the family froze for a second, then dissolved into laughter.",
+    "min_age": 1,
+    "max_age": 2,
+    "weight": 8,
+    "good": true,
+    "delta": {
+      "int": 0.5,
+      "spr": 1
+    }
+  },
+  {
+    "id": "first_steps",
+    "text": "You pulled yourself up on the coffee table, tottered into your first step, fell—and got back up on your own.",
+    "min_age": 1,
+    "max_age": 2,
+    "weight": 8,
+    "delta": {
+      "str": 1
+    }
+  },
+  {
+    "id": "picture_book",
+    "text": "Pointing at the moon in a picture book, you said \"bright\"—the adults realized you knew far more than they had imagined.",
+    "min_age": 2,
+    "max_age": 3,
+    "weight": 6,
+    "good": true,
+    "delta": {
+      "int": 1,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "grandma_warmth",
+    "text": "Grandma's stove always kept a bowl of hot soup waiting for you. That summer you became a child again.",
+    "min_age": 3,
+    "max_age": 14,
+    "weight": 6,
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    },
+    "therapy_q": 0.35
+  },
+  {
+    "id": "teacher_noticed",
+    "text": "Your homeroom teacher called you to the office—not to scold you, but to ask why you had stopped smiling. Someone is watching over you.",
+    "min_age": 6,
+    "max_age": 16,
+    "weight": 5,
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    },
+    "therapy_q": 0.4
+  },
+  {
+    "id": "child_counsel_play",
+    "text": "The school counselor's office has a whole crate of toys. After your eighth sand-tray session, the nightmares stopped.",
+    "min_age": 5,
+    "max_age": 15,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    },
+    "therapy_q": 0.45
+  },
+  {
+    "id": "child_friend_loyal",
+    "text": "Your childhood friend found out about your family—and said only this: \"Then my family just sets out one more pair of chopsticks.\"",
+    "min_age": 6,
+    "max_age": 16,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "spr": 2
+    },
+    "therapy_q": 0.4
+  },
+  {
+    "id": "domestic_fight",
+    "text": "Your parents argued through the night; they smashed more things than all your toys combined.",
+    "min_age": 3,
+    "max_age": 14,
+    "weight": 9,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "first_friend",
+    "text": "You made your first friend, and summer suddenly had color.",
+    "min_age": 4,
+    "max_age": 10,
+    "weight": 8,
+    "good": true,
+    "delta": {
+      "spr": 1
+    },
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "bully_victim",
+    "text": "Older kids blocked the alley entrance; you learned to take the long way home.",
+    "min_age": 7,
+    "max_age": 15,
+    "weight": 8,
+    "delta": {
+      "spr": -1,
+      "str": -0.5
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "bully_fight_back",
+    "text": "You finally fought back. No one blocked your way again.",
+    "min_age": 8,
+    "max_age": 16,
+    "weight": 4,
+    "good": true,
+    "cond": {
+      "min_str": 6
+    },
+    "delta": {
+      "spr": 1,
+      "chr": 0.5
+    }
+  },
+  {
+    "id": "child_prodigy",
+    "text": "You skipped a grade. The teachers said: \"You're the smartest kid I've ever taught.\"",
+    "min_age": 6,
+    "max_age": 12,
+    "weight": 3,
+    "cond": {
+      "min_int": 8
+    },
+    "good": true,
+    "delta": {
+      "int": 1,
+      "spr": 1
+    }
+  },
+  {
+    "id": "parent_divorce",
+    "text": "The day the divorce papers were signed, you could not tell if it was relief or a cave-in.",
+    "min_age": 5,
+    "max_age": 16,
+    "weight": 6,
+    "delta": {
+      "spr": -2,
+      "mny": -1
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "parent_death",
+    "text": "That winter, the phrase you learned fastest was \"my condolences\".",
+    "min_age": 4,
+    "max_age": 30,
+    "weight": 3,
+    "delta": {
+      "spr": -3
+    },
+    "trauma_alpha": 0.55
+  },
+  {
+    "id": "poverty_hunger",
+    "text": "At the end of every month, the dinner table held only pickles and rice porridge.",
+    "min_age": 3,
+    "max_age": 18,
+    "weight": 7,
+    "cond": {
+      "max_mny": 2
+    },
+    "delta": {
+      "str": -1
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "gaokao_success",
+    "text": "The admission letter arrived. The whole family wept together in the stairwell—tears of joy.",
+    "min_age": 17,
+    "max_age": 19,
+    "weight": 8,
+    "cond": {
+      "min_int": 6
+    },
+    "good": true,
+    "delta": {
+      "spr": 2,
+      "int": 0.5
+    }
+  },
+  {
+    "id": "gaokao_fail",
+    "text": "The night your scores came out, you locked yourself away until dawn.",
+    "min_age": 17,
+    "max_age": 19,
+    "weight": 7,
+    "cond": {
+      "max_int": 7
+    },
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "college_life",
+    "text": "Four years of college: libraries, student clubs, and a romance that quietly died out.",
+    "min_age": 18,
+    "max_age": 22,
+    "weight": 10,
+    "cond": {
+      "min_int": 5
+    },
+    "good": true,
+    "delta": {
+      "int": 0.5,
+      "spr": 1
+    },
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "midnight_crisis",
+    "text": "On the night of your fortieth birthday you jolted awake: is this all there is?",
+    "min_age": 35,
+    "max_age": 50,
+    "weight": 5,
+    "delta": {
+      "spr": -1
+    }
+  },
+  {
+    "id": "lottery_small",
+    "text": "You won five hundred yuan in the lottery and treated the whole table to barbecue.",
+    "min_age": 18,
+    "max_age": 80,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "mny": 0.5,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "neighbor_kindness",
+    "text": "The neighbor auntie always makes an extra bowl of dumplings. The world's kindness usually lives in small things.",
+    "min_age": 10,
+    "max_age": 90,
+    "weight": 5,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    },
+    "therapy_q": 0.1
+  },
+  {
+    "id": "marriage",
+    "text": "You got married. You heard not a word of the officiant's speech—you only remember how warm their palm was.",
+    "min_age": 22,
+    "max_age": 38,
+    "weight": 7,
+    "cond": {
+      "min_chr": 3
+    },
+    "good": true,
+    "delta": {
+      "spr": 2
+    },
+    "therapy_q": 0.1
+  },
+  {
+    "id": "divorce_self",
+    "text": "Your handwriting was steady when you signed. Some endings are made with clear eyes.",
+    "min_age": 26,
+    "max_age": 50,
+    "weight": 4,
+    "delta": {
+      "spr": -1.5,
+      "mny": -1
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "childbirth",
+    "text": "The corridor outside the delivery room was very long. The moment you heard the first cry, you redefined yourself.",
+    "min_age": 22,
+    "max_age": 40,
+    "weight": 7,
+    "good": true,
+    "delta": {
+      "spr": 2,
+      "str": -0.5
+    }
+  },
+  {
+    "id": "layoff",
+    "text": "Your name was on the layoff list. You walked out with a cardboard box, and the sky was impossibly blue.",
+    "min_age": 28,
+    "max_age": 55,
+    "weight": 6,
+    "delta": {
+      "mny": -2,
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "promotion",
+    "text": "The promotion came through. In the stairwell, you secretly clenched your fist.",
+    "min_age": 24,
+    "max_age": 55,
+    "weight": 6,
+    "good": true,
+    "delta": {
+      "mny": 1.5,
+      "spr": 1
+    }
+  },
+  {
+    "id": "mortgage_trap",
+    "text": "A thirty-year mortgage. From today on, you belong to the bank.",
+    "min_age": 26,
+    "max_age": 45,
+    "weight": 8,
+    "delta": {
+      "mny": -1.5,
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "investment_win",
+    "text": "The stock you had bet heavily on doubled. You told yourself it was skill.",
+    "min_age": 20,
+    "max_age": 70,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "mny": 2
+    }
+  },
+  {
+    "id": "scam_victim",
+    "text": "The words \"guaranteed profit\" cost you three years of savings.",
+    "min_age": 20,
+    "max_age": 80,
+    "weight": 4,
+    "delta": {
+      "mny": -2,
+      "spr": -1
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "car_accident",
+    "text": "Screeching brakes, shattering glass. When you woke, the ceiling was white.",
+    "min_age": 16,
+    "max_age": 75,
+    "weight": 4,
+    "delta": {
+      "str": -2,
+      "spr": -1
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "serious_illness",
+    "text": "You looked up the name on the diagnosis three times. When chemo took your hair, you wore a red knitted cap.",
+    "min_age": 30,
+    "max_age": 80,
+    "weight": 4,
+    "delta": {
+      "str": -2.5,
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "therapy_helps",
+    "text": "The couch in the therapy office was soft. After your twelfth session, you slept through the night for the first time.",
+    "min_age": 18,
+    "max_age": 85,
+    "weight": 6,
+    "good": true,
+    "therapy_q": 0.5,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "medication_stable",
+    "text": "The medication took effect. The world recovered from black-and-white into low-saturation color.",
+    "min_age": 18,
+    "max_age": 85,
+    "weight": 5,
+    "good": true,
+    "therapy_q": 0.35,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "relapse_dark",
+    "text": "Those images came calling again in the dead of night—clearer than last time.",
+    "min_age": 18,
+    "max_age": 85,
+    "weight": 5,
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "old_friend_rescue",
+    "text": "Your old friend asked nothing, just sat with you until dawn. It helped more than any lecture could.",
+    "min_age": 16,
+    "max_age": 85,
+    "weight": 5,
+    "good": true,
+    "therapy_q": 0.4,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "exercise_heals",
+    "text": "You started running every day. After five kilometers, the world does feel a little lighter.",
+    "min_age": 16,
+    "max_age": 70,
+    "weight": 5,
+    "good": true,
+    "therapy_q": 0.25,
+    "delta": {
+      "str": 1,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "retirement",
+    "text": "You retired. Day one felt like freedom; day thirty felt like a void.",
+    "min_age": 58,
+    "max_age": 70,
+    "weight": 8,
+    "delta": {
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "grandchild",
+    "text": "A grandchild is born. You hold them exactly the way your mother once held you—including the details you swore you would change.",
+    "min_age": 55,
+    "max_age": 80,
+    "weight": 7,
+    "good": true,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "widowhood",
+    "text": "After your partner passed, you kept their cup in its place.",
+    "min_age": 60,
+    "max_age": 95,
+    "weight": 6,
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "peaceful_old",
+    "text": "You bask in the sun on a rattan chair, a cat at your feet. This is good enough.",
+    "min_age": 65,
+    "max_age": 100,
+    "weight": 7,
+    "good": true,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "street_smarts",
+    "text": "In the streets you learned to read faces and moods—more useful than any textbook.",
+    "min_age": 8,
+    "max_age": 25,
+    "weight": 5,
+    "cond": {
+      "max_mny": 3
+    },
+    "delta": {
+      "int": 0.5
+    }
+  },
+  {
+    "id": "night_school",
+    "text": "Work by day, study by night. The diploma is light, but you can feel its weight.",
+    "min_age": 16,
+    "max_age": 40,
+    "weight": 4,
+    "cond": {
+      "max_mny": 4
+    },
+    "good": true,
+    "delta": {
+      "int": 1,
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "volunteer_work",
+    "text": "You volunteer at a nonprofit. Giving is its own harvest.",
+    "min_age": 16,
+    "max_age": 70,
+    "weight": 4,
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "move_city",
+    "text": "You dragged your suitcase to the big city. The rental is eight square meters; the dream is a hundred.",
+    "min_age": 18,
+    "max_age": 35,
+    "weight": 6,
+    "delta": {
+      "mny": -0.5,
+      "int": 0.5
+    }
+  },
+  {
+    "id": "pet_companion",
+    "text": "You adopted a cat. The way it falls asleep kneading on your chest cured part of your insomnia.",
+    "min_age": 18,
+    "max_age": 80,
+    "weight": 5,
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "garden_years",
+    "text": "You kept your first pot of mint alive on the balcony. Life finds its own way out.",
+    "min_age": 40,
+    "max_age": 90,
+    "weight": 5,
+    "good": true,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "fraud_friend",
+    "text": "Your best friend borrowed your last bit of money and vanished. It was not the money you hated.",
+    "min_age": 18,
+    "max_age": 70,
+    "weight": 4,
+    "delta": {
+      "mny": -1.5,
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "random_kindness",
+    "text": "A stranger helped you pick up the papers scattered across the floor, smiling: \"No worries.\"",
+    "min_age": 10,
+    "max_age": 90,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "school_exam_stress",
+    "text": "The day the monthly exam rankings went up, the hallway was so quiet you could hear heartbeats.",
+    "min_age": 12,
+    "max_age": 18,
+    "weight": 7,
+    "delta": {
+      "spr": -1
+    }
+  },
+  {
+    "id": "rebellion_year",
+    "text": "You picked a fight with the whole world and ran away for three days. When you came home, dinner was still warm.",
+    "min_age": 13,
+    "max_age": 19,
+    "weight": 5,
+    "delta": {
+      "spr": 0.5,
+      "chr": 0.3
+    },
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "hobby_lifeline",
+    "text": "You found your hobby. It would save you more than once in the years to come.",
+    "min_age": 8,
+    "max_age": 30,
+    "weight": 5,
+    "good": true,
+    "delta": {
+      "spr": 1.5,
+      "int": 0.3
+    },
+    "therapy_q": 0.15,
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "mentor_appears",
+    "text": "Someone truly listened to you, then said: \"You can do this.\" You believed it for years.",
+    "min_age": 10,
+    "max_age": 35,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "int": 0.5,
+      "spr": 1
+    },
+    "therapy_q": 0.2
+  },
+  {
+    "id": "online_friend",
+    "text": "An online friend became the closest person in your life. You grew up together through a screen.",
+    "min_age": 12,
+    "max_age": 30,
+    "weight": 5,
+    "good": true,
+    "delta": {
+      "spr": 1
+    },
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "gaming_escape",
+    "text": "In the game you are a king. The crash after logging off grows harder to bear.",
+    "min_age": 12,
+    "max_age": 40,
+    "weight": 5,
+    "delta": {
+      "spr": -0.5,
+      "int": -0.2
+    },
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "debt_trap",
+    "text": "By the third year of the online-loan snowball, debt collectors called more often than your parents.",
+    "min_age": 20,
+    "max_age": 60,
+    "weight": 5,
+    "cond": {
+      "max_mny": 4
+    },
+    "delta": {
+      "mny": -2,
+      "spr": -2
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "windfall_inheritance",
+    "text": "A distant relative's will contained your name. Even fate makes mistakes sometimes.",
+    "min_age": 25,
+    "max_age": 75,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "mny": 2.5
+    }
+  },
+  {
+    "id": "house_fire",
+    "text": "The fire took the place you lived. Standing before the ruins, you thought: so this is what it feels like to have nothing.",
+    "min_age": 16,
+    "max_age": 80,
+    "weight": 2,
+    "delta": {
+      "mny": -2,
+      "spr": -2
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "flood_disaster",
+    "text": "The night the floodwater crossed the threshold, the neighbors pulled each other up onto the roof.",
+    "min_age": 10,
+    "max_age": 85,
+    "weight": 2,
+    "delta": {
+      "mny": -1.5
+    },
+    "trauma_alpha": 0.35,
+    "therapy_q": 0.1
+  },
+  {
+    "id": "earthquake_survive",
+    "text": "After the shaking stopped, you slept in the plaza for half a month. People were close—and so were their hearts.",
+    "min_age": 10,
+    "max_age": 85,
+    "weight": 2,
+    "delta": {
+      "spr": -1,
+      "str": -0.5
+    },
+    "trauma_alpha": 0.4,
+    "therapy_q": 0.1
+  },
+  {
+    "id": "pandemic_lockdown",
+    "text": "In three months of lockdown, you learned to bake bread—and to sit with yourself.",
+    "min_age": 10,
+    "max_age": 90,
+    "weight": 2,
+    "delta": {
+      "spr": -0.5,
+      "int": 0.3
+    },
+    "therapy_q": 0.05
+  },
+  {
+    "id": "blood_donation",
+    "text": "You donated blood for the first time. The nurse said your blood would save someone.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 3,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "marathon_finish",
+    "text": "You finished your first half marathon. You cried at the finish line and did not know why.",
+    "min_age": 18,
+    "max_age": 65,
+    "weight": 3,
+    "good": true,
+    "delta": {
+      "str": 1,
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "learn_instrument",
+    "text": "You learned the guitar. Midnight chords do not solve anything, but they keep you company.",
+    "min_age": 12,
+    "max_age": 50,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "chr": 0.5,
+      "spr": 1
+    },
+    "conflict": [
+      "cult"
+    ]
+  },
+  {
+    "id": "travel_solo",
+    "text": "A trip alone. On a rooftop in a strange city, you saw some things clearly.",
+    "min_age": 18,
+    "max_age": 70,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "spr": 1.5,
+      "int": 0.3
+    }
+  },
+  {
+    "id": "religion_comfort",
+    "text": "Faith gave you a framework for explaining the world—and the quiet of Sunday mornings.",
+    "min_age": 16,
+    "max_age": 90,
+    "weight": 3,
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "cult_recruited",
+    "text": "Your new \"family\" was so good to you—so good that only later did you realize it was a hook.",
+    "min_age": 16,
+    "max_age": 60,
+    "weight": 2,
+    "delta": {
+      "spr": -1,
+      "mny": -1
+    },
+    "trauma_alpha": 0.35,
+    "sets": "cult"
+  },
+  {
+    "id": "prison_wrongful",
+    "text": "Two years in prison for a crime you did not commit. The day you were exonerated, state compensation could not buy back the funeral you had missed.",
+    "min_age": 20,
+    "max_age": 60,
+    "weight": 1,
+    "delta": {
+      "spr": -3,
+      "mny": 1
+    },
+    "trauma_alpha": 0.6
+  },
+  {
+    "id": "prison_serve",
+    "text": "Released after serving your sentence. The sunlight outside the gate was blinding as a judgment.",
+    "min_age": 20,
+    "max_age": 60,
+    "weight": 1,
+    "delta": {
+      "chr": -1,
+      "spr": -2
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "witness_crime",
+    "text": "You witnessed an act of violence. For six months after, the same face appeared in your dreams every night.",
+    "min_age": 12,
+    "max_age": 70,
+    "weight": 2,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "rescue_stranger",
+    "text": "You dragged a drowning person ashore. That night your hands shook too much to hold chopsticks.",
+    "min_age": 14,
+    "max_age": 65,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 1,
+      "str": 0.5
+    },
+    "trauma_alpha": 0.2,
+    "therapy_q": 0.1
+  },
+  {
+    "id": "organ_donation_family",
+    "text": "You signed the organ donation registry. Your mother cried and called you foolish; to you it felt just right.",
+    "min_age": 18,
+    "max_age": 70,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "senior_college",
+    "text": "At the senior college you took up calligraphy and smartphones. Your classmates' average age: seventy-two.",
+    "min_age": 60,
+    "max_age": 95,
+    "weight": 4,
+    "good": true,
+    "delta": {
+      "int": 0.3,
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "diary_decades",
+    "text": "Sorting through old things, you unearthed thirty volumes of diaries. You spent the whole afternoon meeting every past version of yourself.",
+    "min_age": 50,
+    "max_age": 95,
+    "weight": 3,
+    "good": true,
+    "therapy_q": 0.25,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "last_letter",
+    "text": "You wrote a letter to yourself ten years from now and tucked it into the deepest drawer.",
+    "min_age": 20,
+    "max_age": 70,
+    "weight": 3,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    },
+    "therapy_q": 0.1
+  }
+]

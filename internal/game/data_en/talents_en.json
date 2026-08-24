@@ -1,0 +1,509 @@
+[
+  {
+    "name": "Natural Beauty",
+    "desc": "Looks +3. Buffed from the moment you spawned.",
+    "bonus": {
+      "chr": 3
+    },
+    "inheritable": true
+  },
+  {
+    "name": "Genius Brain",
+    "desc": "Intellect +3. Neuronal density off the charts.",
+    "bonus": {
+      "int": 3
+    },
+    "inheritable": true
+  },
+  {
+    "name": "Iron Bones",
+    "desc": "Physique +3. Hospitals are foreign territory.",
+    "bonus": {
+      "str": 3
+    },
+    "inheritable": true
+  },
+  {
+    "name": "Silver Spoon",
+    "desc": "Wealth +3. You start where others finish.",
+    "bonus": {
+      "mny": 3
+    },
+    "inheritable": true
+  },
+  {
+    "name": "Optimist",
+    "desc": "Happiness +2, Luck +0.1. If the sky falls, you will use it as a blanket.",
+    "bonus": {
+      "spr": 2
+    },
+    "luck_bonus": 0.1
+  },
+  {
+    "name": "Sensitive Soul",
+    "desc": "Intellect +1, but trauma intensity ×1.5. The antenna that feels the world is also a wound.",
+    "bonus": {
+      "int": 1
+    },
+    "trauma_mult": 1.5
+  },
+  {
+    "name": "Heart of Stone",
+    "desc": "Trauma intensity ×0.6, Happiness -1. Nothing pierces you—and nothing moves you.",
+    "bonus": {
+      "spr": -1
+    },
+    "trauma_mult": 0.6
+  },
+  {
+    "name": "Born Healer",
+    "desc": "Therapy effects ×2. Wherever you go, someone starts getting better.",
+    "therapy_mult": 2,
+    "inheritable": true
+  },
+  {
+    "name": "Lucky One",
+    "desc": "Luck +0.25. Every pull comes out gold.",
+    "luck_bonus": 0.25
+  },
+  {
+    "name": "Social Butterfly",
+    "desc": "Looks +1, Happiness +1. Crowds are your home turf.",
+    "bonus": {
+      "chr": 1,
+      "spr": 1
+    }
+  },
+  {
+    "name": "Exam Grinder",
+    "desc": "Intellect +2. Drilling practice problems is the only ladder up.",
+    "bonus": {
+      "int": 2
+    }
+  },
+  {
+    "name": "Martial Prodigy",
+    "desc": "Physique +3, Looks +1.",
+    "bonus": {
+      "str": 3,
+      "chr": 1
+    }
+  },
+  {
+    "name": "Sickly",
+    "desc": "Physique -2, Intellect +2. The body is a prison for the mind.",
+    "bonus": {
+      "str": -2,
+      "int": 2
+    }
+  },
+  {
+    "name": "Self-Made",
+    "desc": "Wealth +1, Luck +0.15. With nothing to lose, you fear nothing.",
+    "bonus": {
+      "mny": 1
+    },
+    "luck_bonus": 0.15
+  },
+  {
+    "name": "Trauma Resilience",
+    "desc": "Trauma intensity ×0.75. You have been broken—and you know how to grow back.",
+    "trauma_mult": 0.75,
+    "inheritable": true
+  },
+  {
+    "name": "Empath",
+    "desc": "Therapy effects ×1.5, Happiness +1. Other people's pain is real in your body.",
+    "therapy_mult": 1.5,
+    "bonus": {
+      "spr": 1
+    }
+  },
+  {
+    "name": "Paranoia",
+    "desc": "Intellect +1, trauma intensity ×1.3. A hairline separates genius from the abyss.",
+    "bonus": {
+      "int": 1
+    },
+    "trauma_mult": 1.3
+  },
+  {
+    "name": "Performer's Persona",
+    "desc": "Looks +2, Happiness +1. All of life is a stage.",
+    "bonus": {
+      "chr": 2,
+      "spr": 1
+    }
+  },
+  {
+    "name": "The Practitioner",
+    "desc": "Therapy effects ×1.2, Happiness +2. There is a house inside you that never collapses.",
+    "therapy_mult": 1.2,
+    "bonus": {
+      "spr": 2
+    }
+  },
+  {
+    "name": "Star-Gazer",
+    "desc": "Luck +0.1, Intellect +1. You believe fate follows rules.",
+    "luck_bonus": 0.1,
+    "bonus": {
+      "int": 1
+    }
+  },
+  {
+    "name": "Thick Skin",
+    "desc": "Happiness +2, trauma intensity ×0.85. Obliviousness is a gift.",
+    "bonus": {
+      "spr": 2
+    },
+    "trauma_mult": 0.85
+  },
+  {
+    "name": "Ace Student",
+    "desc": "Intellect +2, Physique +1. All-night cramming, still fresh the next day.",
+    "bonus": {
+      "int": 2,
+      "str": 1
+    },
+    "rarity": "rare"
+  },
+  {
+    "name": "Child of Destiny",
+    "desc": "Happiness +2, Luck +0.3, trauma intensity ×0.7. The world keeps hidden favors for you.",
+    "bonus": {
+      "spr": 2
+    },
+    "luck_bonus": 0.3,
+    "trauma_mult": 0.7,
+    "inheritable": true,
+    "rarity": "legendary"
+  },
+  {
+    "name": "Koi Incarnate",
+    "desc": "Luck +0.45. Everyone who reposted this talent regretted it later.",
+    "luck_bonus": 0.45,
+    "rarity": "legendary"
+  },
+  {
+    "name": "Unkillable Cockroach",
+    "desc": "Physique +2, trauma intensity ×0.8. Fate keeps rolling over you; you keep getting up.",
+    "bonus": {
+      "str": 2
+    },
+    "trauma_mult": 0.8,
+    "rarity": "legendary"
+  },
+  {
+    "name": "Time Management Master",
+    "desc": "Intellect +2, Physique +1, Happiness +0.5. Someone who lives two days in every one.",
+    "bonus": {
+      "int": 2,
+      "str": 1,
+      "spr": 0.5
+    },
+    "rarity": "legendary"
+  },
+  {
+    "name": "Photographic Memory",
+    "desc": "Intellect +3, Happiness -0.5. You remember everything—including what you should not.",
+    "bonus": {
+      "int": 3,
+      "spr": -0.5
+    },
+    "rarity": "epic"
+  },
+  {
+    "name": "Peerless Beauty",
+    "desc": "Looks +4, Happiness -0.5. Beauty is a gift and the start of trouble.",
+    "bonus": {
+      "chr": 4,
+      "spr": -0.5
+    },
+    "rarity": "epic"
+  },
+  {
+    "name": "King of the Stage",
+    "desc": "Looks +3, Happiness +1. The spotlight follows you around.",
+    "bonus": {
+      "chr": 3,
+      "spr": 1
+    },
+    "rarity": "epic"
+  },
+  {
+    "name": "Midas Touch",
+    "desc": "Wealth +2, Luck +0.15. Whatever you touch rises in price.",
+    "bonus": {
+      "mny": 2
+    },
+    "luck_bonus": 0.15,
+    "rarity": "epic"
+  },
+  {
+    "name": "Body of Steel",
+    "desc": "Physique +4. Every line on your checkup report reads normal.",
+    "bonus": {
+      "str": 4
+    },
+    "rarity": "epic"
+  },
+  {
+    "name": "Soul Catcher",
+    "desc": "Therapy effects ×2.5. Your hugs have clinical efficacy.",
+    "therapy_mult": 2.5,
+    "rarity": "epic"
+  },
+  {
+    "name": "Chaos Walker",
+    "desc": "Luck +0.2, trauma intensity ×1.2. Wild swings are how you breathe.",
+    "luck_bonus": 0.2,
+    "trauma_mult": 1.2,
+    "rarity": "epic"
+  },
+  {
+    "name": "Business Nose",
+    "desc": "Wealth +1, Intellect +1. You always stand on the right side of the wind.",
+    "bonus": {
+      "mny": 1,
+      "int": 1
+    },
+    "rarity": "epic"
+  },
+  {
+    "name": "Hexagon Warrior",
+    "desc": "All stats +1. No weak sides—and no sharp ones either.",
+    "bonus": {
+      "chr": 1,
+      "int": 1,
+      "str": 1,
+      "mny": 1,
+      "spr": 1
+    },
+    "rarity": "rare"
+  },
+  {
+    "name": "Steel Heart",
+    "desc": "Trauma intensity ×0.5, Happiness -2. The volume of emotion turned down to the minimum.",
+    "bonus": {
+      "spr": -2
+    },
+    "trauma_mult": 0.5,
+    "rarity": "rare"
+  },
+  {
+    "name": "Danger Instinct",
+    "desc": "Luck +0.12, trauma intensity ×0.85. You frown three seconds before disaster strikes.",
+    "luck_bonus": 0.12,
+    "trauma_mult": 0.85,
+    "rarity": "rare"
+  },
+  {
+    "name": "Well-Liked",
+    "desc": "Looks +2, Happiness +1. Your contacts list is a ledger of connections.",
+    "bonus": {
+      "chr": 2,
+      "spr": 1
+    },
+    "rarity": "rare"
+  },
+  {
+    "name": "Martial Family",
+    "desc": "Physique +2, Looks +1. The family fist manual is older than you.",
+    "bonus": {
+      "str": 2,
+      "chr": 1
+    },
+    "rarity": "rare"
+  },
+  {
+    "name": "Scholarly Lineage",
+    "desc": "Intellect +2, Wealth +1. The living room is a library, and the library is everything.",
+    "bonus": {
+      "int": 2,
+      "mny": 1
+    },
+    "rarity": "rare"
+  },
+  {
+    "name": "Late Bloomer",
+    "desc": "Luck +0.08. The first half of life was all foreshadowing for the second.",
+    "luck_bonus": 0.08,
+    "rarity": "rare"
+  },
+  {
+    "name": "Empathic Gift",
+    "desc": "Therapy effects ×1.8, Happiness +0.5. Your ears can catch tears.",
+    "therapy_mult": 1.8,
+    "bonus": {
+      "spr": 0.5
+    },
+    "rarity": "rare"
+  },
+  {
+    "name": "Social Anxiety",
+    "desc": "Intellect +1, Looks -1. Crowds are high-voltage wires; solitude is the charger.",
+    "bonus": {
+      "int": 1,
+      "chr": -1
+    }
+  },
+  {
+    "name": "Foodie",
+    "desc": "Happiness +2, Physique +0.5. Nothing a hot pot cannot fix.",
+    "bonus": {
+      "spr": 2,
+      "str": 0.5
+    }
+  },
+  {
+    "name": "Catlike Nature",
+    "desc": "Happiness +1, Physique +0.5. Loves sleep, shy of strangers, deeply soothing.",
+    "bonus": {
+      "spr": 1,
+      "str": 0.5
+    }
+  },
+  {
+    "name": "Precocious",
+    "desc": "Intellect +2, Happiness -1. Understanding too early is a burden.",
+    "bonus": {
+      "int": 2,
+      "spr": -1
+    }
+  },
+  {
+    "name": "Grind King",
+    "desc": "Intellect +1.5, Physique -0.5. Resting fills you with guilt.",
+    "bonus": {
+      "int": 1.5,
+      "str": -0.5
+    }
+  },
+  {
+    "name": "Lying-Flat Expert",
+    "desc": "Happiness +1.5, Wealth -0.5. Wanting little is a survival wisdom.",
+    "bonus": {
+      "spr": 1.5,
+      "mny": -0.5
+    }
+  },
+  {
+    "name": "Looks Anxiety",
+    "desc": "Looks +1, Happiness -1. The mirror is an instrument of torture you pass every day.",
+    "bonus": {
+      "chr": 1,
+      "spr": -1
+    }
+  },
+  {
+    "name": "Insomniac",
+    "desc": "Intellect +0.5, Happiness -1.5. You know the 4 a.m. ceiling best.",
+    "bonus": {
+      "int": 0.5,
+      "spr": -1.5
+    }
+  },
+  {
+    "name": "Affluenza",
+    "desc": "Wealth +2, Happiness -1. Wanting for nothing is, sometimes, the hardest feeling.",
+    "bonus": {
+      "mny": 2,
+      "spr": -1
+    }
+  },
+  {
+    "name": "Child of the Jianghu",
+    "desc": "Physique +1, Looks +1, Happiness +0.5. Loyalty is etched into your bones.",
+    "bonus": {
+      "str": 1,
+      "chr": 1,
+      "spr": 0.5
+    }
+  },
+  {
+    "name": "Bookworm",
+    "desc": "Intellect +1.5, Physique -0.3. The world between pages is bigger than the one outside the window.",
+    "bonus": {
+      "int": 1.5,
+      "str": -0.3
+    }
+  },
+  {
+    "name": "Athletic Instinct",
+    "desc": "Physique +2. Body coordination maxed out.",
+    "bonus": {
+      "str": 2
+    }
+  },
+  {
+    "name": "Good Voice",
+    "desc": "Looks +1, Happiness +0.5. The moment you open your mouth, the room goes quiet.",
+    "bonus": {
+      "chr": 1,
+      "spr": 0.5
+    }
+  },
+  {
+    "name": "Handy",
+    "desc": "Intellect +0.5, Wealth +0.5. A pair of restless hands that always conjure something up.",
+    "bonus": {
+      "int": 0.5,
+      "mny": 0.5
+    }
+  },
+  {
+    "name": "Honest Soul",
+    "desc": "Happiness +0.5, Looks -0.5. Getting shortchanged is a blessing—the blessing is still on its way.",
+    "bonus": {
+      "spr": 0.5,
+      "chr": -0.5
+    }
+  },
+  {
+    "name": "No Sense of Direction",
+    "desc": "Happiness -0.3. The GPS says you have arrived—and you are standing by a pond.",
+    "bonus": {
+      "spr": -0.3
+    }
+  },
+  {
+    "name": "Decision Paralysis",
+    "desc": "Happiness -0.5. You stood for half an hour between two flavors.",
+    "bonus": {
+      "spr": -0.5
+    }
+  },
+  {
+    "name": "Root of Wisdom",
+    "desc": "Therapy effects ×1.6, Happiness +1. When the Buddha held up a flower, you happened to be there.",
+    "rarity": "rare",
+    "therapy_mult": 1.6,
+    "bonus": {
+      "spr": 1
+    }
+  },
+  {
+    "name": "Immortal Affinity",
+    "desc": "Luck +0.12. They say the temple lamps all lit the day you were born—your grandmother says so.",
+    "rarity": "rare",
+    "luck_bonus": 0.12
+  },
+  {
+    "name": "Silver Tongue",
+    "desc": "Intellect +2, Looks +0.5. Your gift of gab can fool ghosts—and save lives.",
+    "bonus": {
+      "int": 2,
+      "chr": 0.5
+    }
+  },
+  {
+    "name": "Atheist",
+    "desc": "Intellect +1, Happiness -0.5, trauma intensity ×0.9. No god to blame, and no god to fear.",
+    "bonus": {
+      "int": 1,
+      "spr": -0.5
+    },
+    "trauma_mult": 0.9
+  }
+]

@@ -1,0 +1,447 @@
+[
+  {
+    "id": "first_love",
+    "text": "First love was like a low fever; once it passed, you could never remember where it hurt.",
+    "min_age": 15,
+    "max_age": 24,
+    "weight": 9,
+    "delta": {
+      "spr": 1,
+      "chr": 0.5
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "betrayed_love",
+    "text": "You found the answer in their phone. For years after, you slept lightly.",
+    "min_age": 17,
+    "max_age": 35,
+    "weight": 6,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "first_time_tender",
+    "text": "The first time. Clumsy, nervous, dissolving into giggles—but the tenderness was real.",
+    "min_age": 16,
+    "max_age": 25,
+    "weight": 6,
+    "good": true,
+    "cond": {
+      "min_chr": 3
+    },
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "first_time_awful",
+    "text": "The first time was awful: pain, panic, the urge to flee. It took you years to learn anticipation again.",
+    "min_age": 16,
+    "max_age": 28,
+    "weight": 4,
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "one_night_stand",
+    "text": "A stranger's bed, morning awkwardness, and a strange sense of freedom.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 5,
+    "cond": {
+      "min_chr": 4
+    },
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "friends_with_benefits",
+    "text": "You set three ground rules: no feelings. The third one broke first.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "delta": {
+      "spr": -0.5
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "long_distance_love",
+    "text": "A long-distance love living on time zones and data plans. The room after the video call ends is especially quiet.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 5,
+    "delta": {
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "affair_guilt",
+    "text": "The secret outside your marriage is like ice held in the mouth—it melts faster than you think.",
+    "min_age": 26,
+    "max_age": 55,
+    "weight": 3,
+    "delta": {
+      "spr": -1
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "open_relationship",
+    "text": "You talked the rules through openly. The jealousy did not disappear, but the honesty grew.",
+    "min_age": 22,
+    "max_age": 45,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "asexuality_realize",
+    "text": "You finally found the word. Not broken—just different. The world, it turns out, holds many ways to live.",
+    "min_age": 16,
+    "max_age": 35,
+    "weight": 2,
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "coming_out_family",
+    "text": "The night you came out, your mother was silent for a long time—then put food into your bowl. Some acceptance has no words.",
+    "min_age": 16,
+    "max_age": 35,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    },
+    "therapy_q": 0.15
+  },
+  {
+    "id": "coming_out_reject",
+    "text": "They said \"it can be fixed.\" The day you moved out, you did not look back.",
+    "min_age": 16,
+    "max_age": 30,
+    "weight": 2,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.4
+  },
+  {
+    "id": "kink_discovery",
+    "text": "Within the boundaries of a safe word you found a strange peace: surrendering control, you felt free.",
+    "min_age": 20,
+    "max_age": 50,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "kink_boundary_broken",
+    "text": "They crossed the boundary you had agreed on. They apologized afterward, but the alarm inside your body never switched off again.",
+    "min_age": 20,
+    "max_age": 50,
+    "weight": 2,
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "sti_scare",
+    "text": "Two weeks waiting for test results, replaying your whole life. Negative. You swore never to gamble on luck again.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 4,
+    "delta": {
+      "spr": -1
+    },
+    "therapy_q": 0.05
+  },
+  {
+    "id": "sti_positive",
+    "text": "The day of the diagnosis you sat in the hospital stairwell until dark. Managing the chronic condition, telling your partner, starting over—you did it all.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 2,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.3,
+    "therapy_q": 0.1
+  },
+  {
+    "id": "contraception_fail",
+    "text": "Two lines on the pregnancy test. You sat outside the convenience store for a long time, neither of you speaking.",
+    "min_age": 18,
+    "max_age": 38,
+    "weight": 3,
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "abortion_decision",
+    "text": "Outside the operating room you held their hand. This decision had no right or wrong—only the bearing of it.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 2,
+    "delta": {
+      "spr": -2
+    },
+    "trauma_alpha": 0.35
+  },
+  {
+    "id": "unplanned_keep",
+    "text": "You decided to keep it. Panic and anticipation took shifts—until the first heartbeat flattened everything.",
+    "min_age": 20,
+    "max_age": 38,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "sexual_dysfunction_m",
+    "text": "Your body betrayed you at the critical moment. The pillbox hides at the very back of the sock drawer, like a save point of shame.",
+    "min_age": 30,
+    "max_age": 75,
+    "weight": 3,
+    "delta": {
+      "spr": -1.5,
+      "chr": -0.5
+    },
+    "trauma_alpha": 0.2
+  },
+  {
+    "id": "sexual_pain_w",
+    "text": "It hurt every time, and every time you said it was fine. Until the doctor—a woman—said: \"This is not your fault. It is treatable.\"",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 3,
+    "delta": {
+      "spr": -1.5
+    },
+    "trauma_alpha": 0.25,
+    "therapy_q": 0.2
+  },
+  {
+    "id": "libido_mismatch",
+    "text": "One of you wants, the other is exhausted. The bedroom slowly became a guest room.",
+    "min_age": 28,
+    "max_age": 65,
+    "weight": 4,
+    "delta": {
+      "spr": -1
+    }
+  },
+  {
+    "id": "sex_ed_late",
+    "text": "At twenty you finally saw accurate sex education material. What angers you is all the years stolen by lies.",
+    "min_age": 18,
+    "max_age": 30,
+    "weight": 2,
+    "delta": {
+      "int": 0.5
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "harassment_street",
+    "text": "Whistles, stares, footsteps following you for two blocks. You slipped your keys between your fingers.",
+    "min_age": 14,
+    "max_age": 60,
+    "weight": 5,
+    "delta": {
+      "spr": -1
+    },
+    "trauma_alpha": 0.3
+  },
+  {
+    "id": "harassment_workplace",
+    "text": "His hand was \"an accident.\" You resigned; he got promoted. Ten years later you saw his name in the news—and the charges.",
+    "min_age": 18,
+    "max_age": 55,
+    "weight": 3,
+    "delta": {
+      "spr": -2.5
+    },
+    "trauma_alpha": 0.5
+  },
+  {
+    "id": "assault_survive",
+    "text": "After it happened, you showered for a very long time. Later a counselor told you: the dirty one was never you.",
+    "min_age": 14,
+    "max_age": 55,
+    "weight": 2,
+    "delta": {
+      "spr": -3.5
+    },
+    "trauma_alpha": 0.65
+  },
+  {
+    "id": "assault_justice",
+    "text": "The verdict came down. Justice was late, but it came—you wept outside the courthouse until you crouched down, the first time you had cried out loud in ten years.",
+    "min_age": 16,
+    "max_age": 60,
+    "weight": 1,
+    "good": true,
+    "therapy_q": 0.4,
+    "delta": {
+      "spr": 1.5
+    },
+    "trauma_alpha": 0.1
+  },
+  {
+    "id": "intimacy_after_trauma",
+    "text": "A year later, for the first time, you let someone close. Your heart pounded like a drum—but you did not run.",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 3,
+    "good": true,
+    "therapy_q": 0.45,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "consent_education",
+    "text": "You started teaching consent online. Someone DMed you: \"Thank you. Yesterday, I said no.\"",
+    "min_age": 18,
+    "max_age": 60,
+    "weight": 2,
+    "good": true,
+    "therapy_q": 0.2,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "sugar_dating",
+    "text": "A sugar-coated arrangement: he pays, you smile. The accounts balance—only your self-respect cannot be invoiced.",
+    "min_age": 18,
+    "max_age": 40,
+    "weight": 2,
+    "cond": {
+      "min_chr": 6
+    },
+    "delta": {
+      "mny": 1.5,
+      "spr": -1
+    },
+    "trauma_alpha": 0.25
+  },
+  {
+    "id": "polyamory_found",
+    "text": "Three people, four calendars, endless conversations. Love's capacity, it turns out, is negotiable.",
+    "min_age": 22,
+    "max_age": 50,
+    "weight": 1,
+    "good": true,
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "loveless_marriage",
+    "text": "The marriage still runs, like an old machine no one dares switch off.",
+    "min_age": 35,
+    "max_age": 70,
+    "weight": 3,
+    "delta": {
+      "spr": -1
+    }
+  },
+  {
+    "id": "late_in_life_love",
+    "text": "A twilight romance at seventy. The children objected; you held hands anyway—two wrinkled hands on a park bench.",
+    "min_age": 65,
+    "max_age": 95,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 2
+    }
+  },
+  {
+    "id": "romance_novel_escape",
+    "text": "Romance novels are your painkiller. You know it is saccharine—but you cannot quit that hit of sweet.",
+    "min_age": 14,
+    "max_age": 60,
+    "weight": 3,
+    "delta": {
+      "spr": 0.5
+    }
+  },
+  {
+    "id": "dating_app_fatigue",
+    "text": "After three hundred swipes left and right, you deleted the app. Loneliness was not optimized—it was quantified.",
+    "min_age": 20,
+    "max_age": 45,
+    "weight": 4,
+    "delta": {
+      "spr": -0.5
+    }
+  },
+  {
+    "id": "rekindled_flame",
+    "text": "Reunited at the class reunion. Twenty years gone, and ten minutes of conversation felt like you had never been apart.",
+    "min_age": 38,
+    "max_age": 70,
+    "weight": 2,
+    "good": true,
+    "delta": {
+      "spr": 1.5
+    }
+  },
+  {
+    "id": "cheat_discovered",
+    "text": "The chat history got cast onto the TV at the family gathering—a child's accidental screen-mirror. The world went silent for three seconds.",
+    "min_age": 28,
+    "max_age": 60,
+    "weight": 2,
+    "delta": {
+      "spr": -3
+    },
+    "trauma_alpha": 0.45
+  },
+  {
+    "id": "celibacy_vow",
+    "text": "You decided to pause all intimacy for a year. By month three, you were sleeping beautifully.",
+    "min_age": 22,
+    "max_age": 55,
+    "weight": 2,
+    "good": true,
+    "therapy_q": 0.25,
+    "delta": {
+      "spr": 1
+    }
+  },
+  {
+    "id": "body_image_heal",
+    "text": "You stood at the mirror a little longer, and for once found nothing to pick at. Skin, scars, extra flesh—all of it proof of being alive.",
+    "min_age": 16,
+    "max_age": 70,
+    "weight": 3,
+    "good": true,
+    "therapy_q": 0.3,
+    "delta": {
+      "spr": 1.5
+    }
+  }
+]

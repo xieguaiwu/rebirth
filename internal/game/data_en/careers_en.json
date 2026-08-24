@@ -1,0 +1,468 @@
+[
+  {
+    "id": "worker",
+    "name": "Factory Worker",
+    "desc": "Day after day on the assembly line, sweat traded for a full stomach.",
+    "min_age": 16,
+    "weight": 18,
+    "cond": {
+      "min_str": 2
+    },
+    "yearly_delta": {
+      "str": 0.15,
+      "mny": 0.35,
+      "spr": -0.05
+    },
+    "yearly_shock": 0.02,
+    "quit_if_stat": "str",
+    "quit_below": 1.5
+  },
+  {
+    "id": "farmer",
+    "name": "Farmer",
+    "desc": "Living at the mercy of the skies; the land is the most honest employer.",
+    "min_age": 16,
+    "weight": 14,
+    "yearly_delta": {
+      "str": 0.2,
+      "mny": 0.15
+    },
+    "quit_if_stat": "str",
+    "quit_below": 1
+  },
+  {
+    "id": "teacher",
+    "name": "Teacher",
+    "desc": "Dignity and quiet poverty, both dusted in chalk.",
+    "min_age": 21,
+    "weight": 10,
+    "cond": {
+      "min_int": 5
+    },
+    "yearly_delta": {
+      "int": 0.08,
+      "mny": 0.4,
+      "spr": 0.1
+    },
+    "quit_if_stat": "int",
+    "quit_below": 3
+  },
+  {
+    "id": "programmer",
+    "name": "Programmer",
+    "desc": "A fair exchange: high pay for your hairline.",
+    "min_age": 19,
+    "weight": 9,
+    "cond": {
+      "min_int": 7
+    },
+    "yearly_delta": {
+      "int": 0.12,
+      "mny": 0.9,
+      "spr": -0.12,
+      "str": -0.08
+    },
+    "yearly_shock": 0.02,
+    "quit_if_stat": "int",
+    "quit_below": 4
+  },
+  {
+    "id": "doctor",
+    "name": "Doctor",
+    "desc": "Beneath the white coat lies a weight ordinary people could not bear.",
+    "min_age": 23,
+    "weight": 7,
+    "cond": {
+      "min_int": 8
+    },
+    "yearly_delta": {
+      "int": 0.1,
+      "mny": 0.8,
+      "spr": -0.1
+    },
+    "yearly_shock": 0.04,
+    "quit_if_stat": "int",
+    "quit_below": 5
+  },
+  {
+    "id": "civil_servant",
+    "name": "Civil Servant",
+    "desc": "The end of the universe is a government post.",
+    "min_age": 21,
+    "weight": 11,
+    "cond": {
+      "min_int": 6
+    },
+    "yearly_delta": {
+      "mny": 0.5,
+      "spr": 0.08
+    },
+    "quit_if_stat": "int",
+    "quit_below": 3
+  },
+  {
+    "id": "merchant",
+    "name": "Small Business Owner",
+    "desc": "The freedom of bearing your own profit and loss.",
+    "min_age": 18,
+    "weight": 10,
+    "cond": {
+      "min_mny": 2
+    },
+    "yearly_delta": {
+      "mny": 0.7,
+      "int": 0.05,
+      "spr": -0.05
+    }
+  },
+  {
+    "id": "athlete",
+    "name": "Professional Athlete",
+    "desc": "Burning the body into a brief, brilliant light.",
+    "min_age": 16,
+    "max_age": 38,
+    "weight": 5,
+    "cond": {
+      "min_str": 8
+    },
+    "yearly_delta": {
+      "str": 0.1,
+      "mny": 0.8,
+      "chr": 0.05,
+      "spr": -0.05
+    },
+    "quit_if_stat": "str",
+    "quit_below": 6
+  },
+  {
+    "id": "soldier",
+    "name": "Soldier",
+    "desc": "Discipline, honor, and wounds no one can see.",
+    "min_age": 17,
+    "max_age": 45,
+    "weight": 6,
+    "cond": {
+      "min_str": 6
+    },
+    "yearly_delta": {
+      "str": 0.25,
+      "mny": 0.4,
+      "spr": -0.05
+    },
+    "yearly_shock": 0.06,
+    "quit_if_stat": "str",
+    "quit_below": 3
+  },
+  {
+    "id": "esports",
+    "name": "Pro Esports Player",
+    "desc": "Reaction speed is youth itself; at 25 you are already a veteran.",
+    "min_age": 16,
+    "max_age": 30,
+    "weight": 4,
+    "cond": {
+      "min_int": 7,
+      "min_str": 4
+    },
+    "yearly_delta": {
+      "mny": 1.0,
+      "str": -0.15,
+      "spr": -0.1
+    },
+    "yearly_shock": 0.02,
+    "quit_if_stat": "int",
+    "quit_below": 5
+  },
+  {
+    "id": "streamer",
+    "name": "Streamer",
+    "desc": "Always on in front of the camera, forgotten the moment it turns off.",
+    "min_age": 16,
+    "weight": 7,
+    "cond": {
+      "min_chr": 5
+    },
+    "yearly_delta": {
+      "mny": 0.6,
+      "chr": 0.05,
+      "spr": -0.15
+    },
+    "yearly_shock": 0.03,
+    "quit_if_stat": "chr",
+    "quit_below": 3
+  },
+  {
+    "id": "star",
+    "name": "Celebrity",
+    "desc": "Spotlights, trending searches, and your private life offered up as sacrifice.",
+    "min_age": 17,
+    "weight": 3,
+    "cond": {
+      "min_chr": 8,
+      "min_mny": 2
+    },
+    "yearly_delta": {
+      "mny": 2.2,
+      "chr": -0.05,
+      "spr": -0.1
+    },
+    "yearly_shock": 0.04,
+    "quit_if_stat": "chr",
+    "quit_below": 6
+  },
+  {
+    "id": "male_model",
+    "name": "Male Model",
+    "desc": "A trade of skin and youth; the runway shelf life is brutally short.",
+    "min_age": 18,
+    "max_age": 42,
+    "weight": 3,
+    "cond": {
+      "min_chr": 8.5
+    },
+    "yearly_delta": {
+      "mny": 1.4,
+      "chr": -0.1,
+      "str": 0.05,
+      "spr": -0.08
+    },
+    "yearly_shock": 0.03,
+    "quit_if_stat": "chr",
+    "quit_below": 7
+  },
+  {
+    "id": "digital_nomad",
+    "name": "Digital Nomad",
+    "desc": "One laptop, the whole world: coffee in Chiang Mai, sunsets in Lisbon, and a visa forever being renewed.",
+    "min_age": 19,
+    "weight": 4,
+    "cond": {
+      "min_int": 6,
+      "min_mny": 2
+    },
+    "yearly_delta": {
+      "mny": 0.5,
+      "int": 0.08,
+      "spr": 0.2,
+      "str": -0.05
+    },
+    "quit_if_stat": "mny",
+    "quit_below": 0.5
+  },
+  {
+    "id": "neet",
+    "name": "NEET",
+    "desc": "It is not that you cannot find a job—you refuse to play the game. Lying flat is a stance too, though the floor is hard.",
+    "min_age": 16,
+    "weight": 6,
+    "yearly_delta": {
+      "mny": -0.6,
+      "spr": -0.15,
+      "str": -0.1
+    },
+    "quit_if_stat": "spr",
+    "quit_below": 0.5
+  },
+  {
+    "id": "sex_worker",
+    "name": "Sex Worker",
+    "desc": "The oldest trade: quick money, sovereignty over your own body, and daily exposure to shame—always sold as one bundle.",
+    "min_age": 18,
+    "weight": 3,
+    "cond": {
+      "min_chr": 3
+    },
+    "yearly_delta": {
+      "mny": 1.8,
+      "spr": -0.45,
+      "chr": -0.05
+    },
+    "yearly_shock": 0.11,
+    "quit_if_stat": "spr",
+    "quit_below": 1.5
+  },
+  {
+    "id": "adult_film",
+    "name": "Adult Film Actor",
+    "desc": "Sex on camera, exhaustion behind it: a job that turns intimacy into a trade.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 2,
+    "cond": {
+      "min_chr": 7
+    },
+    "yearly_delta": {
+      "mny": 1.9,
+      "spr": -0.35,
+      "chr": -0.08
+    },
+    "yearly_shock": 0.08,
+    "quit_if_stat": "chr",
+    "quit_below": 5
+  },
+  {
+    "id": "hostess",
+    "name": "Bar Hostess",
+    "desc": "The rules of the night are simple: smiles billed by the hour, crossed lines billed by the cost.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 3,
+    "cond": {
+      "min_chr": 6
+    },
+    "yearly_delta": {
+      "mny": 1.5,
+      "spr": -0.3,
+      "chr": 0.03
+    },
+    "yearly_shock": 0.09,
+    "quit_if_stat": "chr",
+    "quit_below": 4
+  },
+  {
+    "id": "gigolo",
+    "name": "Gigolo / Male Escort",
+    "desc": "A man for purchase: charm is the merchandise, dignity the consumable.",
+    "min_age": 18,
+    "max_age": 45,
+    "weight": 2,
+    "cond": {
+      "min_chr": 7.5
+    },
+    "yearly_delta": {
+      "mny": 1.7,
+      "spr": -0.3,
+      "chr": -0.06
+    },
+    "yearly_shock": 0.09,
+    "quit_if_stat": "chr",
+    "quit_below": 5
+  },
+  {
+    "id": "erotica_writer",
+    "name": "Erotica Writer",
+    "desc": "Selling desire in words, you know better than anyone that imagination is safer than reality.",
+    "min_age": 18,
+    "weight": 3,
+    "cond": {
+      "min_int": 6
+    },
+    "yearly_delta": {
+      "mny": 0.5,
+      "int": 0.06,
+      "spr": 0.1
+    },
+    "quit_if_stat": "int",
+    "quit_below": 4
+  },
+  {
+    "id": "sex_therapist",
+    "name": "Sex Therapist",
+    "desc": "Doing repair work in the rooms humans are most ashamed to speak of.",
+    "min_age": 26,
+    "weight": 2,
+    "cond": {
+      "min_int": 8,
+      "min_chr": 5
+    },
+    "yearly_delta": {
+      "mny": 0.9,
+      "int": 0.05,
+      "spr": 0.1
+    },
+    "quit_if_stat": "int",
+    "quit_below": 5
+  },
+  {
+    "id": "ceo",
+    "name": "CEO",
+    "desc": "At the top of an empire, at the top of loneliness: every decision sits on the livelihoods of thousands.",
+    "min_age": 26,
+    "weight": 2,
+    "cond": {
+      "min_int": 7,
+      "min_mny": 7
+    },
+    "yearly_delta": {
+      "mny": 2.5,
+      "spr": -0.28,
+      "str": -0.05
+    },
+    "yearly_shock": 0.05,
+    "quit_if_stat": "spr",
+    "quit_below": 1
+  },
+  {
+    "id": "genius_scientist",
+    "name": "Genius Scientist",
+    "desc": "Chiseling alone at the edge of human understanding.",
+    "min_age": 22,
+    "weight": 2,
+    "cond": {
+      "min_int": 9
+    },
+    "yearly_delta": {
+      "int": 0.08,
+      "mny": 0.55,
+      "spr": 0.05
+    },
+    "quit_if_stat": "int",
+    "quit_below": 6
+  },
+  {
+    "id": "cult_leader",
+    "name": "Cult Leader",
+    "desc": "Distilling your own trauma into a doctrine to control others—only someone steeped in the abyss can preach this sermon.",
+    "min_age": 25,
+    "weight": 2,
+    "requires_trauma_min": 0.45,
+    "cond": {
+      "min_chr": 7,
+      "min_int": 8
+    },
+    "yearly_delta": {
+      "mny": 1.8,
+      "spr": 0.35,
+      "chr": 0.03
+    },
+    "yearly_shock": 0.01
+  },
+  {
+    "id": "fortune_teller",
+    "name": "Fortune Teller / Master",
+    "desc": "Street-side I Ching, livestream tarot: people are not buying predictions—they are buying certainty.",
+    "min_age": 20,
+    "weight": 4,
+    "cond": {
+      "min_int": 6,
+      "min_chr": 4
+    },
+    "yearly_delta": {
+      "mny": 0.8,
+      "int": 0.05,
+      "chr": 0.02,
+      "spr": 0.05
+    },
+    "quit_if_stat": "int",
+    "quit_below": 3
+  },
+  {
+    "id": "monk",
+    "name": "Monk / Clergy",
+    "desc": "Beneath a dim lamp and an ancient Buddha, or the shadow of a cross: handing the rest of your life to an order, in exchange for inner quiet.",
+    "min_age": 18,
+    "weight": 2,
+    "cond": {
+      "min_int": 5,
+      "max_mny": 6
+    },
+    "yearly_delta": {
+      "int": 0.1,
+      "spr": 0.35,
+      "mny": 0.05,
+      "str": -0.03
+    },
+    "quit_if_stat": "spr",
+    "quit_below": 1
+  }
+]

@@ -1,8 +1,9 @@
 // rebirth —— 终端人生重开模拟器。
 //
 // 确定性核心（创伤动力学 + AR(1) 运势 + 加权事件抽取）负责随机性；
-// LLM（openrouter/ox-alpha）只做叙事润色与命运事件注入，全部输出经
-// schema 校验，失败即回退。跨代血统存档实现亚加性应激敏感性遗传。
+// LLM（默认 deepseek-v4-flash 直连；openrouter 可选）只做叙事润色与命运
+// 事件注入，全部输出经 schema 校验，失败即回退；连续失败触发熔断，
+// 本世余下瞬间纯本地。跨代血统存档实现亚加性应激敏感性遗传。
 package main
 
 import (
@@ -20,7 +21,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.7.4"
+var version = "0.8.0"
 
 const pointsTotal = 20
 
@@ -36,8 +37,8 @@ func main() {
 	auto := flag.Bool("auto", false, "自动模式：所有选择取第一项")
 	noLLM := flag.Bool("no-llm", false, "禁用大语言模型叙事")
 	step := flag.Bool("step", false, "逐条推进：每条信息等回车（交互终端默认开启；--auto 时忽略）")
-	provider := flag.String("provider", "openrouter", "LLM 服务商（openrouter / deepseek）")
-	model := flag.String("model", "", "LLM 模型名（默认按 provider：openrouter=stealth/ox-alpha，deepseek=deepseek-v4-flash）")
+	provider := flag.String("provider", "deepseek", "LLM 服务商（deepseek 直连免代理 / openrouter 需代理+额度）")
+	model := flag.String("model", "", "LLM 模型名（默认按 provider：deepseek=deepseek-v4-flash，openrouter=stealth/ox-alpha）")
 	llmURL := flag.String("llm-url", "", "LLM 基础 URL（覆盖 provider 默认端点）")
 	maxAge := flag.Int("max-age", 100, "寿命上限")
 	showVersion := flag.Bool("version", false, "打印版本号")
@@ -224,9 +225,9 @@ func main() {
 func buildNarrator(disabled bool, providerName, model, url string, maxCalls int) game.Narrator {
 	p, ok := llm.ResolveProvider(providerName)
 	if !ok {
-		p, _ = llm.ResolveProvider("openrouter")
+		p, _ = llm.ResolveProvider("deepseek")
 		if !disabled {
-			fmt.Printf("[WARN] 未知 LLM 服务商 %q，回退 openrouter。\n", providerName)
+			fmt.Printf("[WARN] 未知 LLM 服务商 %q，回退 deepseek。\n", providerName)
 		}
 	}
 	if model == "" {

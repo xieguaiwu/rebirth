@@ -120,7 +120,10 @@ func (c *Client) complete(ctx context.Context, system, user string, maxTokens in
 
 	resp, err := func() (*http.Response, error) {
 		if c.HTTP == nil {
-			c.HTTP = http.DefaultClient
+			// Never DefaultClient: it has no timeout at all (v0.8.0
+			// hardening — a stalled dial/proxy must never outlive
+			// the per-call context).
+			c.HTTP = &http.Client{Timeout: 45 * time.Second}
 		}
 		return c.HTTP.Do(req)
 	}()
@@ -158,11 +161,23 @@ func truncate(s string, n int) string {
 // every narration method fails soft back to deterministic text. The
 // epitaph is exempt — one call per life, and it must never be starved by
 // earlier narration (v0.7.4).
+//
+// A failure breaker (v0.8.0) complements the budget: after failLimit
+// CONSECUTIVE failures the channel is declared broken for the rest of the
+// life and every method returns its fallback instantly. Without it, a
+// dead-but-slow endpoint (stealth/ox-alpha measured 15–40s > the 12/18s
+// timeouts) froze the game for the full timeout before every single
+// fallback — once per sampled event, all life long.
 type Narrator struct {
 	C        *Client
 	calls    int
 	MaxCalls int
+	fails    int  // consecutive failures; any success resets
+	dead     bool // breaker open: fail soft without touching the network
 }
+
+// failLimit is how many consecutive failures trip the breaker.
+const failLimit = 3
 
 // DefaultCallBudget caps LLM narration+fate calls for one simulated life.
 // 24 = ~8 fate events (every decade to 90) + ~16 narrated events; the
@@ -181,9 +196,27 @@ func (n *Narrator) budget() bool {
 	return true
 }
 
+// fail records one failure and opens the breaker at the limit.
+func (n *Narrator) fail() {
+	n.fails++
+	if n.fails >= failLimit {
+		n.dead = true
+	}
+}
+
+// ok records a success, resetting the breaker streak.
+func (n *Narrator) ok() { n.fails = 0 }
+
+// Broken reports whether the failure breaker has tripped; game.Run prints
+// a one-time notice so the player knows why narration went silent.
+func (n *Narrator) Broken() bool { return n.dead }
+
 // Narrate rewrites one event line vividly. Falls back to raw sanitized text
 // when the model skips the JSON envelope, then to fallback on failure.
 func (n *Narrator) Narrate(age int, summary, fallback string) string {
+	if n.dead {
+		return fallback
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 	if !n.budget() {
@@ -193,21 +226,25 @@ func (n *Narrator) Narrate(age int, summary, fallback string) string {
 		"你是人生模拟器的叙事者。把给定事件改写成一句生动中文叙述，不超过40字。只输出JSON：{\"text\":\"...\"}",
 		fmt.Sprintf("年龄%d。状态：%s。原文：%s", age, summary, fallback), 600)
 	if err != nil {
+		n.fail()
 		return fallback
 	}
 	var r struct {
 		Text string `json:"text"`
 	}
 	if extractJSON(out, &r) && len([]rune(strings.TrimSpace(r.Text))) >= 2 {
+		n.ok()
 		return truncate(sanitizeLine(r.Text), 60)
 	}
 	// Plain-text models: use the response itself only if it looks like prose
 	// (no JSON punctuation anywhere).
 	if !strings.ContainsAny(out, "{}") {
 		if line := sanitizeLine(out); len([]rune(line)) >= 2 {
+			n.ok()
 			return truncate(line, 60)
 		}
 	}
+	n.fail()
 	return fallback
 }
 
@@ -227,6 +264,9 @@ type fatePayload struct {
 // Every numeric field is clamped; any schema violation returns ok=false so
 // the deterministic pool takes over — hallucinated structure never leaks in.
 func (n *Narrator) FateEvent(age int, summary string) (game.Event, bool) {
+	if n.dead {
+		return game.Event{}, false
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 18*time.Second)
 	defer cancel()
 	if !n.budget() {
@@ -238,17 +278,21 @@ func (n *Narrator) FateEvent(age int, summary string) (game.Event, bool) {
 trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
 		fmt.Sprintf("年龄%d。状态：%s", age, summary), 900)
 	if err != nil {
+		n.fail()
 		return game.Event{}, false
 	}
 	var p fatePayload
 	if !extractJSON(out, &p) {
+		n.fail()
 		return game.Event{}, false
 	}
 	text := strings.TrimSpace(stripControl(p.Text))
 	if len([]rune(text)) < 4 {
+		n.fail()
 		return game.Event{}, false
 	}
 	cl := func(v float64) float64 { return math.Max(-3, math.Min(3, v)) }
+	n.ok()
 	ev := game.Event{
 		ID:           fmt.Sprintf("llm_fate_%d_%d", age, time.Now().UnixMilli()%100000),
 		Text:         truncate(text, 80),
@@ -266,6 +310,9 @@ trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
 // Epitaph writes the closing line of a finished life. It is exempt from
 // the shared budget: one call per life, guaranteed (see Narrator).
 func (n *Narrator) Epitaph(summary string) string {
+	if n.dead {
+		return "一生至此。"
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 	if n.C == nil {
@@ -276,6 +323,7 @@ func (n *Narrator) Epitaph(summary string) string {
 		"你是墓志铭作者。为这段人生写一句不超过30字的墓志铭，克制而有余味。只输出JSON：{\"text\":\"...\"}",
 		summary, 400)
 	if err != nil {
+		n.fail()
 		return "一生至此。"
 	}
 	var r struct {

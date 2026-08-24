@@ -17,6 +17,7 @@ type noop struct{}
 func (noop) Narrate(age int, summary, fallback string) string { return fallback }
 func (noop) FateEvent(age int, summary string) (Event, bool)  { return Event{}, false }
 func (noop) Epitaph(summary string) string                    { return "一生至此。" }
+func (noop) Broken() bool                                     { return false }
 
 // Narrator renders optional LLM flavor. Implementations must fail soft:
 // every method falls back to deterministic text.
@@ -28,6 +29,10 @@ type Narrator interface {
 	FateEvent(age int, summary string) (Event, bool)
 	// Epitaph writes the closing summary of a finished life.
 	Epitaph(summary string) string
+	// Broken reports whether the narrator's failure breaker has tripped
+	// (channel dead or chronically too slow); Run prints one notice and
+	// further calls fail soft instantly.
+	Broken() bool
 }
 
 func isNoop(n Narrator) bool { return n == nil || n == Noop }
@@ -154,6 +159,17 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	careerID := UnemployedID
 	careerName := "无业"
 
+	// One-time notice when the narrator's breaker trips mid-life, so the
+	// player knows narration stopped instead of wondering why every hint
+	// now vanishes instantly (v0.8.0).
+	llmWarned := false
+	warnBroken := func() {
+		if !llmWarned && !isNoop(cfg.LLM) && cfg.LLM.Broken() {
+			llmWarned = true
+			fmt.Fprintln(w, "\n[提示] 叙事通道连续失败（不可用或过慢），本世余下改为纯本地叙事。")
+		}
+	}
+
 	record := func(line string) {
 		fmt.Fprintln(w, line)
 		history = append(history, line)
@@ -211,6 +227,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			} else {
 				clearHint(w, cfg.Hints)
 			}
+			warnBroken()
 		}
 
 		if ev != nil {
@@ -238,6 +255,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 					fmt.Sprintf("事件:%s 职业:%s 属性:%+v 负荷:%.2f", ev.ID, careerName, s, trauma.Load(params)),
 					text)
 				clearHint(w, cfg.Hints)
+				warnBroken()
 			}
 			line := fmt.Sprintf("[%3d 岁] %s", age, text)
 			record(line)

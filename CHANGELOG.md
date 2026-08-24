@@ -1,3 +1,48 @@
+## [0.8.0] - 2026-08-24
+
+### Fixed (44-minute "命运编织中 stuck" report)
+
+Root cause chain (all measured, not guessed):
+
+1. **OpenRouter account had no credits** (HTTP 402 "never purchased
+   credits") — every paid model refused; the only usable channel was the
+   free `stealth/ox-alpha`.
+2. **ox-alpha's real latency (15.2s narrate / 39.5s fate prompt) exceeded
+   the game's 12/18s timeouts** — every single call burned the full
+   timeout and then failed, forever, with no circuit breaker.
+3. Net effect: the game froze ~12s before every sampled event (the dim
+   "命运编织中，稍等片刻" hint), silently fell back each time, and crawled
+   all life long. Empirically: 90s against a dead endpoint only reached
+   age ~12 on v0.7.4.
+
+Changes:
+
+- **Failure breaker in `llm.Narrator`**: after 3 consecutive failures
+  (timeout / HTTP error / schema violation) the channel is declared
+  broken for the rest of the life; every method returns its fallback
+  instantly without touching the network. Any success resets the
+  streak (intermittent channels keep working). New `Broken()` on the
+  `game.Narrator` interface; `Run` prints a one-time notice:
+  `[提示] 叙事通道连续失败（不可用或过慢），本世余下改为纯本地叙事。`
+  Post-fix e2e vs the same dead endpoint: full 45-year life in 36s
+  (3×12s breaker window) instead of crawling forever.
+- **Default provider flipped openrouter → deepseek**: verified working
+  (5.2s, valid JSON, direct CN access, no proxy needed); v4-flash is
+  fast and cheap, and the whole fate+narrate+epitaph chain was already
+  verified on 0.7.4. openrouter stays fully supported via
+  `--provider openrouter` / config; note it now needs BOTH a proxy and
+  account credits for most models (free stealth channels are unstable).
+- **Hardening**: `complete()` no longer falls back to `http.DefaultClient`
+  (which has no timeout at all); a nil client gets a 45s-timeout client.
+- **Regression tests**: `TestTimeoutsEnforced` (stalled server must fail
+  at 12/18s ctx deadlines — proves no call can hang a session),
+  `TestBreakerTripsAfterConsecutiveFailures` (instant fail-soft, budget
+  untouched), `TestBreakerResetsOnSuccess` (streak resets).
+- Real-API smoke: DeepSeek full chain on a 45-year auto life — narration
+  polished through age 45, fate event injected at 30, no false breaker
+  trips; single epitaph miss fell back cleanly (v4-flash occasionally
+  burns max_tokens on reasoning — known, fail-soft by design).
+
 ## [0.7.4] - 2026-08-24
 
 ### Added (player config file + LLM budget overhaul)

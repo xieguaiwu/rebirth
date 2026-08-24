@@ -574,6 +574,7 @@ func (c *countingNarrator) Narrate(age int, summary, fallback string) string {
 }
 func (c *countingNarrator) FateEvent(age int, summary string) (Event, bool) { return Event{}, false }
 func (c *countingNarrator) Epitaph(summary string) string                   { return "一生至此。" }
+func (c *countingNarrator) Broken() bool                                    { return false }
 
 // TestNarrateSamplingDeterministic verifies the per-event-ID sampling:
 // ratio 0 = always (unset default), 1 = always, 0 = never, 0.5 = stable

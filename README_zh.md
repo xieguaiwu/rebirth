@@ -22,7 +22,7 @@ Go 编写的终端人生重开模拟器。玩法致敬人生重开模拟器，�
 - **创伤是动力系统，不是 debuff 清单。** 漏积分器记忆痕迹与杏仁核反应性、前额叶控制耦合。持续逆境会把系统推过鞍结分岔、进入病理吸引子——而迟滞意味着：脱离的阈值比陷入时更低。治疗抵抗性，被数学化地模拟了出来。
 - **命运是自相关的。** AR(1) 运势过程取代独立抽样：好运成串，灾祸也成串，逆袭需要持续的好年景而非一次暴击。
 - **创伤跨代回响。** 每代继承上一代应激敏感性的亚加性比例（ψ=0.7）。血脉慢慢痊愈或螺旋下沉——你玩的每一局都在书写家族的基线。
-- **大模型不掷骰子。** 全部随机性留在确定性核心。可选的模型层（OpenRouter `stealth/ox-alpha`）只做三件事：润色叙事、提出经 schema 校验的「命运事件」（数值强制 clamp）、撰写墓志铭。所有输出在接触你的终端前都会剥离控制字符。
+- **大模型不掷骰子。** 全部随机性留在确定性核心。可选的模型层（默认 DeepSeek `deepseek-v4-flash`，也支持 OpenRouter）只做三件事：润色叙事、提出经 schema 校验的「命运事件」（数值强制 clamp）、撰写墓志铭。所有输出在接触你的终端前都会剥离控制字符。内置熔断器：连续 3 次失败（渠道死/额度尽/慢于 12/18s 超时）后本世余下瞬间切换纯本地叙事，不再反复白等。
 - **内容广度**：63 天赋（四档稀有度）、26 职业（农民 → CEO → 数字游民 → 邪教教主* → 出家人）、13 出身（贫民窟到豪门到战乱地区）、9 分片 336 事件，含致敬国内纪录片式故事博主的街头故事。
 
 \* 邪教教主路线仅在创伤负荷 ≥ 0.45 时解锁：被深渊浸透过的人，才开得了这场布道。
@@ -53,12 +53,12 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
 | `--auto` | 自动选择所有选项 |
 | `--no-llm` | 关闭 LLM 层 |
 | `--step` | 强制逐条推进（每条等回车；交互终端默认开启） |
-| `--provider NAME` | LLM 服务商预设：`openrouter`（默认）或 `deepseek` |
-| `--model NAME` | 模型名（按 provider 默认：`stealth/ox-alpha` / `deepseek-v4-flash`） |
+| `--provider NAME` | LLM 服务商预设：`deepseek`（默认，国内直连免代理）或 `openrouter`（需代理+额度） |
+| `--model NAME` | 模型名（按 provider 默认：`deepseek-v4-flash` / `stealth/ox-alpha`） |
 | `--llm-url URL` | 覆盖 provider 基础 URL（任意 OpenAI 兼容端点） |
 
-设置 `OPENROUTER_API_KEY`（默认服务商）、`DEEPSEEK_API_KEY`（配合
-`--provider deepseek`）或通用 `LLM_API_KEY` 启用叙事层。血统存档位于
+设置 `DEEPSEEK_API_KEY`（默认服务商）、`OPENROUTER_API_KEY`（配合
+`--provider openrouter`）或通用 `LLM_API_KEY` 启用叙事层。反复失败的渠道会触发熔断——打印一行提示后，本世余下全部秒回本地文本。血统存档位于
 `~/.config/rebirth/bloodline.json`；删除它即可开启新家族。
 
 ### 可选配置文件
@@ -68,7 +68,7 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
 
 ```json
 {
-  "provider": "openrouter",
+  "provider": "deepseek",
   "model": "",
   "llm_url": "",
   "llm_calls": 24,
@@ -101,7 +101,7 @@ internal/game/
   events.go             加权事件抽取、天赋、血统治存档
   career.go             职业轨迹 + 出身背景
   run.go                主循环、死亡判定、叙事钩子
-internal/llm/           provider 预设（openrouter/deepseek），带预算的 fail-soft 叙事器
+internal/llm/           provider 预设（deepseek/openrouter），带预算+熔断的 fail-soft 叙事器
 internal/tui/           零依赖 rune 安全行编辑器
 internal/game/data/     events_*.json × 9 分片、职业、出身、天赋
 ```

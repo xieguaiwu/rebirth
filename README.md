@@ -22,7 +22,7 @@ A terminal life-restart simulator in Go, inspired by 人生重开模拟器 and r
 - **Trauma is a dynamical system, not a debuff list.** A leaky-integrator memory trace couples with amygdala reactivity and prefrontal control. Sustained adversity can push the system past a saddle-node bifurcation into a pathological attractor — and hysteresis means recovery requires dropping below a *lower* threshold than the one that trapped you. Treatment resistance, simulated.
 - **Fate autocorrelates.** An AR(1) luck process replaces i.i.d. rolls: good years cluster, disasters cluster, and rags-to-riches arcs need sustained fortune, not one lucky roll.
 - **Trauma echoes across generations.** Each run inherits a sub-additive fraction (`ψ = 0.7`) of the previous life's stress sensitivity. Lineages heal slowly or spiral — your choice of life writes the family's baseline.
-- **The LLM never rolls dice.** All randomness lives in the deterministic core. The optional model layer (OpenRouter `stealth/ox-alpha`) only rewrites narration, proposes schema-validated "fate events" (values clamped), and writes epitaphs. Every output is control-character-sanitized before it touches your terminal.
+- **The LLM never rolls dice.** All randomness lives in the deterministic core. The optional model layer (DeepSeek `deepseek-v4-flash` by default; OpenRouter also supported) only rewrites narration, proposes schema-validated "fate events" (values clamped), and writes epitaphs. Every output is control-character-sanitized before it touches your terminal. A failure breaker stops retrying dead/slow channels: after 3 consecutive failures the rest of the life runs fully local, instantly.
 - **Content breadth**: 63 talents across four rarity tiers, 26 careers (farmer → CEO → digital nomad → cult leader* → monk), 13 birth backgrounds (slum to dynasty to war zone), 336 events across 9 shards including street-level stories inspired by Chinese documentary storytellers.
 
 \* The cult-leader track unlocks only at trauma load ≥ 0.45: you have to have been through the abyss to preach from it.
@@ -53,12 +53,15 @@ rebirth --seed 42 --auto --no-llm   # deterministic auto run (great for CI)
 | `--auto` | auto-pick every choice |
 | `--no-llm` | disable the LLM layer |
 | `--step` | force manual advance (Enter per year; default on interactive TTY) |
-| `--provider NAME` | LLM endpoint preset: `openrouter` (default) or `deepseek` |
-| `--model NAME` | model name (defaults per provider: `stealth/ox-alpha` / `deepseek-v4-flash`) |
+| `--provider NAME` | LLM endpoint preset: `deepseek` (default, direct CN access) or `openrouter` (needs proxy + credits) |
+| `--model NAME` | model name (defaults per provider: `deepseek-v4-flash` / `stealth/ox-alpha`) |
 | `--llm-url URL` | override the provider base URL (any OpenAI-compatible endpoint) |
 
-Set `OPENROUTER_API_KEY` (default provider), `DEEPSEEK_API_KEY` (with
-`--provider deepseek`), or the generic `LLM_API_KEY` to enable narration.
+Set `DEEPSEEK_API_KEY` (default provider), `OPENROUTER_API_KEY` (with
+`--provider openrouter`), or the generic `LLM_API_KEY` to enable narration.
+Channels that repeatedly fail (dead, quota-exhausted, or slower than the
+12/18s call timeouts) trip a breaker — one notice line, then the rest of
+the life plays instantly in fully local mode.
 Your bloodline save lives in `~/.config/rebirth/bloodline.json`; delete it
 to start a fresh lineage.
 
@@ -69,7 +72,7 @@ flags always win, then this file, then built-ins. Every field is optional:
 
 ```json
 {
-  "provider": "openrouter",
+  "provider": "deepseek",
   "model": "",
   "llm_url": "",
   "llm_calls": 24,
@@ -105,7 +108,7 @@ internal/game/
   events.go             weighted event sampling, talents, bloodline save
   career.go             career tracks + birth backgrounds
   run.go                main loop, death checks, narrator hooks
-internal/llm/           provider presets (openrouter/deepseek), budgeted fail-soft narrator
+internal/llm/           provider presets (deepseek/openrouter), budgeted + circuit-broken fail-soft narrator
 internal/tui/           zero-dependency rune-safe line editor
 internal/game/data/     events_*.json × 9 shards, careers, births, talents
 ```

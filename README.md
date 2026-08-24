@@ -53,10 +53,14 @@ rebirth --seed 42 --auto --no-llm   # deterministic auto run (great for CI)
 | `--auto` | auto-pick every choice |
 | `--no-llm` | disable the LLM layer |
 | `--step` | force manual advance (Enter per year; default on interactive TTY) |
-| `--model NAME` | OpenRouter model (default `stealth/ox-alpha`) |
+| `--provider NAME` | LLM endpoint preset: `openrouter` (default) or `deepseek` |
+| `--model NAME` | model name (defaults per provider: `stealth/ox-alpha` / `deepseek-v4-flash`) |
+| `--llm-url URL` | override the provider base URL (any OpenAI-compatible endpoint) |
 
-Set `OPENROUTER_API_KEY` to enable narration. Your bloodline save lives in
-`~/.config/rebirth/bloodline.json`; delete it to start a fresh lineage.
+Set `OPENROUTER_API_KEY` (default provider), `DEEPSEEK_API_KEY` (with
+`--provider deepseek`), or the generic `LLM_API_KEY` to enable narration.
+Your bloodline save lives in `~/.config/rebirth/bloodline.json`; delete it
+to start a fresh lineage.
 
 ## Project layout
 
@@ -67,7 +71,7 @@ internal/game/
   events.go             weighted event sampling, talents, bloodline save
   career.go             career tracks + birth backgrounds
   run.go                main loop, death checks, narrator hooks
-internal/llm/           OpenRouter client, budgeted fail-soft narrator
+internal/llm/           provider presets (openrouter/deepseek), budgeted fail-soft narrator
 internal/tui/           zero-dependency rune-safe line editor
 internal/game/data/     events_*.json × 9 shards, careers, births, talents
 ```

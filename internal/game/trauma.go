@@ -8,6 +8,15 @@ package game
 
 import "math"
 
+// EventTraumaScale is the game-scale calibration of event trauma intensity.
+// The authored trauma_alpha range (0.05-0.65, mean 0.31) is a clinical-scale
+// encoding; at game scale (30+ shocks per life) it saturated the memory
+// trace and latched ~83% of lives into the pathological attractor. Applied
+// to EVENT shocks only — career yearly exposure and LLM fate events keep
+// their own smaller ranges (v0.7.2 balance fix, kept in v0.7.3 when the
+// implementation moved from data halving to this code-level scale).
+const EventTraumaScale = 0.5
+
 // TraumaParams holds the coupled ODE parameters, discretized per year (dt=1).
 // Ranges are chosen so yearly updates stay within [0,1] without extra clamps
 // except where noted.

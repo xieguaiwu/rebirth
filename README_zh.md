@@ -53,9 +53,13 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
 | `--auto` | 自动选择所有选项 |
 | `--no-llm` | 关闭 LLM 层 |
 | `--step` | 强制逐条推进（每条等回车；交互终端默认开启） |
-| `--model NAME` | OpenRouter 模型（默认 `stealth/ox-alpha`） |
+| `--provider NAME` | LLM 服务商预设：`openrouter`（默认）或 `deepseek` |
+| `--model NAME` | 模型名（按 provider 默认：`stealth/ox-alpha` / `deepseek-v4-flash`） |
+| `--llm-url URL` | 覆盖 provider 基础 URL（任意 OpenAI 兼容端点） |
 
-设置 `OPENROUTER_API_KEY` 启用叙事层。血统存档位于 `~/.config/rebirth/bloodline.json`；删除它即可开启新家族。
+设置 `OPENROUTER_API_KEY`（默认服务商）、`DEEPSEEK_API_KEY`（配合
+`--provider deepseek`）或通用 `LLM_API_KEY` 启用叙事层。血统存档位于
+`~/.config/rebirth/bloodline.json`；删除它即可开启新家族。
 
 ## 项目结构
 
@@ -66,7 +70,7 @@ internal/game/
   events.go             加权事件抽取、天赋、血统治存档
   career.go             职业轨迹 + 出身背景
   run.go                主循环、死亡判定、叙事钩子
-internal/llm/           OpenRouter 客户端，带预算的 fail-soft 叙事器
+internal/llm/           provider 预设（openrouter/deepseek），带预算的 fail-soft 叙事器
 internal/tui/           零依赖 rune 安全行编辑器
 internal/game/data/     events_*.json × 9 分片、职业、出身、天赋
 ```

@@ -1,3 +1,24 @@
+## [0.7.3] - 2026-08-24
+
+### Changed (implementation swap + LLM provider settings)
+- **Balance fix moved from data to code**: the v0.7.2 event-alpha halving is
+  now `game.EventTraumaScale = 0.5`, applied to event shocks at run time.
+  All 9 data shards restored to their authored alpha values. 500-seed
+  measurement identical (pathological 28.2%, avg age 79.5, early <30
+  3.4%); TestPathologicalRateBand gate unchanged (<50%).
+- **LLM layer is now provider-configurable**: `--provider openrouter|deepseek`
+  presets (base URL + default model + key env), `--llm-url` overrides the
+  endpoint (any OpenAI-compatible API), `--model` defaults per provider.
+  - openrouter: https://openrouter.ai/api/v1 · `stealth/ox-alpha` ·
+    `OPENROUTER_API_KEY`
+  - deepseek: https://api.deepseek.com/v1 · `deepseek-v4-flash` ·
+    `DEEPSEEK_API_KEY`
+  - Generic `LLM_API_KEY` fallback accepted for any provider.
+- max_tokens raised (Narrate 300→600, FateEvent 500→900, Epitaph 200→400)
+  so DeepSeek V4 reasoning (reasoning_content spends budget before
+  content) cannot starve the visible reply.
+- New tests: provider preset resolution, custom base-URL override path.
+
 ## [0.7.2] - 2026-08-24
 
 ### Fixed (audit round — balance calibration + dead state)

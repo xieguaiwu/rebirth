@@ -19,7 +19,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.7.2"
+var version = "0.7.3"
 
 const pointsTotal = 20
 
@@ -35,7 +35,9 @@ func main() {
 	auto := flag.Bool("auto", false, "自动模式：所有选择取第一项")
 	noLLM := flag.Bool("no-llm", false, "禁用大语言模型叙事")
 	step := flag.Bool("step", false, "逐条推进：每条信息等回车（交互终端默认开启；--auto 时忽略）")
-	model := flag.String("model", "stealth/ox-alpha", "OpenRouter 模型名")
+	provider := flag.String("provider", "openrouter", "LLM 服务商（openrouter / deepseek）")
+	model := flag.String("model", "", "LLM 模型名（默认按 provider：openrouter=stealth/ox-alpha，deepseek=deepseek-v4-flash）")
+	llmURL := flag.String("llm-url", "", "LLM 基础 URL（覆盖 provider 默认端点）")
 	maxAge := flag.Int("max-age", 100, "寿命上限")
 	showVersion := flag.Bool("version", false, "打印版本号")
 	flag.Parse()
@@ -74,7 +76,7 @@ func main() {
 	}
 
 	rng := rand.New(rand.NewSource(*seed))
-	narrator := buildNarrator(*noLLM, *model)
+	narrator := buildNarrator(*noLLM, *provider, *model, *llmURL)
 
 	birth := pickBirth(births, rng, *auto)
 	talentsPick := pickTalents(talents, rng, *auto)
@@ -145,16 +147,33 @@ func main() {
 	}
 }
 
-func buildNarrator(disabled bool, model string) game.Narrator {
-	key := os.Getenv("OPENROUTER_API_KEY")
+func buildNarrator(disabled bool, providerName, model, url string) game.Narrator {
+	p, ok := llm.ResolveProvider(providerName)
+	if !ok {
+		p, _ = llm.ResolveProvider("openrouter")
+		if !disabled {
+			fmt.Printf("[WARN] 未知 LLM 服务商 %q，回退 openrouter。\n", providerName)
+		}
+	}
+	if model == "" {
+		model = p.DefaultModel
+	}
+	if url == "" {
+		url = p.BaseURL
+	}
+	key := os.Getenv(p.KeyEnv)
+	if key == "" {
+		key = os.Getenv("LLM_API_KEY")
+	}
 	if disabled || key == "" {
 		if !disabled && key == "" {
-			fmt.Println("[WARN] 未设置 OPENROUTER_API_KEY，使用纯本地模式。")
+			fmt.Printf("[WARN] 未设置 %s（或 LLM_API_KEY），使用纯本地模式。\n", p.KeyEnv)
 		}
 		return game.Noop
 	}
 	c := llm.New(key, model)
-	fmt.Printf("[OK] 叙事层已启用：%s\n", model)
+	c.BaseURL = url
+	fmt.Printf("[OK] 叙事层已启用：%s（%s）\n", model, p.Name)
 	return llm.NewNarrator(c)
 }
 

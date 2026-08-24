@@ -229,7 +229,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			record(line)
 			s.ApplyDelta(ev.Delta)
 			if ev.TraumaAlpha > 0 {
-				alpha := ev.TraumaAlpha * talentTraumaMult(cfg.Talents, cfg.InheritTal)
+				alpha := ev.TraumaAlpha * EventTraumaScale * talentTraumaMult(cfg.Talents, cfg.InheritTal)
 				trauma.Shock(alpha, params)
 				trigger = true
 			}

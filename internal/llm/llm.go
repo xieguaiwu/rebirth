@@ -20,6 +20,40 @@ import (
 
 const defaultBaseURL = "https://openrouter.ai/api/v1"
 
+// Provider is one named LLM endpoint preset: base URL, default model and
+// the environment variable holding the API key. Providers are OpenAI-
+// compatible chat endpoints; pick with --provider and override pieces
+// with --model / --llm-url.
+type Provider struct {
+	Name         string
+	BaseURL      string
+	DefaultModel string
+	KeyEnv       string
+}
+
+// Providers is the preset registry. Unknown names fall back to openrouter
+// (ResolveProvider reports ok=false and main warns).
+var Providers = map[string]Provider{
+	"openrouter": {
+		Name:         "openrouter",
+		BaseURL:      defaultBaseURL,
+		DefaultModel: "stealth/ox-alpha",
+		KeyEnv:       "OPENROUTER_API_KEY",
+	},
+	"deepseek": {
+		Name:         "deepseek",
+		BaseURL:      "https://api.deepseek.com/v1",
+		DefaultModel: "deepseek-v4-flash",
+		KeyEnv:       "DEEPSEEK_API_KEY",
+	},
+}
+
+// ResolveProvider looks up a preset by name.
+func ResolveProvider(name string) (Provider, bool) {
+	p, ok := Providers[name]
+	return p, ok
+}
+
 // Client talks to an OpenAI-compatible chat endpoint (OpenRouter).
 type Client struct {
 	BaseURL string
@@ -60,6 +94,9 @@ type chatResponse struct {
 }
 
 // complete sends one chat request and returns the assistant text.
+// max_tokens keeps headroom for reasoning models (DeepSeek V4 spends
+// budget on reasoning_content before content; lesson: nano-omni empty
+// content at max_tokens=300).
 func (c *Client) complete(ctx context.Context, system, user string, maxTokens int) (string, error) {
 	if strings.TrimSpace(c.APIKey) == "" {
 		return "", errors.New("llm: empty api key")
@@ -150,7 +187,7 @@ func (n *Narrator) Narrate(age int, summary, fallback string) string {
 	}
 	out, err := n.C.complete(ctx,
 		"你是人生模拟器的叙事者。把给定事件改写成一句生动中文叙述，不超过40字。只输出JSON：{\"text\":\"...\"}",
-		fmt.Sprintf("年龄%d。状态：%s。原文：%s", age, summary, fallback), 300)
+		fmt.Sprintf("年龄%d。状态：%s。原文：%s", age, summary, fallback), 600)
 	if err != nil {
 		return fallback
 	}
@@ -195,7 +232,7 @@ func (n *Narrator) FateEvent(age int, summary string) (game.Event, bool) {
 		`你是命运编织者，为人生模拟器发明一个独特事件。贴合给定状态，避免俗套。
 只输出JSON，字段：{"text":"事件一句话","good":true/false,"chr":-3..3,"int":-3..3,"str":-3..3,"mny":-3..3,"spr":-3..3,"trauma_alpha":0..0.5}
 trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
-		fmt.Sprintf("年龄%d。状态：%s", age, summary), 500)
+		fmt.Sprintf("年龄%d。状态：%s", age, summary), 900)
 	if err != nil {
 		return game.Event{}, false
 	}
@@ -231,7 +268,7 @@ func (n *Narrator) Epitaph(summary string) string {
 	}
 	out, err := n.C.complete(ctx,
 		"你是墓志铭作者。为这段人生写一句不超过30字的墓志铭，克制而有余味。只输出JSON：{\"text\":\"...\"}",
-		summary, 200)
+		summary, 400)
 	if err != nil {
 		return "一生至此。"
 	}

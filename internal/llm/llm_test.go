@@ -115,3 +115,47 @@ func TestFateEventTextStripped(t *testing.T) {
 		t.Fatalf("escape bytes leaked into event text: %q", ev.Text)
 	}
 }
+
+func TestResolveProviderPresets(t *testing.T) {
+	p, ok := ResolveProvider("openrouter")
+	if !ok {
+		t.Fatal("openrouter preset missing")
+	}
+	if p.DefaultModel != "stealth/ox-alpha" || p.KeyEnv != "OPENROUTER_API_KEY" {
+		t.Fatalf("openrouter preset wrong: %+v", p)
+	}
+	p, ok = ResolveProvider("deepseek")
+	if !ok {
+		t.Fatal("deepseek preset missing")
+	}
+	if p.DefaultModel != "deepseek-v4-flash" || p.KeyEnv != "DEEPSEEK_API_KEY" {
+		t.Fatalf("deepseek preset wrong: %+v", p)
+	}
+	if !strings.Contains(p.BaseURL, "api.deepseek.com") {
+		t.Fatalf("deepseek base URL wrong: %s", p.BaseURL)
+	}
+	if _, ok := ResolveProvider("nope"); ok {
+		t.Fatal("unknown provider must not resolve")
+	}
+}
+
+// TestCustomBaseURLOverride ensures a caller-set BaseURL (--llm-url) is
+// honored end to end: the mock server only accepts the custom path.
+func TestCustomBaseURLOverride(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/chat/completions" {
+			t.Errorf("unexpected path %q", r.URL.Path)
+		}
+		resp := map[string]any{"choices": []map[string]any{
+			{"message": map[string]any{"content": `{"text":"你在雨中遇见了一位多年未见的老友。","good":true}`}},
+		}}
+		_ = json.NewEncoder(w).Encode(resp)
+	}))
+	defer srv.Close()
+	c := &Client{BaseURL: "http://example.invalid/v9", Model: "test", APIKey: "test-key"}
+	c.BaseURL = srv.URL // --llm-url override path
+	n := NewNarrator(c)
+	if _, ok := n.FateEvent(30, "s"); !ok {
+		t.Fatal("override base URL rejected")
+	}
+}

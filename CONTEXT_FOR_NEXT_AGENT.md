@@ -1,10 +1,10 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-24 14:25
+最后更新: 2026-08-24 14:45
 
 ## 项目当前状态
 
-rebirth v0.7.2 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿**。
+rebirth v0.7.3 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿**。
 
 - 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
 - 仓库: https://github.com/xieguiawu/rebirth（public，master）
@@ -24,9 +24,9 @@ internal/game/
                         Birth 13 种（sensitivity_add 抬创伤基线）
   run.go                主循环：职业窗口年龄{16,19,23,27,32,38,45}、步进暂停
                         (cfg.Step/Pause/Hints)、死亡判定与年龄分层标签
-internal/llm/llm.go     OpenRouter 客户端：每局预算 10 次、分级超时(12/18s)、
-                        JSON schema 校验+clamp+stripControl(C0/C1 剥离)+
-                        sanitizeLine 纯文本兜底
+internal/llm/llm.go     provider 预设（openrouter/deepseek）：基础 URL + 默认模型 + key 环境变量；
+                        --model/--llm-url 可覆盖；JSON schema 校验+clamp+stripControl+
+                        sanitizeLine 纯文本兜底；max_tokens 已加足（DeepSeek V4 推理先耗预算）
 internal/tui/input.go   零依赖 rune 安全行编辑器：feed() 纯函数解析，
                         rawCarry/carrySkipNL 跨调用状态，ErrCancelled 传播
 scripts/test_pty.py     PTY 端到端套件（8 用例，stdlib only）
@@ -47,6 +47,8 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
 - v0.7.1 oracle 复核补充修复（InheritedTal 播种、orphan \n 幻影提交、carried CSI 吞 Ctrl+C）
 - v0.7.2 病理态平衡标定（83%→28%：事件 alpha 减半 + drive 0.65 + EnterAt 0.80，
   TestPathologicalRateBand 回归闸门）；LowStreak 死状态移除；PTY 套件 9 用例
+- v0.7.3 平衡实现从数据层换为代码层（EventTraumaScale=0.5，数据全部还原，500 局实测不变
+  28.2%）；LLM 层 provider 化（openrouter/deepseek 预设 + --llm-url 覆盖 + deepseek-v4-flash）
 
 ## 两轮 agent 审查的沉淀教训
 
@@ -59,10 +61,10 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
 
 - [ ] 交互模式完整人工测试（目前仅 PTY 自动化覆盖）
 - [x] 病理态占比偏高（~60% 局）——v0.7.2 已标定至 28%（TestPathologicalRateBand 闸门 <50%，防复发）
-- [ ] LLM FateEvent 真实 API 成功路径未验证过（仅 mock 覆盖）
+- [ ] LLM FateEvent 真实 API 成功路径未验证过（仅 mock 覆盖）——**deepseek provider 已接好，可用真实 DEEPSEEK_API_KEY 验证**
 - [ ] 属性点交互较简陋（一行四数字）；PTY 行编辑键位 e2e 已补（case I），全键位矩阵仍可加深
 - [ ] graphify-out 已 gitignore，本地图谱需 `graphify update .` 手动重建
 
 ## 最后更新时间
 
-2026-08-24 14:25
+2026-08-24 14:45

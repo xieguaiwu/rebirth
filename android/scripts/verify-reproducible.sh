@@ -23,7 +23,11 @@ build_once() {
   ./gradlew clean assembleRelease --no-daemon > "/tmp/rb-build-$tag.log" 2>&1 || {
     echo "FAIL: build $tag failed"; tail -30 "/tmp/rb-build-$tag.log"; exit 1
   }
-  find app/build/outputs/apk -name '*.apk' | sort | xargs sha256sum > "/tmp/rb-hash-$tag.txt"
+  # Compare the UNSIGNED APK: signing adds per-build randomness to the
+  # signature block, so signed APKs are never byte-identical. F-Droid's
+  # reproducible-build check works the same way (signature-stripped
+  # comparison via apksigcopier).
+  find app/build/outputs/apk -name '*unsigned*.apk' | sort | xargs sha256sum > "/tmp/rb-hash-$tag.txt"
 }
 
 build_once one

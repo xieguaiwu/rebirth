@@ -350,3 +350,10 @@ Format follows Keep a Changelog; versioning follows SemVer.
 ## [0.1.0] - 2026-08-23
 
 - Initial playable prototype.
+
+### Note (2026-08-25)
+
+The Android client moved to its own repository:
+https://github.com/xieguaiwu/android-rebirth (tag v0.10.0 there too).
+The `android/` subdirectory was removed from this repo after the move;
+`docs/mobile-protocol.md` remains the frozen contract both sides share.

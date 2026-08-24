@@ -95,19 +95,12 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
 
 ## 安卓客户端
 
-同一引擎已移植为安卓应用，位于 `android/` 子目录（com.xieguaiwu.rebirth，
-arm64-v8a，APK ~9MB，F-Droid 就绪）。
-
-- **同一确定性核心**：Go 引擎以子进程形式跑在应用内（`cmd/mobile`
-  JSON-lines daemon）——同种子同人生，与终端版逐字节一致。
-- **中英双语**：UI 与内容双语，应用内一键切换（内容语言跟随 UI 语言）。
-- **自带 LLM 密钥**：设置页可添加任意数量供应商（DeepSeek、OpenRouter、
-  或任意 OpenAI 兼容 URL），可排序作为故障转移链，也可全部关闭纯离线游玩。
-  key 加密存于 Android Keystore，永不离机。
-- **抗杀进程**：每一年自动存档；杀掉应用重开可恢复同一人生（确定性重放）。
-- 构建：`cd android && ./gradlew :app:assembleRelease`（Go 核心由
-  `scripts/build-core.sh` 交叉编译；`scripts/fetch-go.sh` 固定工具链+SHA 校验；
-  `scripts/verify-reproducible.sh` 验证 APK 字节级可复现）。
+安卓客户端已迁出为独立仓库：
+**[github.com/xieguaiwu/android-rebirth](https://github.com/xieguaiwu/android-rebirth)**
+（com.xieguaiwu.rebirth，arm64-v8a，APK ~9MB，F-Droid 就绪）。它以 vendored
+快照方式内嵌本 Go 引擎（`core/`，经 `scripts/sync-core.sh` 刷新），通过
+`cmd/mobile` JSON-lines daemon 以子进程运行——同种子同人生，与终端版逐字节
+一致。协议契约：`docs/mobile-protocol.md`。
 
 ## 项目结构
 
@@ -124,8 +117,8 @@ internal/tui/           零依赖 rune 安全行编辑器
 internal/game/data/     events_*.json × 9 分片、职业、出身、天赋（中文）
 internal/game/data_en/  相同内容的英文版
 cmd/mobile/             JSON-lines daemon（契约见 docs/mobile-protocol.md）
-android/                Compose 应用：进程桥、五屏、Keystore、fastlane
 ```
+（安卓客户端：见 github.com/xieguaiwu/android-rebirth）
 
 ## 开发
 

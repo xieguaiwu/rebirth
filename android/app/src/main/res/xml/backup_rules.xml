@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Legacy (pre-Android 12) backup exclusion: keep nothing. -->
-<full-backup-content>
-    <exclude domain="root" path="." />
-</full-backup-content>

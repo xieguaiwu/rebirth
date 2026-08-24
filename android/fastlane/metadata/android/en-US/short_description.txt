@@ -1,1 +1,0 @@
-Terminal life-restart simulator with a real trauma model

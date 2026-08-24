@@ -102,24 +102,13 @@ flags always win, then this file, then built-ins. Every field is optional:
 
 ## Android app
 
-The same engine ships as an Android app in the `android/` subdirectory
-(com.xieguaiwu.rebirth, arm64-v8a, ~9 MB APK, F-Droid ready).
-
-- **Same deterministic core**: the Go engine runs as a child process
-  (`cmd/mobile` JSON-lines daemon) inside the app — same seed, same life,
-  byte-identical to the terminal version.
-- **Bilingual UI + content**: Chinese and English, switchable in-app
-  (content language follows the UI language).
-- **Bring your own LLM**: in Settings you can add any number of providers
-  (DeepSeek, OpenRouter, or any OpenAI-compatible URL), reorder them as a
-  fallback chain, or disable them all for a fully offline game. Keys are
-  stored encrypted in the Android Keystore and never leave the device.
-- **Resilient**: the game checkpoints after every year; killing the app and
-  reopening resumes the exact same life (deterministic replay).
-- Build: `cd android && ./gradlew :app:assembleRelease` (the Go core is
-  cross-compiled by `scripts/build-core.sh`; pinned toolchain + SHA check
-  in `scripts/fetch-go.sh`; `scripts/verify-reproducible.sh` proves
-  byte-reproducible APKs).
+The Android client lives in its own repository:
+**[github.com/xieguaiwu/android-rebirth](https://github.com/xieguaiwu/android-rebirth)**
+(com.xieguaiwu.rebirth, arm64-v8a, ~9 MB APK, F-Droid ready). It embeds
+this Go engine as a vendored snapshot (`core/`, refreshed by
+`scripts/sync-core.sh`) and runs it as a child process via the
+`cmd/mobile` JSON-lines daemon — same seed, same life, byte-identical to
+the terminal version. Protocol contract: `docs/mobile-protocol.md`.
 
 ## Project layout
 

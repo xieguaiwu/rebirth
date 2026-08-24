@@ -1,5 +1,6 @@
-# binaries
-rebirth
+# binaries (anchored: bare `rebirth` would also match the Kotlin
+# package dir com/xieguiawu/rebirth/ and silently ignore all sources)
+/rebirth
 *.test
 
 # secrets / local saves

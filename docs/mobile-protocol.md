@@ -29,7 +29,7 @@
 
 ### 1.3 `draw_births`
 
-请求：`{"id":3,"cmd":"draw_births","seed":12345}`
+请求：`{"id":3,"cmd":"draw_births","seed":12345,"lang":"zh"}`（lang 可选，默认 zh）
 响应 data：`{"births":[<Birth>,<Birth>,<Birth>]}`（3 张，加权无重复）
 
 `Birth` = `{"id":"slum","name":"贫民窟","desc":"...","weight":10,"bonus":{"chr":0,"int":0,"str":0,"mny":0,"spr":0},"sensitivity_add":0.05}`
@@ -37,7 +37,7 @@
 
 ### 1.4 `draw_talents`
 
-请求：`{"id":4,"cmd":"draw_talents","seed":12345}`
+请求：`{"id":4,"cmd":"draw_talents","seed":12345,"lang":"zh"}`（lang 可选，默认 zh）
 响应 data：`{"talents":[<Talent>×10]}`（10 张，含稀有保底）
 
 `Talent` = `{"name":"乐天派","desc":"...","rarity":"common","bonus":{...},"trauma_mult":1,"luck_bonus":0,"therapy_mult":1,"inheritable":false}`
@@ -110,7 +110,7 @@ curGen = generation+1；`inherited_talent` 按名查找（跨语言找不到 →
 
 字段语义：
 - `lines`：该年全部已记录行（UI 直接渲染；与桌面 CLI 逐字节同源）。
-- `career`：当前职业（`"id":"none"` / `"name":"无业"` = 无业）；无职业年份 = null。
+- `career`：当前职业对象；**无职业（含无业/退休后）= null（字段缺省）**。
 - `career_change`：`"enter"`（入行）| `"quit"`（离开）| `"retire"`（退休）| null。
 - `event`：本年度事件（无事件年份 = null）。`llm` = 是否 LLM 润色/注入。
 - `stats`：五维属性 [0,10]（chr 颜值 / int 智力 / str 体质 / mny 家境 / spr 快乐）。

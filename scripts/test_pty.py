@@ -223,6 +223,51 @@ def _(rep):
     return True
 
 
+@case("I_line_editing_keys")
+def _(rep):
+    # interactive-cli-design §4.3: line-editing keys on a real PTY — left
+    # arrow, backspace, insert must redraw the buffer and stay in sync.
+    m, p = spawn(["--no-llm"])
+    out = b""
+    for prompt, answer in [("你的出身是", b"1\r"), ("选第 1 个", b"1\r"),
+                           ("选第 2 个", b"2\r"), ("选第 3 个", b"3\r")]:
+        end = time.time() + 10
+        while prompt.encode() not in out and time.time() < end:
+            out += read_all(m, 0.3)
+        send(m, answer)
+    # attribute prompt "> "
+    end = time.time() + 10
+    while b"> " not in out and time.time() < end:
+        out += read_all(m, 0.3)
+    # type "12", move left, backspace (deletes the char BEFORE the cursor:
+    # the "1"), insert "3" -> "32"
+    send(m, b"12")
+    out += read_all(m, 0.4)
+    if b"12" not in out:
+        p.kill(); os.close(m)
+        return rep("typed text not echoed")
+    send(m, b"\x1b[D\x7f3")
+    out += read_all(m, 0.4)
+    if b"32" not in out:
+        p.kill(); os.close(m)
+        return rep(f"backspace/arrow edit not redrawn: tail={out[-80:]!r}")
+    send(m, b"\r")  # "23" is not 4 numbers -> default 5/5/5/5
+    # walk the life to its end
+    for _ in range(140):
+        out += read_all(m, 0.4)
+        if "人生结束".encode() in out or "玩家中途离开".encode() in out:
+            break
+        send(m, b"\r")
+    else:
+        p.kill(); os.close(m)
+        return rep("never finished after editing keys")
+    code = p.wait(timeout=5)
+    os.close(m)
+    if code != 0:
+        return rep(f"exit={code}")
+    return True
+
+
 def main():
     fails = 0
     for name, fn in RESULTS:

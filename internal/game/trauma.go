@@ -30,7 +30,7 @@ type TraumaParams struct {
 	LoadM float64 // 0.6
 	LoadA float64 // 0.4
 	// Bifurcation thresholds (hysteresis pair).
-	EnterAt float64 // Mc2 = 0.70 pathological attractor entry
+	EnterAt float64 // Mc2 = 0.80 pathological attractor entry
 	ExitAt  float64 // Mc1 = 0.35 exit threshold (< EnterAt)
 }
 
@@ -47,7 +47,7 @@ func DefaultTraumaParams() TraumaParams {
 		Extinction: 0.10,
 		LoadM:      0.6,
 		LoadA:      0.4,
-		EnterAt:    0.70,
+		EnterAt:    0.80,
 		ExitAt:     0.35,
 	}
 }
@@ -58,9 +58,6 @@ type TraumaState struct {
 	A            float64 // amygdala reactivity, [0,1]
 	P            float64 // prefrontal inhibitory control, [0,1]
 	Pathological bool    // inside the pathological attractor (hysteresis latch)
-	// LowStreak counts consecutive years without any trauma trigger;
-	// used to gate extinction learning (safe-context requirement).
-	LowStreak int
 }
 
 // NewTraumaState creates an initial state with baseline values shifted by
@@ -88,7 +85,6 @@ func (t *TraumaState) Shock(alpha float64, p TraumaParams) {
 	// Mild reconsolidation boost: single shocks wound, only repeated
 	// adversity under arousal crosses the bifurcation.
 	t.M = clamp01(t.M * (1 + 0.25*p.BetaRe*t.A*(1+alpha)))
-	t.LowStreak = 0
 }
 
 // Step advances the coupled system by one year. trigger reports whether this
@@ -102,7 +98,6 @@ func (t *TraumaState) Step(trigger bool, therapyQ float64, p TraumaParams) {
 			// Extinction needs a safe-enough context: no cue and moderate
 			// arousal. Therapy amplifies it.
 			dm -= p.Extinction * (1 + therapyQ)
-			t.LowStreak++
 		}
 	} else {
 		// Cue exposure mildly reconsolidates the fear memory, but therapy
@@ -115,7 +110,7 @@ func (t *TraumaState) Step(trigger bool, therapyQ float64, p TraumaParams) {
 	aPrev := t.A
 
 	// --- amygdala reactivity ---
-	drive := 0.9 * t.M // memory-driven excitation
+	drive := 0.65 * t.M // memory-driven excitation
 	t.A = clamp01(t.A - p.MuA*(t.A-p.AStar) + drive - 0.8*t.P*t.A)
 
 	// --- prefrontal control: eroded by squared amygdala deviation ---

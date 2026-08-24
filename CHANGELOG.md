@@ -1,3 +1,28 @@
+## [0.7.2] - 2026-08-24
+
+### Fixed (audit round — balance calibration + dead state)
+- **Pathological attractor re-calibrated** — measured pathological rate was
+  83% of lives (diagnostic: 300 seeds), far above the game-scale target;
+  CONTEXT documented ~60%. Root cause: the event pool is trauma-saturated
+  (160/336 events carry trauma_alpha, mean 0.31) so the memory trace m
+  saturated at ~1.0 and Load crossed EnterAt by ages 5-11 in most lives.
+  - Event trauma_alpha halved across all 9 shards (160 events; new mean
+    0.156, max 0.325) — the documented calibration lever.
+  - Amygdala drive 0.9 → 0.65 (memory-driven excitation).
+  - EnterAt 0.70 → 0.80 (pathological entry threshold).
+  - Result: 28.0% pathological on the 200-seed regression gate
+    (TestPathologicalRateBand, threshold < 50%), average death age ~80,
+    early (<30) death 3.3%.
+- Removed dead `LowStreak` state: written by Shock/Step but never read;
+  the extinction gate is arousal (A < 0.55), not a streak counter.
+- PTY suite: new case I (line-editing keys on a real PTY — left arrow,
+  backspace, insert redraw); test_pty.py now 9 cases.
+- TestCultLifeCoherence no longer flags legal career re-entry lines
+  (quit → re-enter → quit again produces identical "离开「X」。" lines;
+  only event lines must be unique).
+- READMEs: event count corrected 340 → 336; `--seed` docs now note
+  `--no-llm` is required for full reproducibility.
+
 ## [0.7.1] - 2026-08-24
 
 ### Fixed (oracle verification round)

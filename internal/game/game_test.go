@@ -324,10 +324,16 @@ func TestCultLifeCoherence(t *testing.T) {
 			t.Fatalf("seed %d: loving-home event inside cult household", seed)
 		}
 		// Count duplicates (same event text twice = incoherent repetition).
+		// Career-transition lines (re-entry after a quit, retirement) may
+		// legitimately repeat — only EVENT lines must be unique.
 		lines := map[string]int{}
 		for _, h := range res.History {
 			key := strings.TrimLeft(h, "[0123456789 ]岁")
 			key = strings.TrimSpace(strings.SplitN(key, "] ", 2)[len(strings.SplitN(key, "] ", 2))-1])
+			if strings.HasPrefix(key, "离开「") || strings.HasPrefix(key, "从「") ||
+				strings.Contains(key, "★ 入行") {
+				continue // career transition, legal to repeat
+			}
 			lines[key]++
 		}
 		for k, n := range lines {
@@ -515,4 +521,46 @@ func TestContextKeyEventsLoadSets(t *testing.T) {
 	if gamble.Context != "gambler" && gamble.Sets != "gambler" {
 		t.Fatalf("gamble_first_win lost its establishing fact")
 	}
+}
+
+// TestPathologicalRateBand is the balance regression gate (v0.7.2): the
+// pathological attractor must stay a minority outcome. Before the v0.7.2
+// calibration (event alphas halved, EnterAt 0.80, amygdala drive 0.65) the
+// measured rate was 83%; the gate pins it well under 50% so a future data
+// or dynamics change that re-saturates the attractor fails loudly.
+func TestPathologicalRateBand(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	careers, _ := LoadCareers()
+	births, _ := LoadBirths()
+	talents, _ := LoadTalents()
+	const runs = 200
+	var pathoN int
+	for seed := int64(1); seed <= runs; seed++ {
+		rng := rand.New(rand.NewSource(seed))
+		draw := DrawBirths(births, 3, rng)
+		tal := DrawTalents(talents, 3, rng)
+		cfg := Config{
+			Seed:      seed,
+			Birth:     &draw[0],
+			Bloodline: &Bloodline{Generation: 1},
+			Talents:   tal,
+			LLM:       Noop,
+			MaxAge:    100,
+		}.WithPoints(5, 5, 5, 5)
+		res, err := Run(discard{}, cfg, evs, careers)
+		if err != nil {
+			t.Fatalf("seed %d: %v", seed, err)
+		}
+		if res.Pathological {
+			pathoN++
+		}
+	}
+	rate := float64(pathoN) / runs * 100
+	if rate >= 50 {
+		t.Fatalf("pathological rate %.1f%% >= 50%% — attractor re-saturated", rate)
+	}
+	t.Logf("pathological rate: %.1f%% (%d/%d)", rate, pathoN, runs)
 }

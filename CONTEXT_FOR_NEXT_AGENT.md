@@ -1,10 +1,10 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-24 03:10
+最后更新: 2026-08-24 14:25
 
 ## 项目当前状态
 
-rebirth v0.7.1 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿**。
+rebirth v0.7.2 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿**。
 
 - 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
 - 仓库: https://github.com/xieguiawu/rebirth（public，master）
@@ -45,6 +45,8 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
 - v0.6.0 信仰三弧线 + 街头故事 II（researcher agent 调研驱动）
 - v0.7.0 momus round-2 的 9 findings 全修（血统腐蚀/context 键漂移/feed 循环丢字节）
 - v0.7.1 oracle 复核补充修复（InheritedTal 播种、orphan \n 幻影提交、carried CSI 吞 Ctrl+C）
+- v0.7.2 病理态平衡标定（83%→28%：事件 alpha 减半 + drive 0.65 + EnterAt 0.80，
+  TestPathologicalRateBand 回归闸门）；LowStreak 死状态移除；PTY 套件 9 用例
 
 ## 两轮 agent 审查的沉淀教训
 
@@ -56,11 +58,11 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
 ## 待办
 
 - [ ] 交互模式完整人工测试（目前仅 PTY 自动化覆盖）
-- [ ] 病理态占比仍偏高（~60% 局），可继续标定 EnterAt 或事件 alpha 分布
+- [x] 病理态占比偏高（~60% 局）——v0.7.2 已标定至 28%（TestPathologicalRateBand 闸门 <50%，防复发）
 - [ ] LLM FateEvent 真实 API 成功路径未验证过（仅 mock 覆盖）
-- [ ] 属性点交互较简陋（一行四数字）；无 interactive-cli-design §4 全键位 PTY 矩阵
+- [ ] 属性点交互较简陋（一行四数字）；PTY 行编辑键位 e2e 已补（case I），全键位矩阵仍可加深
 - [ ] graphify-out 已 gitignore，本地图谱需 `graphify update .` 手动重建
 
 ## 最后更新时间
 
-2026-08-24 03:10
+2026-08-24 14:25

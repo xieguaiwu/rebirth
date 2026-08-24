@@ -9,7 +9,7 @@
    "spr": -1,
    "int": -0.3
   },
-  "trauma_alpha": 0.2,
+  "trauma_alpha": 0.1,
   "requires": [
    "cult"
   ]
@@ -23,7 +23,7 @@
   "delta": {
    "spr": -1.5
   },
-  "trauma_alpha": 0.25,
+  "trauma_alpha": 0.125,
   "requires": [
    "cult"
   ]
@@ -39,7 +39,7 @@
    "int": -0.5,
    "spr": -1
   },
-  "trauma_alpha": 0.3,
+  "trauma_alpha": 0.15,
   "requires": [
    "cult"
   ]
@@ -54,7 +54,7 @@
    "int": -1,
    "chr": -0.3
   },
-  "trauma_alpha": 0.25,
+  "trauma_alpha": 0.125,
   "requires": [
    "cult"
   ]
@@ -68,7 +68,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.45,
+  "trauma_alpha": 0.225,
   "requires": [
    "cult"
   ]
@@ -82,7 +82,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.5,
+  "trauma_alpha": 0.25,
   "requires": [
    "cult"
   ]
@@ -97,7 +97,7 @@
    "str": -1.5,
    "spr": -1.5
   },
-  "trauma_alpha": 0.5,
+  "trauma_alpha": 0.25,
   "requires": [
    "cult"
   ]
@@ -111,7 +111,7 @@
   "delta": {
    "spr": -2.5
   },
-  "trauma_alpha": 0.55,
+  "trauma_alpha": 0.275,
   "requires": [
    "cult"
   ]
@@ -141,7 +141,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.4,
+  "trauma_alpha": 0.2,
   "requires": [
    "cult"
   ]
@@ -156,7 +156,7 @@
    "spr": -1,
    "int": -0.2
   },
-  "trauma_alpha": 0.2,
+  "trauma_alpha": 0.1,
   "requires": [
    "cult"
   ]
@@ -170,7 +170,7 @@
   "delta": {
    "spr": -2.5
   },
-  "trauma_alpha": 0.5,
+  "trauma_alpha": 0.25,
   "requires": [
    "cult"
   ]
@@ -186,7 +186,7 @@
   "delta": {
    "spr": 1
   },
-  "trauma_alpha": 0.3,
+  "trauma_alpha": 0.15,
   "requires": [
    "cult"
   ],
@@ -203,7 +203,7 @@
    "spr": -1
   },
   "therapy_q": 0.1,
-  "trauma_alpha": 0.15,
+  "trauma_alpha": 0.075,
   "requires": [
    "cult"
   ]
@@ -265,7 +265,7 @@
    "spr": -1,
    "int": 0.2
   },
-  "trauma_alpha": 0.2,
+  "trauma_alpha": 0.1,
   "requires": [
    "cult"
   ]
@@ -279,7 +279,7 @@
   "delta": {
    "spr": -1.5
   },
-  "trauma_alpha": 0.3,
+  "trauma_alpha": 0.15,
   "therapy_q": 0.25,
   "requires": [
    "cult"

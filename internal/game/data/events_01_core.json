@@ -20,7 +20,7 @@
    "str": -2,
    "spr": -1
   },
-  "trauma_alpha": 0.15
+  "trauma_alpha": 0.075
  },
  {
   "id": "abandoned",
@@ -34,7 +34,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.4
+  "trauma_alpha": 0.2
  },
  {
   "id": "loved_child",
@@ -109,7 +109,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.35
+  "trauma_alpha": 0.175
  },
  {
   "id": "first_friend",
@@ -135,7 +135,7 @@
    "spr": -1,
    "str": -0.5
   },
-  "trauma_alpha": 0.3
+  "trauma_alpha": 0.15
  },
  {
   "id": "bully_fight_back",
@@ -177,7 +177,7 @@
    "spr": -2,
    "mny": -1
   },
-  "trauma_alpha": 0.45
+  "trauma_alpha": 0.225
  },
  {
   "id": "parent_death",
@@ -188,7 +188,7 @@
   "delta": {
    "spr": -3
   },
-  "trauma_alpha": 0.55
+  "trauma_alpha": 0.275
  },
  {
   "id": "poverty_hunger",
@@ -202,7 +202,7 @@
   "delta": {
    "str": -1
   },
-  "trauma_alpha": 0.2
+  "trauma_alpha": 0.1
  },
  {
   "id": "gaokao_success",
@@ -231,7 +231,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.25
+  "trauma_alpha": 0.125
  },
  {
   "id": "college_life",
@@ -310,7 +310,7 @@
    "spr": -1.5,
    "mny": -1
   },
-  "trauma_alpha": 0.3
+  "trauma_alpha": 0.15
  },
  {
   "id": "childbirth",
@@ -334,7 +334,7 @@
    "mny": -2,
    "spr": -2
   },
-  "trauma_alpha": 0.3
+  "trauma_alpha": 0.15
  },
  {
   "id": "promotion",
@@ -380,7 +380,7 @@
    "mny": -2,
    "spr": -1
   },
-  "trauma_alpha": 0.2
+  "trauma_alpha": 0.1
  },
  {
   "id": "car_accident",
@@ -392,7 +392,7 @@
    "str": -2,
    "spr": -1
   },
-  "trauma_alpha": 0.45
+  "trauma_alpha": 0.225
  },
  {
   "id": "serious_illness",
@@ -404,7 +404,7 @@
    "str": -2.5,
    "spr": -1.5
   },
-  "trauma_alpha": 0.5
+  "trauma_alpha": 0.25
  },
  {
   "id": "therapy_helps",
@@ -439,7 +439,7 @@
   "delta": {
    "spr": -1.5
   },
-  "trauma_alpha": 0.3
+  "trauma_alpha": 0.15
  },
  {
   "id": "old_friend_rescue",
@@ -496,7 +496,7 @@
   "delta": {
    "spr": -2.5
   },
-  "trauma_alpha": 0.45
+  "trauma_alpha": 0.225
  },
  {
   "id": "peaceful_old",
@@ -593,7 +593,7 @@
    "mny": -1.5,
    "spr": -2
   },
-  "trauma_alpha": 0.35
+  "trauma_alpha": 0.175
  },
  {
   "id": "random_kindness",
@@ -700,7 +700,7 @@
    "mny": -2,
    "spr": -2
   },
-  "trauma_alpha": 0.3
+  "trauma_alpha": 0.15
  },
  {
   "id": "windfall_inheritance",
@@ -723,7 +723,7 @@
    "mny": -2,
    "spr": -2
   },
-  "trauma_alpha": 0.45
+  "trauma_alpha": 0.225
  },
  {
   "id": "flood_disaster",
@@ -734,7 +734,7 @@
   "delta": {
    "mny": -1.5
   },
-  "trauma_alpha": 0.35,
+  "trauma_alpha": 0.175,
   "therapy_q": 0.1
  },
  {
@@ -747,7 +747,7 @@
    "spr": -1,
    "str": -0.5
   },
-  "trauma_alpha": 0.4,
+  "trauma_alpha": 0.2,
   "therapy_q": 0.1
  },
  {
@@ -834,7 +834,7 @@
    "spr": -1,
    "mny": -1
   },
-  "trauma_alpha": 0.35,
+  "trauma_alpha": 0.175,
   "sets": "cult"
  },
  {
@@ -847,7 +847,7 @@
    "spr": -3,
    "mny": 1
   },
-  "trauma_alpha": 0.6
+  "trauma_alpha": 0.3
  },
  {
   "id": "prison_serve",
@@ -859,7 +859,7 @@
    "chr": -1,
    "spr": -2
   },
-  "trauma_alpha": 0.4
+  "trauma_alpha": 0.2
  },
  {
   "id": "witness_crime",
@@ -870,7 +870,7 @@
   "delta": {
    "spr": -2
   },
-  "trauma_alpha": 0.45
+  "trauma_alpha": 0.225
  },
  {
   "id": "rescue_stranger",
@@ -883,7 +883,7 @@
    "spr": 1,
    "str": 0.5
   },
-  "trauma_alpha": 0.2,
+  "trauma_alpha": 0.1,
   "therapy_q": 0.1
  },
  {

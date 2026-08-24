@@ -23,7 +23,7 @@ A terminal life-restart simulator in Go, inspired by 人生重开模拟器 and r
 - **Fate autocorrelates.** An AR(1) luck process replaces i.i.d. rolls: good years cluster, disasters cluster, and rags-to-riches arcs need sustained fortune, not one lucky roll.
 - **Trauma echoes across generations.** Each run inherits a sub-additive fraction (`ψ = 0.7`) of the previous life's stress sensitivity. Lineages heal slowly or spiral — your choice of life writes the family's baseline.
 - **The LLM never rolls dice.** All randomness lives in the deterministic core. The optional model layer (OpenRouter `stealth/ox-alpha`) only rewrites narration, proposes schema-validated "fate events" (values clamped), and writes epitaphs. Every output is control-character-sanitized before it touches your terminal.
-- **Content breadth**: 63 talents across four rarity tiers, 26 careers (farmer → CEO → digital nomad → cult leader* → monk), 13 birth backgrounds (slum to dynasty to war zone), ~340 events across 9 shards including street-level stories inspired by Chinese documentary storytellers.
+- **Content breadth**: 63 talents across four rarity tiers, 26 careers (farmer → CEO → digital nomad → cult leader* → monk), 13 birth backgrounds (slum to dynasty to war zone), 336 events across 9 shards including street-level stories inspired by Chinese documentary storytellers.
 
 \* The cult-leader track unlocks only at trauma load ≥ 0.45: you have to have been through the abyss to preach from it.
 
@@ -49,7 +49,7 @@ rebirth --seed 42 --auto --no-llm   # deterministic auto run (great for CI)
 
 | Flag | Effect |
 |---|---|
-| `--seed N` | fixed seed, fully reproducible runs |
+| `--seed N` | fixed seed, fully reproducible runs (combine with `--no-llm`; the optional LLM layer is non-deterministic by nature) |
 | `--auto` | auto-pick every choice |
 | `--no-llm` | disable the LLM layer |
 | `--step` | force manual advance (Enter per year; default on interactive TTY) |

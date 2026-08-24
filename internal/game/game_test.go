@@ -86,8 +86,8 @@ func TestPickEventDeterministic(t *testing.T) {
 	rngB := rand.New(rand.NewSource(42))
 	s := Stats{CHR: 5, INT: 5, STR: 5, MNY: 5, SPR: 5}
 	for age := 0; age < 60; age++ {
-		a := PickEvent(evs, age, s, "", Facts{}, nil, rngA, 0, false)
-		b := PickEvent(evs, age, s, "", Facts{}, nil, rngB, 0, false)
+		a := PickEvent(evs, age, s, "", Facts{}, nil, rngA, 0, false, DefaultTraumaParams(), 0)
+		b := PickEvent(evs, age, s, "", Facts{}, nil, rngB, 0, false, DefaultTraumaParams(), 0)
 		if (a == nil) != (b == nil) {
 			t.Fatalf("age %d: nil mismatch", age)
 		}
@@ -207,7 +207,7 @@ func TestCultEventsGatedBehindFact(t *testing.T) {
 	// Without the cult fact, no cult event may ever fire.
 	for age := 0; age <= 100; age++ {
 		for roll := 0; roll < 50; roll++ {
-			ev := PickEvent(evs, age, s, UnemployedID, Facts{}, nil, rng, 0, false)
+			ev := PickEvent(evs, age, s, UnemployedID, Facts{}, nil, rng, 0, false, DefaultTraumaParams(), 0)
 			if ev != nil && hasRequires(ev, "cult") {
 				t.Fatalf("cult event %s fired without cult fact (age %d)", ev.ID, age)
 			}
@@ -218,7 +218,7 @@ func TestCultEventsGatedBehindFact(t *testing.T) {
 	found := false
 	for age := 0; age <= 18 && !found; age++ {
 		for roll := 0; roll < 200 && !found; roll++ {
-			ev := PickEvent(evs, age, s, UnemployedID, facts, nil, rng, 0, false)
+			ev := PickEvent(evs, age, s, UnemployedID, facts, nil, rng, 0, false, DefaultTraumaParams(), 0)
 			if ev != nil && hasRequires(ev, "cult") {
 				found = true
 			}
@@ -262,7 +262,7 @@ func TestLifetimeNoRepeat(t *testing.T) {
 	used := map[string]bool{}
 	repeat := ""
 	for age := 0; age <= 90; age++ {
-		ev := PickEvent(evs, age, s, UnemployedID, Facts{}, used, rng, 0, false)
+		ev := PickEvent(evs, age, s, UnemployedID, Facts{}, used, rng, 0, false, DefaultTraumaParams(), 0)
 		if ev == nil {
 			continue
 		}
@@ -402,7 +402,7 @@ func TestSuperstitionArcGated(t *testing.T) {
 	// Without the fact, dependence/threat/awakening events never fire.
 	for age := 0; age <= 100; age++ {
 		for roll := 0; roll < 40; roll++ {
-			ev := PickEvent(evs, age, s, UnemployedID, Facts{}, nil, rng, 0, false)
+			ev := PickEvent(evs, age, s, UnemployedID, Facts{}, nil, rng, 0, false, DefaultTraumaParams(), 0)
 			if ev != nil && len(ev.Requires) > 0 && hasRequires(ev, "superstition") {
 				t.Fatalf("superstition-dependent event %s fired without the fact", ev.ID)
 			}

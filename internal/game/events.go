@@ -190,7 +190,11 @@ func NewFacts(b *Birth) Facts {
 // trauma load multiplies negative-event weights when pathological.
 // used excludes already-fired events (lifetime uniqueness); firing an event
 // with a Context field establishes that fact.
-func PickEvent(evs []Event, age int, s Stats, career string, facts Facts, used map[string]bool, rng *rand.Rand, luck float64, pathological bool) *Event {
+//
+// sens (inherited sensitivity, [0,1]) biases sampling for high-s lineages
+// (v0.9.0): trauma events get heavier, healing events lighter — the
+// heritable trait changes what life hands you, not just how you react.
+func PickEvent(evs []Event, age int, s Stats, career string, facts Facts, used map[string]bool, rng *rand.Rand, luck float64, pathological bool, p TraumaParams, sens float64) *Event {
 	type cand struct {
 		idx    int
 		weight float64
@@ -213,6 +217,15 @@ func PickEvent(evs []Event, age int, s Stats, career string, facts Facts, used m
 		}
 		if pathological && !e.Good {
 			w *= 1.8 // pathological attractor biases toward dark events
+		}
+		// v0.9.0: inherited sensitivity biases the event stream itself.
+		// High-s lineages draw more trauma and less healing.
+		sens = Clamp01(sens)
+		if e.TraumaAlpha > 0 {
+			w *= 1 + p.SensTraumaW*sens
+		}
+		if e.TherapyQ > 0 {
+			w *= 1 - p.SensHealW*sens
 		}
 		if w <= 0 {
 			continue

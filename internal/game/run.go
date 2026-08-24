@@ -117,6 +117,14 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	if cfg.Birth != nil {
 		sens += cfg.Birth.SensitivityAdd
 	}
+	// v0.9.0: inherited sensitivity lowers the pathological-entry threshold
+	// itself — the heritable trait is a real bias toward the attractor, not
+	// only a birth-year baseline. Hysteresis pair is guarded so EnterAt can
+	// never drop to/below ExitAt (custom configs may set either).
+	params.EnterAt -= params.SensEnterAt * Clamp01(sens)
+	if params.EnterAt <= params.ExitAt {
+		params.EnterAt = params.ExitAt + 0.05
+	}
 	trauma := NewTraumaState(Clamp01(sens), params)
 
 	fmt.Fprintf(w, "\n════ 第 %d 代 · 种子 %d ════\n", gen, cfg.Seed)
@@ -210,7 +218,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 		}
 
 		// --- event roll ---
-		ev := PickEvent(evs, age, s, careerID, facts, used, rng, luck, trauma.Pathological)
+		ev := PickEvent(evs, age, s, careerID, facts, used, rng, luck, trauma.Pathological, params, Clamp01(sens))
 		trigger := false
 		therapyQ := 0.0
 

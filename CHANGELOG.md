@@ -1,3 +1,52 @@
+## [0.9.0] - 2026-08-24
+
+### Changed (inherited trauma sensitivity now genuinely shapes lives)
+
+Math audit (v0.8.x): sensitivity s only shifted the birth-year baseline
+(m0 = 0.05+0.30s, a0 = AStar+0.35s). With the amygdala relaxing in
+~1.2 years and the extinction term (−0.10/yr) erasing the memory
+baseline in ~2–3 years, plus the entry threshold at m ≥ ~0.85 — far
+above anything s could supply — the heritable trait was decoration:
+24,000 simulated lives showed an identical 35.7% pathological rate for
+s = 0..1, and lineage s-chains were just echoes of each generation's own
+trauma with zero memory. The README's "trauma echoes across
+generations" claim was mathematically false.
+
+v0.9.0 wires s into the dynamics at four points (all per-unit-s,
+configurable via TraumaParams):
+
+- **SensEnterAt = 0.30** — inherited sensitivity lowers the pathological
+  entry threshold itself (EnterAt −= 0.30·s, hysteresis pair guarded so
+  EnterAt never drops to/below ExitAt). At s=1 the threshold falls from
+  0.80 to 0.50: two childhood traumas now suffice to enter the
+  attractor instead of ~9–11.
+- **SensTraumaW = 0.40 / SensHealW = 0.40** — event sampling biases:
+  trauma events get heavier, healing events lighter for high-s
+  lineages (PickEvent gains the params + sensitivity arguments).
+- **SensExtinct = 0.50** — extinction learning slows by (1−0.5·s), so
+  sensitive lineages take roughly twice as long to heal on their own.
+
+Measured pathological rate vs inherited sensitivity (3,000 lives each,
+identical seed streams, only s differs):
+
+| s | patho | mean age |
+|---|---|---|
+| 0.00 | 35.8% | 73.0 |
+| 0.25 | 50.8% | 67.4 |
+| 0.50 | 65.1% | 60.9 |
+| 0.75 | 80.0% | 52.0 |
+| 1.00 | 94.3% | 41.9 |
+
+(v0.8.x: flat 35.7% at every level.) Baseline s=0 is unchanged, so the
+TestPathologicalRateBand balance gate stays green. Lineage chains now
+show the intended dynamics: pathological families self-sustain (s
+saturates ~0.7, ~80% re-pathologizing), one recovered generation breaks
+the chain (s → ~0.01), and renewed trauma re-establishes it.
+
+- New tests: TestGeneticSensitivityMatters (rate must rise strictly
+  with s, top-of-range ≥ 8pp above baseline — the old model measured
+  exactly 0), TestSensitivitySlowsExtinction, TestSensitivityThresholdShift.
+
 ## [0.8.1] - 2026-08-24
 
 ### Fixed (ages 1–2 always blank — "二岁的内容总是不出来")

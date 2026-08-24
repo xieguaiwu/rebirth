@@ -1,10 +1,10 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-24 22:30
+最后更新: 2026-08-24 23:40
 
 ## 项目当前状态
 
-rebirth v0.8.0 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿、真实 LLM 路径已验证（含熔断器实测）**。
+rebirth v0.9.0 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿、真实 LLM 路径已验证、创伤遗传模型已实证生效**。
 
 - 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
 - 仓库: https://github.com/xieguiawu/rebirth（public，master）
@@ -63,6 +63,14 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
   （连续 3 败→本世余下零网络秒回退，成功即重置；Run 打一次性提示）②默认 provider 切 deepseek
   （5.2s 实测、国内直连、免代理）③complete() 弃用无超时的 http.DefaultClient 兑底。实测：死服务器
   下 v0.7.4 90s 只到 12 岁 vs v0.8.0 36s 跑完 45 岁全程；DeepSeek 真机 45 岁全链路无熔断误杀
+- v0.9.0 创伤遗传模型实证修复：数学审计发现旧模型 s 只抬升出生基值
+  （杏仁核弛豫 ~1.2 年 + 灭绝项 2-3 年清零 + 门槛 m≥0.85 远够不着）→
+  24000 局病理率对 s=0..1 恒为 35.7%——**遗传通道断裂，README 描述数学上为假**。
+  修复：s 入动力学四点（SensEnterAt=0.30 降门槛 / SensTraumaW=0.40 创伤事件
+  加权 / SensHealW=0.40 治愈降权 / SensExtinct=0.50 灭绝减半，全部入
+  TraumaParams 可配置）。实测病理率曲线 35.8%(s=0)→94.3%(s=1)；多代链呈现
+  病理家族自持（s 饱和 0.7）→康复断裂（s→0.01）→环境再触发；s=0 基线不变，
+  TestPathologicalRateBand 仍绿。新增 3 测试（单调性+灭绝+阈值移位）
 
 ## 两轮 agent 审查的沉淀教训
 

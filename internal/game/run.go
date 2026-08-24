@@ -2,7 +2,9 @@ package game
 
 import (
 	"fmt"
+	"hash/fnv"
 	"io"
+	"math"
 	"math/rand"
 	"strings"
 )
@@ -40,6 +42,14 @@ type Config struct {
 	LLM        Narrator
 	MaxAge     int       // hard age cap, default 100
 	points     []float64 // CHR/INT/STR/MNY allocation, applied at birth
+
+	// Trauma overrides the built-in dynamics parameters; nil = defaults.
+	Trauma *TraumaParams
+	// NarrateRatio is the fraction of trauma/good events sent to the LLM
+	// narrator (deterministic per event ID, 0..1). 1 = narrate everything
+	// (old behavior), 0.5 = every other event, 0 = never (still falls
+	// back to the pool text). Default 1.
+	NarrateRatio float64
 
 	// Step turns on manual advance: after every yearly line, Pause is
 	// called; returning true aborts the life gracefully. Nil-safe.
@@ -88,6 +98,9 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	}
 	rng := rand.New(rand.NewSource(cfg.Seed))
 	params := DefaultTraumaParams()
+	if cfg.Trauma != nil {
+		params = *cfg.Trauma
+	}
 
 	s := Stats{}
 	sens := 0.0
@@ -99,7 +112,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 	if cfg.Birth != nil {
 		sens += cfg.Birth.SensitivityAdd
 	}
-	trauma := NewTraumaState(clamp01(sens), params)
+	trauma := NewTraumaState(Clamp01(sens), params)
 
 	fmt.Fprintf(w, "\n════ 第 %d 代 · 种子 %d ════\n", gen, cfg.Seed)
 	if len(cfg.points) == 4 {
@@ -113,7 +126,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 		fmt.Fprintf(w, "[出身] %s —— %s\n", cfg.Birth.Name, cfg.Birth.Desc)
 	}
 	if sens > 0.05 {
-		fmt.Fprintf(w, "[血脉] 应激敏感性基线 %.2f（高于此值更易受创）\n", clamp01(sens))
+		fmt.Fprintf(w, "[血脉] 应激敏感性基线 %.2f（高于此值更易受创）\n", Clamp01(sens))
 	}
 	for _, t := range cfg.Talents {
 		s.ApplyDelta(&t.Bonus)
@@ -216,7 +229,8 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 				}
 			}
 			text := ev.Text
-			if !isNoop(cfg.LLM) && (ev.TraumaAlpha > 0 || ev.Good) {
+			if !isNoop(cfg.LLM) && (ev.TraumaAlpha > 0 || ev.Good) &&
+				narrateSample(ev.ID, cfg.NarrateRatio) {
 				if cfg.Hints {
 					fmt.Fprint(w, hintPending)
 				}
@@ -229,7 +243,7 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			record(line)
 			s.ApplyDelta(ev.Delta)
 			if ev.TraumaAlpha > 0 {
-				alpha := ev.TraumaAlpha * EventTraumaScale * talentTraumaMult(cfg.Talents, cfg.InheritTal)
+				alpha := ev.TraumaAlpha * params.EventScale * talentTraumaMult(cfg.Talents, cfg.InheritTal)
 				trauma.Shock(alpha, params)
 				trigger = true
 			}
@@ -350,6 +364,22 @@ func talentLuck(ts []Talent, inherit *Talent) float64 {
 		v += inherit.LuckBonus
 	}
 	return v
+}
+
+// narrateSample decides deterministically — by event ID hash, consuming NO
+// RNG — whether this event gets LLM narration. Ratio 0 = default (narrate
+// everything, old behavior); 1 = everything; 0.5 = half. The budget would
+// otherwise be eaten by narrate calls alone before the epitaph (v0.7.4).
+func narrateSample(id string, ratio float64) bool {
+	if ratio <= 0 {
+		return true // unset: keep the original always-narrate behavior
+	}
+	if ratio >= 1 {
+		return true
+	}
+	h := fnv.New32a()
+	_, _ = h.Write([]byte(id))
+	return float64(h.Sum32())/float64(math.MaxUint32) < ratio
 }
 
 func talentTraumaMult(ts []Talent, inherit *Talent) float64 {

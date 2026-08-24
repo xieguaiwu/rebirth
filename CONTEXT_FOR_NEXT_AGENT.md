@@ -1,14 +1,15 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-24 14:45
+最后更新: 2026-08-24 15:30
 
 ## 项目当前状态
 
-rebirth v0.7.3 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿**。
+rebirth v0.7.4 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿、真实 LLM 路径已验证**。
 
 - 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
 - 仓库: https://github.com/xieguiawu/rebirth（public，master）
 - 数据: 26 职业 / 13 出身 / 63 天赋（四档稀有度+保底）/ **336 事件（9 分片）**
+- 存档: `~/.config/rebirth/bloodline.json`（已清除重开）；配置: `~/.config/rebirth/config.json`（可选，flags > config > 默认）
 
 ## 架构
 
@@ -16,7 +17,8 @@ rebirth v0.7.3 —— Go 终端人生重开模拟器，**可玩、已部署、�
 main.go                 入口：flags、出生/天赋/属性点流程、步进模式接线
 internal/game/
   trauma.go             创伤动力学：漏积分器 m + 杏仁核 a + 前额叶 p 耦合 ODE，
-                        迟滞闩锁 (EnterAt=0.70/ExitAt=0.35)、亚加性跨代遗传 ψ=0.7
+                        迟滞闩锁 (EnterAt=0.80/ExitAt=0.35)、亚加性跨代遗传 ψ=0.7；
+                        Drive/EventScale/阈值全部入 TraumaParams（配置可覆盖）
   events.go             Event(requires/conflict/sets/context)/Cond/Talent(rarity)/
                         Bloodline；加权抽取(AR(1)运势调制)+终身去重+Facts 引擎；
                         LoadEvents 用 DisallowUnknownFields（键漂移启动即炸）
@@ -24,12 +26,14 @@ internal/game/
                         Birth 13 种（sensitivity_add 抬创伤基线）
   run.go                主循环：职业窗口年龄{16,19,23,27,32,38,45}、步进暂停
                         (cfg.Step/Pause/Hints)、死亡判定与年龄分层标签
-internal/llm/llm.go     provider 预设（openrouter/deepseek）：基础 URL + 默认模型 + key 环境变量；
-                        --model/--llm-url 可覆盖；JSON schema 校验+clamp+stripControl+
-                        sanitizeLine 纯文本兜底；max_tokens 已加足（DeepSeek V4 推理先耗预算）
+internal/llm/llm.go     provider 预设（openrouter/deepseek）+ 每局预算（默认 24，墓志铭免预算）+
+                        分级超时(12/18s) + JSON schema 校验 + clamp + stripControl + 纯文本兜底
+internal/config/config.go 可选配置文件 ~/.config/rebirth/config.json：provider/model/llm_url/llm_calls/
+                        narrate_ratio/max_age/seed/step/hints + trauma 动力学覆盖（enter_at/exit_at/drive/
+                        event_trauma_scale）；未知键 DisallowUnknownFields 大声失败；坏文件 WARN 回退默认
 internal/tui/input.go   零依赖 rune 安全行编辑器：feed() 纯函数解析，
                         rawCarry/carrySkipNL 跨调用状态，ErrCancelled 传播
-scripts/test_pty.py     PTY 端到端套件（8 用例，stdlib only）
+scripts/test_pty.py     PTY 端到端套件（9 用例，stdlib only）
 ```
 
 ## 事实引擎（连贯性核心）
@@ -49,6 +53,9 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
   TestPathologicalRateBand 回归闸门）；LowStreak 死状态移除；PTY 套件 9 用例
 - v0.7.3 平衡实现从数据层换为代码层（EventTraumaScale=0.5，数据全部还原，500 局实测不变
   28.2%）；LLM 层 provider 化（openrouter/deepseek 预设 + --llm-url 覆盖 + deepseek-v4-flash）
+- v0.7.4 配置文件化（internal/config，flags>config>默认）；trauma 动力学全部可调（Drive/EventScale
+  入 TraumaParams）；LLM 预算重构（10→24、墓志铭免预算、narrate 按事件 ID 确定性采样 0.5）；
+  **DeepSeek 真实 API 全链路首次验证成功**（fate+narrate+epitaph）
 
 ## 两轮 agent 审查的沉淀教训
 
@@ -61,10 +68,11 @@ famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保�
 
 - [ ] 交互模式完整人工测试（目前仅 PTY 自动化覆盖）
 - [x] 病理态占比偏高（~60% 局）——v0.7.2 已标定至 28%（TestPathologicalRateBand 闸门 <50%，防复发）
-- [ ] LLM FateEvent 真实 API 成功路径未验证过（仅 mock 覆盖）——**deepseek provider 已接好，可用真实 DEEPSEEK_API_KEY 验证**
+- [x] LLM FateEvent 真实 API 成功路径——v0.7.4 用 DEEPSEEK_API_KEY 实测通过（墓志铭/命运/润色均真实生成）
+- [ ] 安卓移植架构方案（docs/plans/）——ultrabrain 调研中
 - [ ] 属性点交互较简陋（一行四数字）；PTY 行编辑键位 e2e 已补（case I），全键位矩阵仍可加深
 - [ ] graphify-out 已 gitignore，本地图谱需 `graphify update .` 手动重建
 
 ## 最后更新时间
 
-2026-08-24 14:45
+2026-08-24 15:30

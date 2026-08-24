@@ -62,6 +62,40 @@ Set `OPENROUTER_API_KEY` (default provider), `DEEPSEEK_API_KEY` (with
 Your bloodline save lives in `~/.config/rebirth/bloodline.json`; delete it
 to start a fresh lineage.
 
+### Optional config file
+
+`~/.config/rebirth/config.json` persists your defaults — command-line
+flags always win, then this file, then built-ins. Every field is optional:
+
+```json
+{
+  "provider": "openrouter",
+  "model": "",
+  "llm_url": "",
+  "llm_calls": 24,
+  "narrate_ratio": 0.5,
+  "max_age": 100,
+  "seed": 0,
+  "step": false,
+  "hints": true,
+  "trauma": {
+    "enter_at": 0.80,
+    "exit_at": 0.35,
+    "drive": 0.65,
+    "event_trauma_scale": 0.5
+  }
+}
+```
+
+- `llm_calls`: per-life LLM call budget (narration + fate events). The
+  epitaph is exempt so it is never starved.
+- `narrate_ratio`: fraction of trauma/good events sent to the narrator
+  (0.5 = half, deterministic per event ID).
+- `trauma.*`: the pathological-attractor dynamics overrides — the
+  v0.7.2-calibrated defaults (pathological rate ~28%) are listed; tune
+  `enter_at` up for rarer trauma, `drive` down for gentler lives.
+- Unknown keys are rejected with a warning (typos fail loudly).
+
 ## Project layout
 
 ```

@@ -14,12 +14,13 @@ import (
 	"strings"
 	"time"
 
+	"rebirth/internal/config"
 	"rebirth/internal/game"
 	"rebirth/internal/llm"
 	"rebirth/internal/tui"
 )
 
-var version = "0.7.3"
+var version = "0.7.4"
 
 const pointsTotal = 20
 
@@ -46,8 +47,72 @@ func main() {
 		fmt.Println("rebirth", version)
 		return
 	}
-	if *seed == 0 {
-		*seed = time.Now().UnixNano() % 1_000_000_007
+
+	// Optional player config: flags > config file > built-in defaults.
+	cfgPath := config.DefaultPath()
+	cfgFile, cfgErr := config.Load(cfgPath)
+	if cfgErr != nil {
+		fmt.Printf("[WARN] 配置文件 %s 解析失败（%v），使用默认设置。\n", cfgPath, cfgErr)
+		cfgFile = &config.Config{}
+	}
+	flagSet := map[string]bool{}
+	flag.Visit(func(f *flag.Flag) { flagSet[f.Name] = true })
+
+	prov := *provider
+	if !flagSet["provider"] && cfgFile.Provider != nil {
+		prov = *cfgFile.Provider
+	}
+	mdl := *model
+	if !flagSet["model"] && cfgFile.Model != nil {
+		mdl = *cfgFile.Model
+	}
+	url := *llmURL
+	if !flagSet["llm-url"] && cfgFile.BaseURL != nil {
+		url = *cfgFile.BaseURL
+	}
+	ma := *maxAge
+	if !flagSet["max-age"] && cfgFile.MaxAge != nil {
+		ma = *cfgFile.MaxAge
+	}
+	if ma <= 0 {
+		ma = 100
+	}
+	seedV := *seed
+	if !flagSet["seed"] && cfgFile.Seed != nil {
+		seedV = *cfgFile.Seed
+	}
+	if seedV == 0 {
+		seedV = time.Now().UnixNano() % 1_000_000_007
+	}
+	maxCalls := llm.DefaultCallBudget
+	if cfgFile.MaxCalls != nil && *cfgFile.MaxCalls > 0 {
+		maxCalls = *cfgFile.MaxCalls
+	}
+	narrateRatio := 0.5 // default: half the trauma/good events get LLM polish
+	if cfgFile.Narrate != nil {
+		narrateRatio = *cfgFile.Narrate
+		if narrateRatio < 0 || narrateRatio > 1 {
+			fmt.Printf("[WARN] narrate_ratio %.2f 超出 [0,1]，使用 0.5。\n", narrateRatio)
+			narrateRatio = 0.5
+		}
+	}
+	// Dynamics overrides (balance calibration); nil keeps game defaults.
+	var traumaOverride *game.TraumaParams
+	if cfgFile.Trauma != nil {
+		tp := game.DefaultTraumaParams()
+		if cfgFile.Trauma.EnterAt != nil {
+			tp.EnterAt = game.Clamp01(*cfgFile.Trauma.EnterAt)
+		}
+		if cfgFile.Trauma.ExitAt != nil {
+			tp.ExitAt = game.Clamp01(*cfgFile.Trauma.ExitAt)
+		}
+		if cfgFile.Trauma.Drive != nil {
+			tp.Drive = game.Clamp01(*cfgFile.Trauma.Drive)
+		}
+		if cfgFile.Trauma.EventTraumaScale != nil {
+			tp.EventScale = game.Clamp01(*cfgFile.Trauma.EventTraumaScale)
+		}
+		traumaOverride = &tp
 	}
 
 	evs, err := game.LoadEvents()
@@ -75,8 +140,8 @@ func main() {
 		fmt.Println("[WARN] 血统存档损坏，从第 1 代开始。")
 	}
 
-	rng := rand.New(rand.NewSource(*seed))
-	narrator := buildNarrator(*noLLM, *provider, *model, *llmURL)
+	rng := rand.New(rand.NewSource(seedV))
+	narrator := buildNarrator(*noLLM, prov, mdl, url, maxCalls)
 
 	birth := pickBirth(births, rng, *auto)
 	talentsPick := pickTalents(talents, rng, *auto)
@@ -87,19 +152,28 @@ func main() {
 	// generation).
 	curGen := bloodline.Generation + 1
 	cfg := game.Config{
-		Seed:       *seed,
-		Birth:      birth,
-		Bloodline:  &game.Bloodline{Generation: curGen, Sensitivity: bloodline.Sensitivity, InheritedTal: bloodline.InheritedTal},
-		Talents:    talentsPick,
-		InheritTal: inheritTalent(talents, bloodline),
-		LLM:        narrator,
-		MaxAge:     *maxAge,
+		Seed:         seedV,
+		Birth:        birth,
+		Bloodline:    &game.Bloodline{Generation: curGen, Sensitivity: bloodline.Sensitivity, InheritedTal: bloodline.InheritedTal},
+		Talents:      talentsPick,
+		InheritTal:   inheritTalent(talents, bloodline),
+		LLM:          narrator,
+		MaxAge:       ma,
+		Trauma:       traumaOverride,
+		NarrateRatio: narrateRatio,
 	}.WithPoints(stats[0], stats[1], stats[2], stats[3])
 
 	// Step mode: opt-in via --step, on by default on interactive terminals,
-	// always off in auto mode.
-	cfg.Step = !*auto && (tui.IsTTY() || *step)
+	// always off in auto mode; config may force either direction.
+	stepOn := *step
+	if !flagSet["step"] && cfgFile.Step != nil {
+		stepOn = *cfgFile.Step
+	}
+	cfg.Step = !*auto && (tui.IsTTY() || stepOn)
 	cfg.Hints = tui.IsStdoutTTY()
+	if cfgFile.Hints != nil {
+		cfg.Hints = *cfgFile.Hints
+	}
 	if cfg.Step {
 		cfg.Pause = func() bool {
 			fmt.Print("\n\033[2m回车=下一年 · q=退出\033[0m ")
@@ -147,7 +221,7 @@ func main() {
 	}
 }
 
-func buildNarrator(disabled bool, providerName, model, url string) game.Narrator {
+func buildNarrator(disabled bool, providerName, model, url string, maxCalls int) game.Narrator {
 	p, ok := llm.ResolveProvider(providerName)
 	if !ok {
 		p, _ = llm.ResolveProvider("openrouter")
@@ -174,7 +248,9 @@ func buildNarrator(disabled bool, providerName, model, url string) game.Narrator
 	c := llm.New(key, model)
 	c.BaseURL = url
 	fmt.Printf("[OK] 叙事层已启用：%s（%s）\n", model, p.Name)
-	return llm.NewNarrator(c)
+	n := llm.NewNarrator(c)
+	n.MaxCalls = maxCalls
+	return n
 }
 
 func pickBirth(bs []game.Birth, rng *rand.Rand, auto bool) *game.Birth {

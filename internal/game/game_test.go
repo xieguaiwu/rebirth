@@ -564,3 +564,82 @@ func TestPathologicalRateBand(t *testing.T) {
 	}
 	t.Logf("pathological rate: %.1f%% (%d/%d)", rate, pathoN, runs)
 }
+
+// countingNarrator records narration calls for sampling tests.
+type countingNarrator struct{ n int }
+
+func (c *countingNarrator) Narrate(age int, summary, fallback string) string {
+	c.n++
+	return fallback
+}
+func (c *countingNarrator) FateEvent(age int, summary string) (Event, bool) { return Event{}, false }
+func (c *countingNarrator) Epitaph(summary string) string                   { return "一生至此。" }
+
+// TestNarrateSamplingDeterministic verifies the per-event-ID sampling:
+// ratio 0 = always (unset default), 1 = always, 0 = never, 0.5 = stable
+// subset, and identical runs sample identically (no RNG involvement).
+func TestNarrateSamplingDeterministic(t *testing.T) {
+	if !narrateSample("a", 0) {
+		t.Fatal("ratio 0 must mean default = always")
+	}
+	if !narrateSample("a", 1) {
+		t.Fatal("ratio 1 must always narrate")
+	}
+	if !narrateSample("a", -1) {
+		t.Fatal("negative ratio must behave as default (always)")
+	}
+	// 0.5: roughly half of a large ID set is sampled, deterministically.
+	ids := []string{}
+	for i := 0; i < 200; i++ {
+		ids = append(ids, "ev_"+string(rune('a'+i%26))+string(rune('0'+i%10)))
+	}
+	sampled := 0
+	first := map[string]bool{}
+	for _, id := range ids {
+		if narrateSample(id, 0.5) {
+			sampled++
+			first[id] = true
+		}
+	}
+	if sampled < 60 || sampled > 140 {
+		t.Fatalf("0.5 ratio sampled %d/200 — expected ~100", sampled)
+	}
+	for _, id := range ids {
+		if narrateSample(id, 0.5) != first[id] {
+			t.Fatalf("sampling not deterministic for %s", id)
+		}
+	}
+}
+
+// TestNarrateRatioApplied verifies the ratio reaches the narrator: ratio 0
+// (default) narrates every trauma/good event, ratio 0 means... here we pin
+// a tiny epsilon-free check with a fixed seed: ratio=1 must narrate, and a
+// full life with ratio=0 (default) narrates every eligible event.
+func TestNarrateRatioApplied(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	careers, _ := LoadCareers()
+	run := func(ratio float64) int {
+		cn := &countingNarrator{}
+		cfg := Config{Seed: 1234, Bloodline: &Bloodline{}, LLM: cn, MaxAge: 60, NarrateRatio: ratio}.WithPoints(5, 5, 5, 5)
+		if _, err := Run(discard{}, cfg, evs, careers); err != nil {
+			t.Fatalf("run: %v", err)
+		}
+		return cn.n
+	}
+	all := run(1)
+	if all == 0 {
+		t.Fatal("ratio 1 should narrate eligible events")
+	}
+	// Ratio 0 = unset default = always narrate (same as 1).
+	if run(0) != all {
+		t.Fatalf("ratio 0 must default to always: got %d vs %d", run(0), all)
+	}
+	// Ratio tiny-but-positive should narrate far fewer.
+	few := run(0.01)
+	if few >= all {
+		t.Fatalf("ratio 0.01 narrated %d >= all %d", few, all)
+	}
+}

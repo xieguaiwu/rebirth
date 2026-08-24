@@ -61,6 +61,37 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
 `--provider deepseek`）或通用 `LLM_API_KEY` 启用叙事层。血统存档位于
 `~/.config/rebirth/bloodline.json`；删除它即可开启新家族。
 
+### 可选配置文件
+
+`~/.config/rebirth/config.json` 持久化你的默认设置——优先级：命令行参数
+> 配置文件 > 内置默认。所有字段均可选：
+
+```json
+{
+  "provider": "openrouter",
+  "model": "",
+  "llm_url": "",
+  "llm_calls": 24,
+  "narrate_ratio": 0.5,
+  "max_age": 100,
+  "seed": 0,
+  "step": false,
+  "hints": true,
+  "trauma": {
+    "enter_at": 0.80,
+    "exit_at": 0.35,
+    "drive": 0.65,
+    "event_trauma_scale": 0.5
+  }
+}
+```
+
+- `llm_calls`：每局 LLM 调用预算（叙事润色+命运事件）。墓志铭不计入，永不被饿死。
+- `narrate_ratio`：创伤/正面事件被 LLM 润色的比例（0.5=一半，按事件 ID 确定性采样）。
+- `trauma.*`：病理吸引子动力学参数覆盖——v0.7.2 标定的默认值（病理率 ~28%）已列出；
+  想更少创伤可调高 `enter_at`，想更温和的人生可调低 `drive`。
+- 未知键会启动时 WARN 拒绝（拼写错误大声失败，不静默）。
+
 ## 项目结构
 
 ```

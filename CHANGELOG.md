@@ -1,3 +1,27 @@
+## [0.7.4] - 2026-08-24
+
+### Added (player config file + LLM budget overhaul)
+- **Optional config file** `~/.config/rebirth/config.json` (new package
+  `internal/config`): provider/model/llm_url/llm_calls/narrate_ratio/
+  max_age/seed/step/hints + `trauma` dynamics overrides (enter_at,
+  exit_at, drive, event_trauma_scale). Precedence: flags > config >
+  defaults (flag.Visit tracks explicit flags). Unknown keys fail loudly
+  (DisallowUnknownFields); broken files WARN and fall back to defaults.
+- **Trauma dynamics are now tunable at runtime**: Drive and EventScale
+  moved from hard-coded constants into TraumaParams (defaults unchanged:
+  0.65 / 0.5); clamp01 exported as Clamp01 for config validation.
+- **LLM budget overhaul** (real-API finding): the 10-call budget was
+  exhausted by narration alone before age 45 — every later event and the
+  epitaph silently fell back. Default budget 10 → 24, epitaph is exempt
+  from the budget (one call per life, never starved), and narration is
+  sampled deterministically per event ID (narrate_ratio, default 0.5).
+- **DeepSeek real-API path verified end to end** (first time): with
+  DEEPSEEK_API_KEY + --provider deepseek, fate events inject, narration
+  samples, epitaph returns a real model line ("最俊的农夫，种了一生沉默").
+- Tests: config package (missing file / full parse / unknown-key rejection
+  / partial trauma override), narrate sampling determinism + ratio reach,
+  custom base-URL override.
+
 ## [0.7.3] - 2026-08-24
 
 ### Changed (implementation swap + LLM provider settings)

@@ -155,15 +155,19 @@ func truncate(s string, n int) string {
 
 // Narrator implements game.Narrator on top of the client. A per-run call
 // budget keeps long lives from turning into API marathons; once exhausted,
-// every method fails soft back to deterministic text.
+// every narration method fails soft back to deterministic text. The
+// epitaph is exempt — one call per life, and it must never be starved by
+// earlier narration (v0.7.4).
 type Narrator struct {
 	C        *Client
 	calls    int
 	MaxCalls int
 }
 
-// DefaultCallBudget caps LLM invocations for one simulated life.
-const DefaultCallBudget = 10
+// DefaultCallBudget caps LLM narration+fate calls for one simulated life.
+// 24 = ~8 fate events (every decade to 90) + ~16 narrated events; the
+// narrate path additionally samples by event ID (game.NarrateRatio).
+const DefaultCallBudget = 24
 
 // NewNarrator wraps a client; pass game.Noop when key is missing.
 func NewNarrator(c *Client) *Narrator { return &Narrator{C: c, MaxCalls: DefaultCallBudget} }
@@ -259,13 +263,15 @@ trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
 	return ev, true
 }
 
-// Epitaph writes the closing line of a finished life.
+// Epitaph writes the closing line of a finished life. It is exempt from
+// the shared budget: one call per life, guaranteed (see Narrator).
 func (n *Narrator) Epitaph(summary string) string {
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
-	if !n.budget() {
+	if n.C == nil {
 		return "一生至此。"
 	}
+	n.calls++ // still counted for observability, never blocks
 	out, err := n.C.complete(ctx,
 		"你是墓志铭作者。为这段人生写一句不超过30字的墓志铭，克制而有余味。只输出JSON：{\"text\":\"...\"}",
 		summary, 400)

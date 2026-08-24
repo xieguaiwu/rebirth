@@ -1,0 +1,20 @@
+rebirth is a life-restart simulator with a computational-psychiatry model of traumatic memory.
+
+Features:
+- Trauma as a dynamical system: memory trace, amygdala and prefrontal control coupled year by year
+- Hysteresis: entering a pathological attractor requires a higher load than leaving it
+- Heritable stress sensitivity: each life shapes the next generation
+- 339 hand-written events, 63 talents, 26 careers, 13 birth backgrounds
+- Bilingual: Chinese and English content
+- Deterministic seeds: share a seed and replay the exact same life
+- Fully offline playable
+
+Optional AI narration:
+- Configure your own LLM providers (DeepSeek, OpenRouter, or any OpenAI-compatible endpoint)
+- Multiple providers can be added; they are tried in order as fallbacks
+- No provider configured = completely offline, no network requests
+- API keys are stored encrypted in the Android Keystore and never leave the device
+
+Content advisory: this game contains mature themes (trauma, mental illness, sex work, cult abuse). Fictional, written for adults, text only.
+
+Privacy: no ads, no trackers, no telemetry. The only permission used is INTERNET, and only when you enable AI narration.

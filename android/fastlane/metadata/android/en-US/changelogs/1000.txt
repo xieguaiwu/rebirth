@@ -1,0 +1,1 @@
+First release: full offline life simulator with bilingual content (Chinese/English), deterministic seeds, heritable trauma sensitivity, and optional multi-provider AI narration (DeepSeek / OpenRouter / custom OpenAI-compatible endpoints).

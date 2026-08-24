@@ -5,6 +5,17 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+import java.util.Properties
+
+// Optional local signing for side-loading and GitHub Release artifacts.
+// F-Droid rebuilds with its own signature (or the Verified route uses the
+// AllowedAPKSigningKeys below); keystore.properties is never committed.
+val ksFile = rootProject.file("keystore.properties")
+val ksProps = Properties()
+if (ksFile.exists()) {
+    ksFile.inputStream().use { ksProps.load(it) }
+}
+
 android {
     namespace = "com.xieguiawu.rebirth"
     compileSdk = 35
@@ -17,9 +28,23 @@ android {
         versionName = "0.10.0"
     }
 
+    signingConfigs {
+        if (ksFile.exists()) {
+            create("release") {
+                storeFile = file(ksProps["storeFile"] as String)
+                storePassword = ksProps["storePassword"] as String
+                keyAlias = ksProps["keyAlias"] as String
+                keyPassword = ksProps["keyPassword"] as String
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (ksFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

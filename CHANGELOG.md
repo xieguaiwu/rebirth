@@ -1,3 +1,32 @@
+## [0.10.0] - 2026-08-24
+
+### Added: Android client, resumable session, bilingual content, multi-provider LLM
+
+- **Session refactor** (`internal/game/session.go`): `Run`'s loop body is
+  now a resumable `Session` stepper (`NewSession`/`Advance`/`DeathCheck`/
+  `Finish`). The CLI output is byte-identical to v0.9.0 — locked by
+  `TestRunSessionByteIdentical` and a golden history hash
+  (`TestSessionDeterministicGolden`).
+- **Mobile daemon** (`cmd/mobile`): JSON-lines daemon implementing the
+  frozen protocol in `docs/mobile-protocol.md` (hello / bloodline_get /
+  draw_births / draw_talents / new_session / next / checkpoint_get /
+  resume_session / shutdown). Yearly atomic checkpoints enable
+  deterministic replay recovery; death auto-saves the lineage.
+- **Android app** (`android/`): Compose app with five screens (Home,
+  Create, Timeline, Trauma panel, Settings), a core-process bridge that
+  execs the Go engine, Keystore-encrypted API keys, Chinese/English UI +
+  content, and full F-Droid preparation (fastlane metadata, pinned
+  toolchain fetch, reproducible-build verification — two clean builds
+  produce identical APK hashes).
+- **Multi-provider LLM** (`internal/llm`): `ChainNarrator` tries player-
+  configured providers in order with per-provider circuit breakers and a
+  shared call budget; zero providers = fully offline. Narrator prompts
+  are language-aware (zh/en).
+- **Bilingual content**: English dataset (`internal/game/data_en/`,
+  339 events / 26 careers / 13 births / 63 talents, same IDs and numeric
+  fields, fact keys verified identical) + `--lang` flag on the CLI.
+- Version bump to 0.10.0 (single tag will cover both CLI and Android).
+
 ## [0.9.0] - 2026-08-24
 
 ### Changed (inherited trauma sensitivity now genuinely shapes lives)

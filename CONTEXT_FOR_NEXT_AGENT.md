@@ -1,95 +1,80 @@
 # CONTEXT_FOR_NEXT_AGENT.md
 
-最后更新: 2026-08-24 23:40
+最后更新: 2026-08-25 00:10
 
 ## 项目当前状态
 
-rebirth v0.9.0 —— Go 终端人生重开模拟器，**可玩、已部署、公开仓库、全部测试绿、真实 LLM 路径已验证、创伤遗传模型已实证生效**。
+rebirth v0.10.0 —— Go 终端人生重开模拟器 + **安卓客户端（android/ 子目录）**，可玩、可构建、全部测试绿、确定性跨端锁定、F-Droid 发布材料就绪。
 
-- 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
-- 仓库: https://github.com/xieguiawu/rebirth（public，master）
-- 数据: 26 职业 / 13 出身 / 63 天赋（四档稀有度+保底）/ **339 事件（9 分片）**
-- 存档: `~/.config/rebirth/bloodline.json`（已清除重开）；配置: `~/.config/rebirth/config.json`（可选，flags > config > 默认）
+- CLI 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
+- 仓库: https://github.com/xieguaiwu/rebirth（public，master，**未打 tag v0.10.0**）
+- 数据: 26 职业 / 13 出身 / 63 天赋 / 339 事件（9 分片）× **双语（data/ 中文 + data_en/ 英文）**
+- 安卓: `android/` 子目录（单仓单 tag 双端同版），arm64-only APK ~9MB
 
-## 架构
+## 架构（v0.10.0 新增）
 
 ```
-main.go                 入口：flags、出生/天赋/属性点流程、步进模式接线
+main.go                 入口：flags、出生/天赋/属性点流程、步进模式接线、--lang
 internal/game/
-  trauma.go             创伤动力学：漏积分器 m + 杏仁核 a + 前额叶 p 耦合 ODE，
-                        迟滞闩锁 (EnterAt=0.80/ExitAt=0.35)、亚加性跨代遗传 ψ=0.7；
-                        Drive/EventScale/阈值全部入 TraumaParams（配置可覆盖）
-  events.go             Event(requires/conflict/sets/context)/Cond/Talent(rarity)/
-                        Bloodline；加权抽取(AR(1)运势调制)+终身去重+Facts 引擎；
-                        LoadEvents 用 DisallowUnknownFields（键漂移启动即炸）
-  career.go             Career 26 条（含 requires_trauma_min 门控的邪教教主）+
-                        Birth 13 种（sensitivity_add 抬创伤基线）
-  run.go                主循环：职业窗口年龄{16,19,23,27,32,38,45}、步进暂停
-                        (cfg.Step/Pause/Hints)、死亡判定与年龄分层标签
-internal/llm/llm.go     provider 预设（deepseek 默认/openrouter）+ 每局预算（默认 24，墓志铭免预算）+
-                        分级超时(12/18s) + **熔断器（连续 3 败→本世秒回本地，Broken() 接口）** +
-                        JSON schema 校验 + clamp + stripControl + 纯文本兜底
-internal/config/config.go 可选配置文件 ~/.config/rebirth/config.json：provider/model/llm_url/llm_calls/
-                        narrate_ratio/max_age/seed/step/hints + trauma 动力学覆盖（enter_at/exit_at/drive/
-                        event_trauma_scale）；未知键 DisallowUnknownFields 大声失败；坏文件 WARN 回退默认
-internal/tui/input.go   零依赖 rune 安全行编辑器：feed() 纯函数解析，
-                        rawCarry/carrySkipNL 跨调用状态，ErrCancelled 传播
-scripts/test_pty.py     PTY 端到端套件（9 用例，stdlib only）
+  session.go            ★ Session 可恢复步进器：NewSession/Advance/DeathCheck/
+                        Finish/Result；Run 重写为薄循环（输出逐字节一致，
+                        TestRunSessionByteIdentical + Golden 哈希锁定）
+  run.go                薄驱动 + Narrator 接口/Noop/Config/Result
+  events.go             双语 embed（data/ + data_en/），LoadEventsLang(lang)
+  career.go             LoadCareersLang/LoadBirthsLang（同 schema）
+  trauma.go             创伤动力学（未动）
+internal/llm/
+  llm.go                Narrator + Lang 字段（提示词 zh/en）+ ChainNarrator
+                        （有序 failover、每 provider 独立熔断、共享预算、
+                        墓志铭免预算）
+cmd/mobile/main.go      ★ JSON-lines daemon（契约 docs/mobile-protocol.md）：
+                        hello/bloodline_get/draw_births/draw_talents/new_session/
+                        next/checkpoint_get/resume_session/shutdown；--dir 参数；
+                        每 year 原子写 session.json（cfg+llm_cache，无 key）；
+                        死亡自动存 bloodline.json；重放恢复确定性（e2e 测试锁定）
+android/                ★ 单 Activity Compose 工程（com.xieguaiwu.rebirth）
+  app/src/main/java/…/core/   CoreProcess（exec .so + JSON-lines + 30s 超时 +
+                              崩溃重启 + stderr 脱敏）、Protocol.kt（协议模型）、
+                              FakeCore（测试注入）
+  …/ui/                 Home/Create/Timeline/TraumaPanel/Settings 五屏
+  …/security/           Keystore AES-GCM（key 永不离机）+ InMemory 测试实现
+  app/src/main/jniLibs/arm64-v8a/librebirth_core.so（构建产物，gitignore）
+  scripts/              fetch-go.sh（固定 Go 工具链）/ build-core.sh（arm64 纯
+                        Go 交叉编译）/ verify-reproducible.sh（双构建 SHA 比对）
+  fastlane/             双语元数据（en-US/zh-CN，截图是占位待替换）
+docs/mobile-protocol.md ★ 冻结协议契约 v1
+docs/fdroiddata/com.xieguaiwu.rebirth.yml   fdroiddata 草稿
 ```
 
-## 事实引擎（连贯性核心）
+## 关键决策与已验证事实
 
-事件三字段：`requires`(事实必须为真) / `conflict`(事实必须为假) / `sets` 或
-`context`(触发时建立事实，`!fact` 语法清除)。出身经 NewFacts 预设（cult_family→"cult" 等）。
-弧线：cult 邪教（含第二代童年分片）、faith 正信、superstition 迷信（黑暗镜像 scammer）、
-famous 流量、gambler 赌球、park_risk 妙瓦底。TestFactReachability 保证所有引用的事实可产出。
+1. **ABI 只出 arm64-v8a**：Go 1.25 实测（官方 + Fedora 工具链）android/amd64、arm、386 全部要求 cgo 外部链接；arm64 是唯一纯 Go 目标。cgo + NDK 会破坏 F-Droid 可复现性 → 放弃 32 位/x86_64。
+2. **可复现性已实测**：verify-reproducible.sh 双构建 SHA-256 一致（20c07627...）。
+3. **checkpoint 重放 off-by-one 教训**：checkpoint 在 Advance(age N) 之后保存 → resume 重放必须 `for Age <= cp.Age`（含 N），否则 N 岁会被处理两次（e2e 测试抓出）。
+4. **llm 测试服务器格式坑**：client 解析 OpenAI 格式 `{choices:[{message:{content}}]}`，测试 fake server 直接返回 `{"text":...}` 会让所有调用静默失败 → e2e fakeServer 已按 OpenAI 格式。
+5. **根 .gitignore 裸模式 `rebirth` 曾静默忽略 Kotlin 包目录**（com/xieguaiwu/rebirth/）——已锚定为 `/rebirth`。教训：gitignore 模式要锚定。
+6. **android/386/arm 需要 cgo**（Go 1.25）→ 见决策 1。
+7. 双语数据事实键（requires/conflict/sets/context）已用脚本验证 zh==en（339 事件零漂移）。
 
-## 版本史要点
+## 版本史要点（v0.10.0）
 
-- v0.5.0 步进模式 / 天赋稀有度 / 终身事件唯一性
-- v0.6.0 信仰三弧线 + 街头故事 II（researcher agent 调研驱动）
-- v0.7.0 momus round-2 的 9 findings 全修（血统腐蚀/context 键漂移/feed 循环丢字节）
-- v0.7.1 oracle 复核补充修复（InheritedTal 播种、orphan \n 幻影提交、carried CSI 吞 Ctrl+C）
-- v0.7.2 病理态平衡标定（83%→28%：事件 alpha 减半 + drive 0.65 + EnterAt 0.80，
-  TestPathologicalRateBand 回归闸门）；LowStreak 死状态移除；PTY 套件 9 用例
-- v0.7.3 平衡实现从数据层换为代码层（EventTraumaScale=0.5，数据全部还原，500 局实测不变
-  28.2%）；LLM 层 provider 化（openrouter/deepseek 预设 + --llm-url 覆盖 + deepseek-v4-flash）
-- v0.7.4 配置文件化（internal/config，flags>config>默认）；trauma 动力学全部可调（Drive/EventScale
-  入 TraumaParams）；LLM 预算重构（10→24、墓志铭免预算、narrate 按事件 ID 确定性采样 0.5）；
-  **DeepSeek 真实 API 全链路首次验证成功**（fate+narrate+epitaph）
-- v0.8.0 「命运编织中卡死」修复：根因 = OpenRouter 账户 402 无额度（付费模型全拒）+
-  唯一可用的免费 stealth/ox-alpha 实测延迟 15.2s（叙事）/39.5s（命运）> 游戏 12/18s 超时 →
-  每次调用烧满超时后必然失败且无熔断，每采一个事件冻 ~12s 一路爬行。修复：①Narrator 熔断器
-  （连续 3 败→本世余下零网络秒回退，成功即重置；Run 打一次性提示）②默认 provider 切 deepseek
-  （5.2s 实测、国内直连、免代理）③complete() 弃用无超时的 http.DefaultClient 兑底。实测：死服务器
-  下 v0.7.4 90s 只到 12 岁 vs v0.8.0 36s 跑完 45 岁全程；DeepSeek 真机 45 岁全链路无熔断误杀
-- v0.9.0 创伤遗传模型实证修复：数学审计发现旧模型 s 只抬升出生基值
-  （杏仁核弛豫 ~1.2 年 + 灭绝项 2-3 年清零 + 门槛 m≥0.85 远够不着）→
-  24000 局病理率对 s=0..1 恒为 35.7%——**遗传通道断裂，README 描述数学上为假**。
-  修复：s 入动力学四点（SensEnterAt=0.30 降门槛 / SensTraumaW=0.40 创伤事件
-  加权 / SensHealW=0.40 治愈降权 / SensExtinct=0.50 灭绝减半，全部入
-  TraumaParams 可配置）。实测病理率曲线 35.8%(s=0)→94.3%(s=1)；多代链呈现
-  病理家族自持（s 饱和 0.7）→康复断裂（s→0.01）→环境再触发；s=0 基线不变，
-  TestPathologicalRateBand 仍绿。新增 3 测试（单调性+灭绝+阈值移位）
-
-## 两轮 agent 审查的沉淀教训
-
-1. struct tag/switch 分支与数据 key 的映射漂移已复发 4 次 → DisallowUnknownFields +
-   TestFactReachability 双闸门已建，勿拆。
-2. 单测手工拼接 feed 尾部会掩盖循环体 bug——循环级测试（driveLoop）必须保留。
-3. ox-alpha 上游延迟可达 60s：LLM 层有预算+短超时+熔断器+纯文本兜底四层防御，勿移除。
-   deepseek-v4-flash 偶发把 max_tokens 烧在 reasoning 上返回空 content（已知 flaky，兜底即安全）。
+- v0.10.0（本次）：会话化重构（Session 可恢复步进器，CLI 输出逐字节不变）、cmd/mobile daemon + 冻结协议、ChainNarrator 多供应商 failover（玩家可配多个 LLM 供应商或纯离线）、双语数据 data_en + --lang、安卓客户端（五屏 Compose、进程桥、Keystore key 存储、F-Droid 全套准备）、可复现构建实测通过。
 
 ## 待办
 
-- [ ] 交互模式完整人工测试（目前仅 PTY 自动化覆盖；v0.8.0 后建议玩家真机再过一遍）
-- [x] 「命运编织中」卡死 ——v0.8.0 熔断器 + 默认渠道切换修复（根因：402 无额度 + ox-alpha 延迟超超时）
-- [x] 病理态占比偏高（~60% 局）——v0.7.2 已标定至 28%（TestPathologicalRateBand 闸门 <50%，防复发）
-- [x] LLM FateEvent 真实 API 成功路径——v0.7.4 用 DEEPSEEK_API_KEY 实测通过（墓志铭/命运/润色均真实生成）
-- [x] 安卓移植架构方案——docs/plans/2026-08-24-rebirth-android-port-plan.md（ultrabrain：方案 C Go进程+JSON协议 推荐，7~10 人日）
-- [ ] 属性点交互较简陋（一行四数字）；PTY 行编辑键位 e2e 已补（case I），全键位矩阵仍可加深
+- [ ] **真机验证（P0）**：Pixel/arm64 真机侧载 app-release.apk，验证 nativeLibraryDir exec .so 在 targetSdk 35 可行（方案 C 最大风险点，若失败切方案 A gomobile）
+- [ ] **真机冒烟**：完整一局 0~100 岁步进无崩溃/ANR；杀进程重开恢复正确年份；飞行模式全程可玩
+- [ ] **真机 LLM 冒烟**：DeepSeek key 输入后叙事/命运/墓志铭各 ≥1 次成功；断网全回退本地
+- [ ] fastlane 截图替换为真机实截（当前为占位图）
+- [ ] 打 tag v0.10.0 + push（需用户确认）；fdroiddata fork + MR
+- [ ] 本地 `~/.local/bin/rebirth` 重新部署（v0.10.0 带 --lang）
 - [ ] graphify-out 已 gitignore，本地图谱需 `graphify update .` 手动重建
+- [ ] 交互模式人工测试（CLI 一直待办）
+
+## 知识图谱
+
+- graphify-out/: 不存在（gitignore），需 `graphify update . --no-llm` 重建
 
 ## 最后更新时间
 
-2026-08-24 15:30
+2026-08-25 00:10

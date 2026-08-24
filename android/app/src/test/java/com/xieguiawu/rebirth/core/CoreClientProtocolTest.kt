@@ -227,7 +227,13 @@ class CoreClientProtocolTest {
 
     @Test
     fun resumeSession_reEncodesNarratorWithKeys() = runBlocking {
-        val h = Harness(responder = okResponse(null))
+        val h = Harness(responder = okResponse(
+            buildJsonObject {
+                put("resumed", true)
+                put("age", 0)
+                put("generation", 1)
+            },
+        ))
         h.client.resumeSession(
             NarratorConfig(
                 enabled = true,

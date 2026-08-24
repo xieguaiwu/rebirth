@@ -137,7 +137,13 @@ func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, erro
 			sess.Finish()
 			fmt.Fprintf(w, "\n──── 人生结束：%d 岁 · 职业：%s · %s ────\n", sess.DeathAge, sess.CareerName, sess.DeathStatus)
 			if !isNoop(sess.Cfg.LLM) {
-				fmt.Fprintln(w, "墓志铭："+sess.EpitaphText)
+				// Byte-identical to the pre-session Run: the pending hint is
+				// printed before the (blocking) epitaph call and cleared after.
+				if cfg.Hints {
+					fmt.Fprint(w, hintPending)
+				}
+				clearHint(w, cfg.Hints)
+				fmt.Fprintln(w, "墓志铭："+sess.FinishEpitaph())
 			}
 			break
 		}

@@ -56,6 +56,7 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
 | `--provider NAME` | LLM 服务商预设：`deepseek`（默认，国内直连免代理）或 `openrouter`（需代理+额度） |
 | `--model NAME` | 模型名（按 provider 默认：`deepseek-v4-flash` / `stealth/ox-alpha`） |
 | `--llm-url URL` | 覆盖 provider 基础 URL（任意 OpenAI 兼容端点） |
+| `--lang zh\|en` | 内容语言：`zh`（默认）或 `en`（英文事件/职业/天赋 + 英文 LLM 提示词） |
 
 设置 `DEEPSEEK_API_KEY`（默认服务商）、`OPENROUTER_API_KEY`（配合
 `--provider openrouter`）或通用 `LLM_API_KEY` 启用叙事层。反复失败的渠道会触发熔断——打印一行提示后，本世余下全部秒回本地文本。血统存档位于
@@ -92,18 +93,38 @@ rebirth --seed 42 --auto --no-llm   # 确定性自动模式（适合 CI）
   想更少创伤可调高 `enter_at`，想更温和的人生可调低 `drive`。
 - 未知键会启动时 WARN 拒绝（拼写错误大声失败，不静默）。
 
+## 安卓客户端
+
+同一引擎已移植为安卓应用，位于 `android/` 子目录（com.xieguaiwu.rebirth，
+arm64-v8a，APK ~9MB，F-Droid 就绪）。
+
+- **同一确定性核心**：Go 引擎以子进程形式跑在应用内（`cmd/mobile`
+  JSON-lines daemon）——同种子同人生，与终端版逐字节一致。
+- **中英双语**：UI 与内容双语，应用内一键切换（内容语言跟随 UI 语言）。
+- **自带 LLM 密钥**：设置页可添加任意数量供应商（DeepSeek、OpenRouter、
+  或任意 OpenAI 兼容 URL），可排序作为故障转移链，也可全部关闭纯离线游玩。
+  key 加密存于 Android Keystore，永不离机。
+- **抗杀进程**：每一年自动存档；杀掉应用重开可恢复同一人生（确定性重放）。
+- 构建：`cd android && ./gradlew :app:assembleRelease`（Go 核心由
+  `scripts/build-core.sh` 交叉编译；`scripts/fetch-go.sh` 固定工具链+SHA 校验；
+  `scripts/verify-reproducible.sh` 验证 APK 字节级可复现）。
+
 ## 项目结构
 
 ```
 main.go                 入口：参数解析、出生/天赋/属性点流程
 internal/game/
+  session.go            可恢复 Session 步进器（Advance/DeathCheck/Finish）
   trauma.go             耦合 ODE 核心 + 迟滞 + 遗传核
-  events.go             加权事件抽取、天赋、血统治存档
+  events.go             加权事件抽取、天赋、血统治存档、双语加载
   career.go             职业轨迹 + 出身背景
   run.go                主循环、死亡判定、叙事钩子
-internal/llm/           provider 预设（deepseek/openrouter），带预算+熔断的 fail-soft 叙事器
+internal/llm/           provider 预设 + 链式故障转移，带预算+熔断的 fail-soft 叙事器
 internal/tui/           零依赖 rune 安全行编辑器
-internal/game/data/     events_*.json × 9 分片、职业、出身、天赋
+internal/game/data/     events_*.json × 9 分片、职业、出身、天赋（中文）
+internal/game/data_en/  相同内容的英文版
+cmd/mobile/             JSON-lines daemon（契约见 docs/mobile-protocol.md）
+android/                Compose 应用：进程桥、五屏、Keystore、fastlane
 ```
 
 ## 开发

@@ -224,6 +224,75 @@ func mustTalents(t *testing.T) []Talent {
 	return ts
 }
 
+// hintNarrator is a Narrator that returns marker text, used to lock the
+// interactive-TTY byte sequence around the epitaph call (momus P1-1: the
+// session refactor must preserve the hint + clearHint bytes and the
+// death-line-before-epitaph ordering exactly like the pre-session Run).
+type hintNarrator struct{}
+
+func (hintNarrator) Narrate(age int, summary, fallback string) string { return fallback }
+func (hintNarrator) FateEvent(age int, summary string) (Event, bool)  { return Event{}, false }
+func (hintNarrator) Epitaph(summary string) string                    { return "墓志铭测试文本" }
+func (hintNarrator) Broken() bool                                     { return false }
+
+func TestRunEpitaphHintBytes(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	careers, _ := LoadCareers()
+	cfg := Config{
+		Seed:   77,
+		LLM:    hintNarrator{},
+		MaxAge: 100,
+		Hints:  true,
+		Step:   false,
+	}.WithPoints(5, 5, 5, 5)
+	var buf bytes.Buffer
+	if _, err := Run(&buf, cfg, evs, careers); err != nil {
+		t.Fatalf("run: %v", err)
+	}
+	out := buf.String()
+
+	// The death line must appear before the epitaph line, with the hint
+	// sequence between them. Earlier hints belong to yearly narrate calls;
+	// the LAST hint/clear in the output is the epitaph's own (same order
+	// as the pre-session Run).
+	dl := strings.Index(out, "──── 人生结束：")
+	hint := strings.LastIndex(out, hintPending)
+	clr := strings.LastIndex(out, "\r\033[K")
+	ep := strings.Index(out, "墓志铭：墓志铭测试文本")
+	if dl < 0 || ep < 0 {
+		t.Fatalf("missing death/epitaph lines:\n%s", out)
+	}
+	if !(dl < hint && hint < clr && clr < ep) {
+		t.Fatalf("epitaph byte order wrong (death=%d hint=%d clear=%d ep=%d):\n%s", dl, hint, clr, ep, out)
+	}
+}
+
+// TestSessionFinishNilLLMSafe guards against a nil narrator panicking in
+// Finish/FinishEpitaph (momus P2: old Run had an isNoop guard).
+func TestSessionFinishNilLLMSafe(t *testing.T) {
+	evs, err := LoadEvents()
+	if err != nil {
+		t.Fatalf("dataset: %v", err)
+	}
+	careers, _ := LoadCareers()
+	cfg := Config{Seed: 1, MaxAge: 100}.WithPoints(5, 5, 5, 5)
+	sess := NewSession(cfg, evs, careers)
+	for !sess.Done() {
+		sess.Advance()
+		if sess.DeathCheck() {
+			sess.Finish()
+			sess.FinishEpitaph()
+			break
+		}
+	}
+	if sess.DeathStatus == "" {
+		t.Fatal("death status not computed")
+	}
+}
+
 func joinLines(lines []string) string {
 	var b bytes.Buffer
 	for _, l := range lines {

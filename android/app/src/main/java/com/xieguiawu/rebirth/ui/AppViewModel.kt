@@ -23,6 +23,9 @@ import com.xieguiawu.rebirth.security.SecureStorage
 import java.util.Locale
 import java.util.UUID
 import kotlin.random.Random
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,6 +80,22 @@ class AppViewModel(
 
     private val _ui = MutableStateFlow(UiState())
     val ui: StateFlow<UiState> = _ui.asStateFlow()
+
+    // viewModelScope is cancelled in onCleared, so the daemon shutdown
+    // uses its own scope (graceful exit; checkpoint discipline is the
+    // fallback if the process dies abruptly).
+    private val shutdownScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    override fun onCleared() {
+        shutdownScope.launch {
+            try {
+                client.shutdown()
+            } catch (_: Exception) {
+                // process is going away anyway
+            }
+        }
+        super.onCleared()
+    }
 
     /** Set by MainActivity to recreate() on in-app language switch. */
     var onLanguageChanged: (() -> Unit)? = null
@@ -245,12 +264,15 @@ class AppViewModel(
             state.copy(years = state.years + year, nextPending = pending)
         }
 
-    /** Process restarted itself: resume from checkpoint and re-advance the lost year. */
+    /** Process restarted itself: resume from checkpoint and rebuild the lost timeline. */
     private suspend fun recoverAfterCrash() {
         try {
             val cp = client.checkpointGet()
             if (!cp.exists) return
-            client.resumeSession(buildNarrator(_ui.value.settings))
+            val replayed = client.resumeSession(buildNarrator(_ui.value.settings))
+            _ui.update { s ->
+                s.copy(years = replayed, nextPending = false).copy(coreError = null)
+            }
             val year = client.next()
             _ui.update { s -> appendYear(s, year, pending = false).copy(coreError = null) }
         } catch (_: CoreException) {
@@ -262,10 +284,10 @@ class AppViewModel(
         viewModelScope.launch {
             _ui.update { it.copy(loading = true) }
             try {
-                client.resumeSession(buildNarrator(_ui.value.settings))
+                val replayed = client.resumeSession(buildNarrator(_ui.value.settings))
                 _ui.update {
                     it.copy(
-                        years = emptyList(),
+                        years = replayed,
                         death = null,
                         loading = false,
                         screen = Screen.Timeline,

@@ -112,7 +112,7 @@ curGen = generation+1；`inherited_talent` 按名查找（跨语言找不到 →
 - `lines`：该年全部已记录行（UI 直接渲染；与桌面 CLI 逐字节同源）。
 - `career`：当前职业对象；**无职业（含无业/退休后）= null（字段缺省）**。
 - `career_change`：`"enter"`（入行）| `"quit"`（离开）| `"retire"`（退休）| null。
-- `event`：本年度事件（无事件年份 = null）。`llm` = 是否 LLM 润色/注入。
+- `event`：本年度事件（无事件年份 = null）。`llm` = 事件是否经 LLM（命运注入 **或** 叙事润色——润色后文本见 `lines`）。
 - `stats`：五维属性 [0,10]（chr 颜值 / int 智力 / str 体质 / mny 家境 / spr 快乐）。
 - `trauma`：`m` 记忆痕迹 / `a` 杏仁核 / `p` 前额叶 / `load` 负荷 / `pathological` 病理态。
 - `luck`：本年度 AR(1) 运势 [-1,1]。
@@ -150,6 +150,7 @@ curGen = generation+1；`inherited_talent` 按名查找（跨语言找不到 →
 - 读取 `session.json`（含 cfg 全量 + llm_cache + 已推进年龄），重放至已保存年龄（确定性，本地瞬间完成），后续 `next` 从该年龄继续。
 - narrator 配置**必须由客户端重传**（key 永不落盘）；session.json 内不含任何 key。
 - 无 checkpoint → 报错 `"no checkpoint"`。
+- 响应 data：`{"resumed":true,"age":N,"generation":G,"years":[<YearResult>×N+1]}`——`years` 是重放的**全部年份**（0..N 岁完整 YearResult；崩溃丢失的时间线数据只能从这里取回；后续 `next` 从 N+1 岁继续）。
 
 ### 1.9 `shutdown`
 
@@ -157,16 +158,18 @@ curGen = generation+1；`inherited_talent` 按名查找（跨语言找不到 →
 
 ## 2. checkpoint 与恢复语义（session.json）
 
-- 每次 `next` 成功后原子写入 `session.json`（JSON：`{"cfg":{...},"age":N,"llm_cache":{...}}`）。
-- `cfg` 含：seed / lang / birth / talents / points / max_age / trauma_overrides / bloodline（本局继承值）/ narrator 的**非敏感部分**（providers 的 provider/model/url，**无 key**）。
-- `llm_cache`：`{"<age>": {"fate": {<Event>}, "texts": {"<eventID>": "<text>"}}}`。
-- 重放 = `NewSession(cfg)` + 循环 `Advance` 到 age（CacheNarrator 命中缓存，未命中转真调用）。
+- 每次 `next` 成功后原子写入 `session.json`（JSON：扁平字段，非嵌套 cfg——实现即文档）：
+  `{"seed":N,"lang":"zh","birth":{...},"bloodline":{...},"talents":[...],"inherit_tal":"...","points":[...],"max_age":100,"narrate_ratio":0.5,"trauma":{...},"age":N,"llm_cache":{"ages":{"<age>":{"fate":{<Event>},"fate_ok":bool,"fate_consulted":bool,"narrate_text":"...","narrate_used":bool,"narrate_consulted":bool}}}}`
+- checkpoint 不含任何 API key；narrator 配置由客户端在 resume 时重传（含 budget/ratio，ratio 变化对已恢复局不生效——以 checkpoint 值为准）。
+- `llm_cache`：`fate_*` 记录当年命运事件调用（结果或未产生）；`narrate_*` 记录当年叙事润色（文本或未产生）。`consulted=false` 的年龄 = 当年未触发 LLM 调用（预算耗尽/未采样），重放时不调用真 LLM。
+- 重放 = `NewSession(cfg)` + 循环 `Advance` **到 checkpoint age 含该年**（checkpoint 在 N 岁处理完保存 → 重放处理 0..N 岁）→ 与未中断运行逐位一致（e2e 锁定）。
 - 恢复后 narrator 以客户端传入的 providers 重建；熔断/预算状态从零开始（可接受）。
 
 ## 3. 错误约定
 
 - 未知 cmd → `{"ok":false,"error":"unknown command <name>"}`。
 - 参数校验失败 → `{"ok":false,"error":"<具体原因>"}`。
+- `next` 在无会话时 → `"no session"`；在人生结束后 → `"session finished"`（§1.6）。
 - 内部 panic → 进程崩溃由 Android 侧重启（ProcessBuilder 重启 + checkpoint 恢复）。
 
 ## 4. 日志红线

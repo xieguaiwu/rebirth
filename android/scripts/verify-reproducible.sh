@@ -17,6 +17,9 @@ echo "SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH"
 
 build_once() {
   local tag="$1"
+  bash scripts/build-core.sh > "/tmp/rb-core-$tag.log" 2>&1 || {
+    echo "FAIL: core build $tag failed"; tail -20 "/tmp/rb-core-$tag.log"; exit 1
+  }
   ./gradlew clean assembleRelease --no-daemon > "/tmp/rb-build-$tag.log" 2>&1 || {
     echo "FAIL: build $tag failed"; tail -30 "/tmp/rb-build-$tag.log"; exit 1
   }

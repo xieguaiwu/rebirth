@@ -16,6 +16,7 @@ type YearInfo struct {
 	CareerName   string
 	CareerChange string // "", "enter", "quit", "retire"
 	Event        *Event // fired event (nil when the year had none)
+	Narrated     bool   // the event line was rewritten by the LLM narrator
 	Stats        Stats
 	TraumaM      float64
 	TraumaA      float64
@@ -260,6 +261,7 @@ func (s *Session) Advance() *YearInfo {
 		}
 		line := fmt.Sprintf("[%3d 岁] %s", age, text)
 		s.record(line)
+		info.Narrated = text != ev.Text
 		s.S.ApplyDelta(ev.Delta)
 		if ev.TraumaAlpha > 0 {
 			alpha := ev.TraumaAlpha * s.Params.EventScale * talentTraumaMult(s.Cfg.Talents, s.Cfg.InheritTal)
@@ -323,10 +325,11 @@ func (s *Session) DeathCheck() bool {
 	return false
 }
 
-// Finish computes the end-of-life status and epitaph (idempotent). The CLI
-// calls it after the loop; the daemon calls it when DeathCheck reports
-// death. The epitaph is a narrator call when one is configured; Noop's
-// Epitaph returns the deterministic default without touching the network.
+// Finish computes the end-of-life status (idempotent). The CLI calls it
+// after the loop; the daemon calls it when DeathCheck reports death. The
+// epitaph is computed separately by FinishEpitaph so the CLI can print
+// the death line BEFORE the (potentially blocking) narrator call and show
+// its hint indicator, exactly like the pre-session Run.
 func (s *Session) Finish() {
 	if s.finished {
 		return
@@ -352,7 +355,21 @@ func (s *Session) Finish() {
 		status += "（终生生处于创伤病理态）"
 	}
 	s.DeathStatus = status
-	s.EpitaphText = s.Cfg.LLM.Epitaph(stateSummary(s.DeathAge, s.S, s.Trauma, s.CareerName, s.Params))
+}
+
+// FinishEpitaph computes the epitaph text on demand (idempotent, one
+// narrator call per life when a narrator is configured).
+func (s *Session) FinishEpitaph() string {
+	if s.EpitaphText != "" {
+		return s.EpitaphText
+	}
+	n := s.Cfg.LLM
+	if n == nil || isNoop(n) {
+		s.EpitaphText = ""
+		return ""
+	}
+	s.EpitaphText = n.Epitaph(stateSummary(s.DeathAge, s.S, s.Trauma, s.CareerName, s.Params))
+	return s.EpitaphText
 }
 
 // Result summarizes one completed (or aborted) life, mirroring Run's

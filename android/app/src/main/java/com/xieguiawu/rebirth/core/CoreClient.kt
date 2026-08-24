@@ -167,8 +167,10 @@ interface CoreClient {
         }
     }
 
-    /** Narrator config MUST be re-sent (keys never touch disk). */
-    suspend fun resumeSession(narrator: NarratorConfig) {
+    /** Narrator config MUST be re-sent (keys never touch disk).
+     *  Returns every replayed year (0..N) so the UI can rebuild the
+     *  timeline lost in the crash (protocol §1.8). */
+    suspend fun resumeSession(narrator: NarratorConfig): List<YearResult> {
         val params = buildJsonObject {
             put("narrator", buildJsonObject {
                 put("enabled", narrator.enabled)
@@ -186,7 +188,15 @@ interface CoreClient {
                 put("ratio", narrator.ratio)
             })
         }
-        request("resume_session", params) // ok:true, data unused
+        val data = request("resume_session", params)
+            ?: throw CoreException.missingData("resume_session")
+        return try {
+            data.jsonObject["years"]?.jsonArray?.map {
+                ProtocolJson.json.decodeFromJsonElement<YearResult>(it)
+            } ?: emptyList()
+        } catch (e: Exception) {
+            throw CoreException.decodeError("resume_session", e)
+        }
     }
 
     suspend fun shutdown() {

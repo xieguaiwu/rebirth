@@ -217,8 +217,11 @@ func TestProtocolFullLife(t *testing.T) {
 		t.Fatalf("life did not end within 120 steps (last age %v)", lastAge)
 	}
 
-	// The death year consumes the session; further next calls error.
-	d.mustErr("next", nil)
+	// The death year consumes the session; further next calls error
+	// with the protocol §1.6 message.
+	if got := d.mustErr("next", nil); got != "session finished" {
+		t.Fatalf("expected 'session finished', got %q", got)
+	}
 
 	// Bloodline file on disk reflects the saved lineage.
 	raw, err := os.ReadFile(filepath.Join(dir, "bloodline.json"))
@@ -280,9 +283,19 @@ func TestCheckpointResumeDeterministic(t *testing.T) {
 				if cp2["exists"] != true || int(cp2["age"].(float64)) != resumeAt {
 					t.Fatalf("checkpoint after restart: %v", cp2)
 				}
-				d.mustOK("resume_session", map[string]any{"narrator": map[string]any{
+				rd := d.mustOK("resume_session", map[string]any{"narrator": map[string]any{
 					"enabled": false, "providers": []any{},
 				}})
+				// P1-2: every replayed year must be returned so the UI can
+				// rebuild the timeline (the crash lost those YearResults).
+				yrs, ok := rd["years"].([]any)
+				if !ok || len(yrs) != resumeAt+1 {
+					t.Fatalf("resume_session must return replayed years 0..%d: %v", resumeAt, rd)
+				}
+				lastYr := yrs[len(yrs)-1].(map[string]any)
+				if int(lastYr["age"].(float64)) != resumeAt {
+					t.Fatalf("last replayed year must be %d: %v", resumeAt, lastYr)
+				}
 			}
 			if yr["died"].(bool) {
 				// The resumed run dies with the same epitaph.

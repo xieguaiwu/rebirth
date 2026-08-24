@@ -56,6 +56,7 @@ rebirth --seed 42 --auto --no-llm   # deterministic auto run (great for CI)
 | `--provider NAME` | LLM endpoint preset: `deepseek` (default, direct CN access) or `openrouter` (needs proxy + credits) |
 | `--model NAME` | model name (defaults per provider: `deepseek-v4-flash` / `stealth/ox-alpha`) |
 | `--llm-url URL` | override the provider base URL (any OpenAI-compatible endpoint) |
+| `--lang zh\|en` | content language: `zh` (default) or `en` (English events/careers/talents + English LLM prompts) |
 
 Set `DEEPSEEK_API_KEY` (default provider), `OPENROUTER_API_KEY` (with
 `--provider openrouter`), or the generic `LLM_API_KEY` to enable narration.
@@ -99,6 +100,27 @@ flags always win, then this file, then built-ins. Every field is optional:
   `enter_at` up for rarer trauma, `drive` down for gentler lives.
 - Unknown keys are rejected with a warning (typos fail loudly).
 
+## Android app
+
+The same engine ships as an Android app in the `android/` subdirectory
+(com.xieguaiwu.rebirth, arm64-v8a, ~9 MB APK, F-Droid ready).
+
+- **Same deterministic core**: the Go engine runs as a child process
+  (`cmd/mobile` JSON-lines daemon) inside the app — same seed, same life,
+  byte-identical to the terminal version.
+- **Bilingual UI + content**: Chinese and English, switchable in-app
+  (content language follows the UI language).
+- **Bring your own LLM**: in Settings you can add any number of providers
+  (DeepSeek, OpenRouter, or any OpenAI-compatible URL), reorder them as a
+  fallback chain, or disable them all for a fully offline game. Keys are
+  stored encrypted in the Android Keystore and never leave the device.
+- **Resilient**: the game checkpoints after every year; killing the app and
+  reopening resumes the exact same life (deterministic replay).
+- Build: `cd android && ./gradlew :app:assembleRelease` (the Go core is
+  cross-compiled by `scripts/build-core.sh`; pinned toolchain + SHA check
+  in `scripts/fetch-go.sh`; `scripts/verify-reproducible.sh` proves
+  byte-reproducible APKs).
+
 ## Project layout
 
 ```
@@ -108,10 +130,14 @@ internal/game/
   events.go             weighted event sampling, talents, bloodline save
   career.go             career tracks + birth backgrounds
   run.go                main loop, death checks, narrator hooks
-internal/llm/           provider presets (deepseek/openrouter), budgeted + circuit-broken fail-soft narrator
+internal/llm/           provider presets (deepseek/openrouter), chain failover, budgeted + circuit-broken fail-soft narrator
 internal/tui/           zero-dependency rune-safe line editor
-internal/game/data/     events_*.json × 9 shards, careers, births, talents
+internal/game/data/     events_*.json × 9 shards, careers, births, talents (zh)
+internal/game/data_en/  same content in English (en)
 ```
+
+## Android app
+
 
 ## Development
 

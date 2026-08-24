@@ -225,6 +225,10 @@ type checkpoint struct {
 type daemon struct {
 	dir string
 
+	// finishedLife marks a completed life (next after death errors with
+	// "session finished" per protocol §1.6 instead of "no session").
+	finishedLife bool
+
 	eventsZh  []game.Event
 	careersZh []*game.Career
 	birthsZh  []game.Birth
@@ -475,18 +479,16 @@ func (d *daemon) newSession(req request) (any, error) {
 
 	d.sess = game.NewSession(cfg, d.events(lang), d.careers(lang))
 	d.lang = lang
+	d.finishedLife = false
 	// A fresh life invalidates any stale checkpoint.
-	_ = os.Remove(d.sessionPath())
+	if err := os.Remove(d.sessionPath()); err != nil && !os.IsNotExist(err) {
+		log.Printf("stale checkpoint remove failed: %v", err)
+	}
 	return map[string]any{"generation": curGen}, nil
 }
 
-func (d *daemon) next() (any, error) {
-	if d.sess == nil {
-		return nil, fmt.Errorf("no session")
-	}
-	info := d.sess.Advance()
-	died := d.sess.DeathCheck()
-
+// buildYearDTO converts a YearInfo into the protocol year payload.
+func (d *daemon) buildYearDTO(info *game.YearInfo) *yearDTO {
 	out := &yearDTO{
 		Age:             info.Age,
 		Lines:           info.Lines,
@@ -502,11 +504,24 @@ func (d *daemon) next() (any, error) {
 	if info.Event != nil {
 		out.Event = &eventDTO{
 			ID: info.Event.ID, Text: info.Event.Text,
-			Good: info.Event.Good, LLM: info.Event.LLMGenerated,
+			Good: info.Event.Good, LLM: info.Event.LLMGenerated || info.Narrated,
 			TraumaAlpha: info.Event.TraumaAlpha, TherapyQ: info.Event.TherapyQ,
 			Delta: info.Event.Delta,
 		}
 	}
+	return out
+}
+
+func (d *daemon) next() (any, error) {
+	if d.sess == nil {
+		if d.finishedLife {
+			return nil, fmt.Errorf("session finished")
+		}
+		return nil, fmt.Errorf("no session")
+	}
+	info := d.sess.Advance()
+	died := d.sess.DeathCheck()
+	out := d.buildYearDTO(info)
 
 	if died {
 		d.sess.Finish()
@@ -519,7 +534,7 @@ func (d *daemon) next() (any, error) {
 				out.Epitaph = "一生至此。"
 			}
 		} else {
-			out.Epitaph = d.sess.EpitaphText
+			out.Epitaph = d.sess.FinishEpitaph()
 		}
 		// Save the lineage exactly like main.go does.
 		next := &game.Bloodline{
@@ -545,6 +560,7 @@ func (d *daemon) next() (any, error) {
 		}
 		_ = os.Remove(d.sessionPath())
 		d.sess = nil
+		d.finishedLife = true
 	} else {
 		// Checkpoint every alive year for crash recovery.
 		if err := d.saveCheckpoint(info.Age); err != nil {
@@ -644,17 +660,27 @@ func (d *daemon) resumeSession(req request) (any, error) {
 	// Deterministic replay to the checkpoint age: the checkpoint was saved
 	// AFTER processing cp.Age, so replay must process through cp.Age
 	// inclusive (<=, not <) to land on the same session state.
+	// All replayed years are returned so the UI can rebuild the full past
+	// timeline (P1-2: the crash lost those YearResults; resume_session is
+	// the only protocol path that can recover them).
+	var years []*yearDTO
 	for d.sess.Age <= cp.Age {
-		d.sess.Advance()
-		if d.sess.DeathCheck() {
+		info := d.sess.Advance()
+		died := d.sess.DeathCheck()
+		if died {
 			return nil, fmt.Errorf("checkpoint age %d beyond life end", cp.Age)
 		}
+		years = append(years, d.buildYearDTO(info))
 	}
 	gen := 1
 	if cp.Bloodline != nil {
 		gen = cp.Bloodline.Generation
 	}
-	return map[string]any{"resumed": true, "age": cp.Age, "generation": gen}, nil
+	resp := map[string]any{"resumed": true, "age": cp.Age, "generation": gen}
+	if len(years) > 0 {
+		resp["years"] = years
+	}
+	return resp, nil
 }
 
 func main() {

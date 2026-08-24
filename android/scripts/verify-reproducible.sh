@@ -20,14 +20,13 @@ build_once() {
   bash scripts/build-core.sh > "/tmp/rb-core-$tag.log" 2>&1 || {
     echo "FAIL: core build $tag failed"; tail -20 "/tmp/rb-core-$tag.log"; exit 1
   }
-  ./gradlew clean assembleRelease --no-daemon > "/tmp/rb-build-$tag.log" 2>&1 || {
+  # -PunsignedRelease: signing adds per-build randomness, so the check
+  # compares unsigned APKs (F-Droid's reproducible-build check works the
+  # same way: signature-stripped comparison via apksigcopier).
+  ./gradlew clean assembleRelease -PunsignedRelease --no-daemon > "/tmp/rb-build-$tag.log" 2>&1 || {
     echo "FAIL: build $tag failed"; tail -30 "/tmp/rb-build-$tag.log"; exit 1
   }
-  # Compare the UNSIGNED APK: signing adds per-build randomness to the
-  # signature block, so signed APKs are never byte-identical. F-Droid's
-  # reproducible-build check works the same way (signature-stripped
-  # comparison via apksigcopier).
-  find app/build/outputs/apk -name '*unsigned*.apk' | sort | xargs sha256sum > "/tmp/rb-hash-$tag.txt"
+  find app/build/outputs/apk -name '*.apk' | sort | xargs sha256sum > "/tmp/rb-hash-$tag.txt"
 }
 
 build_once one

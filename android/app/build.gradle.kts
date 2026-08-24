@@ -42,7 +42,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            if (ksFile.exists()) {
+            // -PunsignedRelease builds an unsigned APK: the reproducible-
+            // build check (scripts/verify-reproducible.sh) must compare
+            // unsigned artifacts (signing adds per-build randomness).
+            if (ksFile.exists() && !project.hasProperty("unsignedRelease")) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }

@@ -21,7 +21,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.9.0"
+var version = "0.10.0"
 
 const pointsTotal = 20
 
@@ -41,6 +41,7 @@ func main() {
 	model := flag.String("model", "", "LLM 模型名（默认按 provider：deepseek=deepseek-v4-flash，openrouter=stealth/ox-alpha）")
 	llmURL := flag.String("llm-url", "", "LLM 基础 URL（覆盖 provider 默认端点）")
 	maxAge := flag.Int("max-age", 100, "寿命上限")
+	lang := flag.String("lang", "zh", "内容语言（zh/en；en 为英文内容，叙事提示词同步切换）")
 	showVersion := flag.Bool("version", false, "打印版本号")
 	flag.Parse()
 
@@ -116,22 +117,27 @@ func main() {
 		traumaOverride = &tp
 	}
 
-	evs, err := game.LoadEvents()
+	evL := *lang
+	if *lang != "zh" && *lang != "en" {
+		fmt.Printf("[WARN] 未知语言 %q，使用 zh。\n", *lang)
+		evL = "zh"
+	}
+	evs, err := game.LoadEventsLang(evL)
 	if err != nil {
 		fmt.Println("[FAIL] 事件加载:", err)
 		os.Exit(1)
 	}
-	careers, err := game.LoadCareers()
+	careers, err := game.LoadCareersLang(evL)
 	if err != nil {
 		fmt.Println("[FAIL] 职业加载:", err)
 		os.Exit(1)
 	}
-	births, err := game.LoadBirths()
+	births, err := game.LoadBirthsLang(evL)
 	if err != nil {
 		fmt.Println("[FAIL] 出生背景加载:", err)
 		os.Exit(1)
 	}
-	talents, err := game.LoadTalents()
+	talents, err := game.LoadTalentsLang(evL)
 	if err != nil {
 		fmt.Println("[FAIL] 天赋加载:", err)
 		os.Exit(1)
@@ -143,6 +149,12 @@ func main() {
 
 	rng := rand.New(rand.NewSource(seedV))
 	narrator := buildNarrator(*noLLM, prov, mdl, url, maxCalls)
+	if c, ok := narrator.(*llm.Narrator); ok {
+		c.Lang = evL
+	}
+	if c, ok := narrator.(*llm.ChainNarrator); ok {
+		c.Lang = evL
+	}
 
 	birth := pickBirth(births, rng, *auto)
 	talentsPick := pickTalents(talents, rng, *auto)

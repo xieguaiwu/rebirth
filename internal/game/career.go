@@ -56,9 +56,9 @@ func condMet(c *Cond, s Stats) bool {
 // UnemployedID marks the fallback track.
 const UnemployedID = "none"
 
-// LoadCareers parses the embedded career table.
-func LoadCareers() ([]*Career, error) {
-	raw, err := eventsFS.ReadFile("data/careers.json")
+// LoadCareersLang parses the embedded career table of one content language.
+func LoadCareersLang(lang string) ([]*Career, error) {
+	raw, err := eventsFS.ReadFile(dataDir(lang) + "/careers.json")
 	if err != nil {
 		return nil, fmt.Errorf("read embedded careers: %w", err)
 	}
@@ -70,6 +70,11 @@ func LoadCareers() ([]*Career, error) {
 		return nil, fmt.Errorf("careers.json contains no careers")
 	}
 	return cs, nil
+}
+
+// LoadCareers parses the embedded Chinese career table.
+func LoadCareers() ([]*Career, error) {
+	return LoadCareersLang("zh")
 }
 
 // PickCareer samples one eligible track at a decision window. Falls back to
@@ -121,9 +126,9 @@ type Birth struct {
 	SensitivityAdd float64 `json:"sensitivity_add"`
 }
 
-// LoadBirths parses the embedded birth table.
-func LoadBirths() ([]Birth, error) {
-	raw, err := eventsFS.ReadFile("data/births.json")
+// LoadBirthsLang parses the embedded birth table of one content language.
+func LoadBirthsLang(lang string) ([]Birth, error) {
+	raw, err := eventsFS.ReadFile(dataDir(lang) + "/births.json")
 	if err != nil {
 		return nil, fmt.Errorf("read embedded births: %w", err)
 	}
@@ -135,6 +140,11 @@ func LoadBirths() ([]Birth, error) {
 		return nil, fmt.Errorf("births.json contains no entries")
 	}
 	return bs, nil
+}
+
+// LoadBirths parses the embedded Chinese birth table.
+func LoadBirths() ([]Birth, error) {
+	return LoadBirthsLang("zh")
 }
 
 // DrawBirths samples n distinct weighted births for the choice menu.

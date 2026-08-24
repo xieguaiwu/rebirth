@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+
+# Local configuration (never commit)
+local.properties
+keystore.properties
+
+# Native core binaries (produced by scripts/build-core.sh, committed by integration)
+*.so
+
+# IDE
+.idea/
+.kotlin/
+captures/
+.DS_Store
+
+# Build outputs
+*.apk

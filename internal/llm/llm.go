@@ -174,6 +174,9 @@ type Narrator struct {
 	MaxCalls int
 	fails    int  // consecutive failures; any success resets
 	dead     bool // breaker open: fail soft without touching the network
+	// Lang selects the prompt language: "" or "zh" = Chinese, "en" =
+	// English. Content language and narrator prompts stay in sync.
+	Lang string
 }
 
 // failLimit is how many consecutive failures trip the breaker.
@@ -186,6 +189,42 @@ const DefaultCallBudget = 24
 
 // NewNarrator wraps a client; pass game.Noop when key is missing.
 func NewNarrator(c *Client) *Narrator { return &Narrator{C: c, MaxCalls: DefaultCallBudget} }
+
+// narrateSystemPrompt returns the narrator system prompt for a language.
+func narrateSystemPrompt(lang string) string {
+	if lang == "en" {
+		return "You are the narrator of a life simulator. Rewrite the given event as one vivid English sentence, at most 40 words. Output only JSON: {\"text\":\"...\"}"
+	}
+	return "你是人生模拟器的叙事者。把给定事件改写成一句生动中文叙述，不超过40字。只输出JSON：{\"text\":\"...\"}"
+}
+
+// fateSystemPrompt returns the fate-weaver system prompt for a language.
+func fateSystemPrompt(lang string) string {
+	if lang == "en" {
+		return `You are the weaver of fate for a life simulator. Invent one unique event that fits the given state. Avoid cliches.
+Output only JSON with fields: {"text":"one-sentence event","good":true/false,"chr":-3..3,"int":-3..3,"str":-3..3,"mny":-3..3,"spr":-3..3,"trauma_alpha":0..0.5}
+trauma_alpha is the event's trauma intensity (0 = none).`
+	}
+	return `你是命运编织者，为人生模拟器发明一个独特事件。贴合给定状态，避免俗套。
+只输出JSON，字段：{"text":"事件一句话","good":true/false,"chr":-3..3,"int":-3..3,"str":-3..3,"mny":-3..3,"spr":-3..3,"trauma_alpha":0..0.5}
+trauma_alpha 表示该事件的创伤强度（0=无创伤）。`
+}
+
+// epitaphSystemPrompt returns the epitaph prompt for a language.
+func epitaphSystemPrompt(lang string) string {
+	if lang == "en" {
+		return "You are an epitaph author. Write one epitaph of at most 30 words for this life, restrained and memorable. Output only JSON: {\"text\":\"...\"}"
+	}
+	return "你是墓志铭作者。为这段人生写一句不超过30字的墓志铭，克制而有余味。只输出JSON：{\"text\":\"...\"}"
+}
+
+// defaultEpitaph returns the deterministic no-LLM epitaph for a language.
+func defaultEpitaph(lang string) string {
+	if lang == "en" {
+		return "That was a life."
+	}
+	return "一生至此。"
+}
 
 // budget reports whether one more call is allowed and reserves it.
 func (n *Narrator) budget() bool {
@@ -223,7 +262,7 @@ func (n *Narrator) Narrate(age int, summary, fallback string) string {
 		return fallback
 	}
 	out, err := n.C.complete(ctx,
-		"你是人生模拟器的叙事者。把给定事件改写成一句生动中文叙述，不超过40字。只输出JSON：{\"text\":\"...\"}",
+		narrateSystemPrompt(n.Lang),
 		fmt.Sprintf("年龄%d。状态：%s。原文：%s", age, summary, fallback), 600)
 	if err != nil {
 		n.fail()
@@ -273,9 +312,7 @@ func (n *Narrator) FateEvent(age int, summary string) (game.Event, bool) {
 		return game.Event{}, false
 	}
 	out, err := n.C.complete(ctx,
-		`你是命运编织者，为人生模拟器发明一个独特事件。贴合给定状态，避免俗套。
-只输出JSON，字段：{"text":"事件一句话","good":true/false,"chr":-3..3,"int":-3..3,"str":-3..3,"mny":-3..3,"spr":-3..3,"trauma_alpha":0..0.5}
-trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
+		fateSystemPrompt(n.Lang),
 		fmt.Sprintf("年龄%d。状态：%s", age, summary), 900)
 	if err != nil {
 		n.fail()
@@ -311,20 +348,20 @@ trauma_alpha 表示该事件的创伤强度（0=无创伤）。`,
 // the shared budget: one call per life, guaranteed (see Narrator).
 func (n *Narrator) Epitaph(summary string) string {
 	if n.dead {
-		return "一生至此。"
+		return defaultEpitaph(n.Lang)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 	if n.C == nil {
-		return "一生至此。"
+		return defaultEpitaph(n.Lang)
 	}
 	n.calls++ // still counted for observability, never blocks
 	out, err := n.C.complete(ctx,
-		"你是墓志铭作者。为这段人生写一句不超过30字的墓志铭，克制而有余味。只输出JSON：{\"text\":\"...\"}",
+		epitaphSystemPrompt(n.Lang),
 		summary, 400)
 	if err != nil {
 		n.fail()
-		return "一生至此。"
+		return defaultEpitaph(n.Lang)
 	}
 	var r struct {
 		Text string `json:"text"`
@@ -337,7 +374,7 @@ func (n *Narrator) Epitaph(summary string) string {
 			return truncate(line, 45)
 		}
 	}
-	return "一生至此。"
+	return defaultEpitaph(n.Lang)
 }
 
 // sanitizeLine strips JSON punctuation, quotes and newlines from a model
@@ -379,4 +416,102 @@ func extractJSON(s string, v any) bool {
 		return false
 	}
 	return json.Unmarshal([]byte(s[start:end+1]), v) == nil
+}
+
+// ChainNarrator tries an ordered list of narrators (providers) per call,
+// falling through on failure, and shares one call budget across all of
+// them. Each wrapped narrator keeps its own failure breaker: a provider
+// that fails failLimit times in a row is skipped for the rest of the life.
+// If every provider is dead or the budget is exhausted, calls fail soft to
+// the deterministic fallback. The mobile daemon builds one chain from the
+// player's provider list; the CLI keeps its single-provider Narrator.
+type ChainNarrator struct {
+	narrators []*Narrator
+	calls     int
+	MaxCalls  int
+	Lang      string
+}
+
+// NewChain builds a chain from clients. maxCalls is the shared budget;
+// per-narrator budgets are disabled (the chain owns the budget).
+func NewChain(clients []*Client, maxCalls int) *ChainNarrator {
+	ns := make([]*Narrator, 0, len(clients))
+	for _, c := range clients {
+		if c == nil || strings.TrimSpace(c.APIKey) == "" {
+			continue
+		}
+		n := NewNarrator(c)
+		n.MaxCalls = math.MaxInt32 // chain owns the budget
+		ns = append(ns, n)
+	}
+	if maxCalls <= 0 {
+		maxCalls = DefaultCallBudget
+	}
+	return &ChainNarrator{narrators: ns, MaxCalls: maxCalls}
+}
+
+// reserve consumes one shared budget unit. Epitaph is exempt.
+func (c *ChainNarrator) reserve() bool {
+	if c.calls >= c.MaxCalls {
+		return false
+	}
+	c.calls++
+	return true
+}
+
+// Narrate tries each live provider in order until one produces a text
+// different from the fallback (i.e. an actual model reply).
+func (c *ChainNarrator) Narrate(age int, summary, fallback string) string {
+	if !c.reserve() {
+		return fallback
+	}
+	for _, n := range c.narrators {
+		if n.dead {
+			continue
+		}
+		n.Lang = c.Lang
+		if out := n.Narrate(age, summary, fallback); out != fallback {
+			return out
+		}
+	}
+	return fallback
+}
+
+// FateEvent tries each live provider in order.
+func (c *ChainNarrator) FateEvent(age int, summary string) (game.Event, bool) {
+	if !c.reserve() {
+		return game.Event{}, false
+	}
+	for _, n := range c.narrators {
+		if n.dead {
+			continue
+		}
+		n.Lang = c.Lang
+		if ev, ok := n.FateEvent(age, summary); ok {
+			return ev, true
+		}
+	}
+	return game.Event{}, false
+}
+
+// Epitaph is exempt from the shared budget: one call per life.
+func (c *ChainNarrator) Epitaph(summary string) string {
+	for _, n := range c.narrators {
+		if n.dead {
+			continue
+		}
+		n.Lang = c.Lang
+		return n.Epitaph(summary)
+	}
+	return defaultEpitaph(c.Lang)
+}
+
+// Broken reports whether every provider's breaker has tripped.
+func (c *ChainNarrator) Broken() bool {
+	for _, n := range c.narrators {
+		if !n.dead {
+			return false
+		}
+	}
+	return true
 }

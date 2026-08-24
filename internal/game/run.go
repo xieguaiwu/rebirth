@@ -5,7 +5,6 @@ import (
 	"hash/fnv"
 	"io"
 	"math"
-	"math/rand"
 	"strings"
 )
 
@@ -96,259 +95,54 @@ type Result struct {
 // careerWindows are the ages at which a new track may be entered.
 var careerWindows = map[int]bool{16: true, 19: true, 23: true, 27: true, 32: true, 38: true, 45: true}
 
-// Run plays one life end-to-end, emitting progress lines to w.
+// Run plays one life end-to-end, emitting progress lines to w. It is a
+// thin driver over Session (session.go) so the mobile daemon can step and
+// checkpoint the exact same simulation; the output is byte-identical to
+// the pre-session implementation (the existing tests are the baseline).
 func Run(w io.Writer, cfg Config, evs []Event, careers []*Career) (*Result, error) {
 	if cfg.MaxAge <= 0 {
 		cfg.MaxAge = 100
 	}
-	rng := rand.New(rand.NewSource(cfg.Seed))
-	params := DefaultTraumaParams()
-	if cfg.Trauma != nil {
-		params = *cfg.Trauma
-	}
+	sess := NewSession(cfg, evs, careers)
+	sess.Out = w
 
-	s := Stats{}
-	sens := 0.0
-	gen := 1
-	if cfg.Bloodline != nil {
-		sens = cfg.Bloodline.Sensitivity
-		gen = cfg.Bloodline.Generation
+	fmt.Fprintf(w, "\n════ 第 %d 代 · 种子 %d ════\n", sess.Gen, sess.Cfg.Seed)
+	if sess.Cfg.Birth != nil {
+		fmt.Fprintf(w, "[出身] %s —— %s\n", sess.Cfg.Birth.Name, sess.Cfg.Birth.Desc)
 	}
-	if cfg.Birth != nil {
-		sens += cfg.Birth.SensitivityAdd
+	if sess.Sens > 0.05 {
+		fmt.Fprintf(w, "[血脉] 应激敏感性基线 %.2f（高于此值更易受创）\n", Clamp01(sess.Sens))
 	}
-	// v0.9.0: inherited sensitivity lowers the pathological-entry threshold
-	// itself — the heritable trait is a real bias toward the attractor, not
-	// only a birth-year baseline. Hysteresis pair is guarded so EnterAt can
-	// never drop to/below ExitAt (custom configs may set either).
-	params.EnterAt -= params.SensEnterAt * Clamp01(sens)
-	if params.EnterAt <= params.ExitAt {
-		params.EnterAt = params.ExitAt + 0.05
-	}
-	trauma := NewTraumaState(Clamp01(sens), params)
-
-	fmt.Fprintf(w, "\n════ 第 %d 代 · 种子 %d ════\n", gen, cfg.Seed)
-	if len(cfg.points) == 4 {
-		s.CHR += cfg.points[0]
-		s.INT += cfg.points[1]
-		s.STR += cfg.points[2]
-		s.MNY += cfg.points[3]
-	}
-	if cfg.Birth != nil {
-		s.ApplyDelta(&cfg.Birth.Bonus)
-		fmt.Fprintf(w, "[出身] %s —— %s\n", cfg.Birth.Name, cfg.Birth.Desc)
-	}
-	if sens > 0.05 {
-		fmt.Fprintf(w, "[血脉] 应激敏感性基线 %.2f（高于此值更易受创）\n", Clamp01(sens))
-	}
-	for _, t := range cfg.Talents {
-		s.ApplyDelta(&t.Bonus)
+	for _, t := range sess.Cfg.Talents {
 		fmt.Fprintf(w, "[天赋] %s —— %s\n", t.Name, t.Desc)
 	}
-	if cfg.InheritTal != nil {
-		s.ApplyDelta(&cfg.InheritTal.Bonus)
-		fmt.Fprintf(w, "[血脉天赋] %s —— %s\n", cfg.InheritTal.Name, cfg.InheritTal.Desc)
-	}
-	s.Clamp()
-	// Nobody starts dead: birth/talent negatives may not zero a stat
-	// (momus P2-4: orphan build used to die at age 0).
-	s.CHR = maxF(s.CHR, 1)
-	s.INT = maxF(s.INT, 1)
-	s.STR = maxF(s.STR, 1)
-	s.MNY = maxF(s.MNY, 0)
-	s.SPR = maxF(s.SPR, 1)
-
-	fortune := NewFortune(rng, 0.7)
-	var history []string
-	facts := NewFacts(cfg.Birth) // storyline facts: "cult", "broken_home"...
-	used := map[string]bool{}    // lifetime event uniqueness
-	deathAge := -1
-	sprLowYears := 0
-	careerID := UnemployedID
-	careerName := "无业"
-
-	// One-time notice when the narrator's breaker trips mid-life, so the
-	// player knows narration stopped instead of wondering why every hint
-	// now vanishes instantly (v0.8.0).
-	llmWarned := false
-	warnBroken := func() {
-		if !llmWarned && !isNoop(cfg.LLM) && cfg.LLM.Broken() {
-			llmWarned = true
-			fmt.Fprintln(w, "\n[提示] 叙事通道连续失败（不可用或过慢），本世余下改为纯本地叙事。")
-		}
+	if sess.Cfg.InheritTal != nil {
+		fmt.Fprintf(w, "[血脉天赋] %s —— %s\n", sess.Cfg.InheritTal.Name, sess.Cfg.InheritTal.Desc)
 	}
 
-	record := func(line string) {
-		fmt.Fprintln(w, line)
-		history = append(history, line)
-	}
+	for !sess.Done() {
+		sess.Advance() // prints its own lines to w (record -> Out)
 
-	for age := 0; age <= cfg.MaxAge; age++ {
-		luck := clamp(fortune.Next()+talentLuck(cfg.Talents, cfg.InheritTal), -1, 1)
-
-		// --- career decision window ---
-		cur := findCareer(careers, careerID)
-		if cur == nil || cur.ID == UnemployedID {
-			if careerWindows[age] {
-				load := trauma.Load(params)
-				if c := PickCareer(careers, age, s, load, rng, luck); c != nil {
-					careerID = c.ID
-					careerName = c.Name
-					cur = c
-					record(fmt.Sprintf("[%3d 岁] ★ 入行：%s —— %s", age, c.Name, c.Desc))
-				}
-			}
-		} else {
-			// Yearly drift and recurring exposure while employed.
-			s.ApplyDelta(&cur.YearlyDelta)
-			if cur.YearlyShock > 0 {
-				trauma.Shock(cur.YearlyShock, params)
-			}
-			if lost := careerQuitCheck(cur, s); lost {
-				record(fmt.Sprintf("[%3d 岁] 离开「%s」。", age, cur.Name))
-				careerID = UnemployedID
-				careerName = "无业"
-				cur = nil
-			} else if cur.MaxAge > 0 && age >= cur.MaxAge {
-				record(fmt.Sprintf("[%3d 岁] 从「%s」退休。", age, cur.Name))
-				careerID = UnemployedID
-				careerName = "退休"
-				cur = nil
-			}
-		}
-
-		// --- event roll ---
-		ev := PickEvent(evs, age, s, careerID, facts, used, rng, luck, trauma.Pathological, params, Clamp01(sens))
-		trigger := false
-		therapyQ := 0.0
-
-		// Once per decade past 20, the model may weave a unique fate event.
-		if age >= 20 && age%10 == 0 && !isNoop(cfg.LLM) {
-			summary := stateSummary(age, s, trauma, careerName, params)
-			if cfg.Hints {
-				fmt.Fprint(w, hintPending)
-			}
-			if fate, ok := cfg.LLM.FateEvent(age, summary); ok {
-				clearHint(w, cfg.Hints)
-				ev = &fate
-				used[ev.ID] = true // fate events also never repeat
-			} else {
-				clearHint(w, cfg.Hints)
-			}
-			warnBroken()
-		}
-
-		if ev != nil {
-			used[ev.ID] = true
-			established := ev.Sets
-			if ev.Context != "" {
-				established = ev.Context // v0.6.0 shards use the context key
-			}
-			if established != "" {
-				// "!fact" clears a storyline fact (e.g. rescue ends the
-				// cult isolation and reopens ordinary social events).
-				if name := strings.TrimPrefix(established, "!"); name != established {
-					delete(facts, name)
-				} else {
-					facts[established] = true
-				}
-			}
-			text := ev.Text
-			if !isNoop(cfg.LLM) && (ev.TraumaAlpha > 0 || ev.Good) &&
-				narrateSample(ev.ID, cfg.NarrateRatio) {
-				if cfg.Hints {
-					fmt.Fprint(w, hintPending)
-				}
-				text = cfg.LLM.Narrate(age,
-					fmt.Sprintf("事件:%s 职业:%s 属性:%+v 负荷:%.2f", ev.ID, careerName, s, trauma.Load(params)),
-					text)
-				clearHint(w, cfg.Hints)
-				warnBroken()
-			}
-			line := fmt.Sprintf("[%3d 岁] %s", age, text)
-			record(line)
-			s.ApplyDelta(ev.Delta)
-			if ev.TraumaAlpha > 0 {
-				alpha := ev.TraumaAlpha * params.EventScale * talentTraumaMult(cfg.Talents, cfg.InheritTal)
-				trauma.Shock(alpha, params)
-				trigger = true
-			}
-			if ev.TherapyQ > 0 {
-				therapyQ = ev.TherapyQ * talentTherapyMult(cfg.Talents, cfg.InheritTal)
-			}
-		}
-
-		trauma.Step(trigger, therapyQ, params)
-
-		// Pathological attractor drains happiness yearly (clinical analogue).
-		if trauma.Pathological {
-			s.SPR -= 0.25 // attractor drains joy, but slower than despair
-		}
-		s.Clamp()
-
-		// Manual advance: one Enter per year of life.
+		// Manual advance: one Enter per year of life. Positioned between
+		// Advance and DeathCheck exactly as in the original Run (the
+		// pause used to sit between trauma.Step and the death accounting).
 		if cfg.Step && cfg.Pause != nil && cfg.Pause() {
-			// Keep the Result contract whole even on quit (momus P1: main
-			// used to read a zero Sensitivity and corrupt the lineage save).
-			res := &Result{Age: age, Career: careerName, Stats: s,
-				Pathological: trauma.Pathological,
-				Sensitivity:  EndingSensitivity(trauma, params),
-				History:      history,
-				Aborted:      true}
-			fmt.Fprintf(w, "\n──── 玩家中途离开（%d 岁）────\n", age)
-			return res, nil
+			sess.Aborted = true
+			sess.DeathAge = sess.Age - 1
+			fmt.Fprintf(w, "\n──── 玩家中途离开（%d 岁）────\n", sess.DeathAge)
+			return sess.Result(), nil
 		}
 
-		if s.SPR <= 0.01 {
-			sprLowYears++
-		} else {
-			sprLowYears = 0
-		}
-		// Death checks: body fails at 0 STR; 5 straight years at 0 SPR.
-		if s.STR <= 0.01 || sprLowYears >= 5 {
-			deathAge = age
+		if sess.DeathCheck() {
+			sess.Finish()
+			fmt.Fprintf(w, "\n──── 人生结束：%d 岁 · 职业：%s · %s ────\n", sess.DeathAge, sess.CareerName, sess.DeathStatus)
+			if !isNoop(sess.Cfg.LLM) {
+				fmt.Fprintln(w, "墓志铭："+sess.EpitaphText)
+			}
 			break
 		}
-		if age == cfg.MaxAge {
-			deathAge = age
-		}
 	}
-
-	res := &Result{
-		Age:          deathAge,
-		Career:       careerName,
-		Stats:        s,
-		Pathological: trauma.Pathological,
-		Sensitivity:  EndingSensitivity(trauma, params),
-		History:      history,
-	}
-
-	status := "安详离世"
-	switch {
-	case res.Age <= 5:
-		status = "幼年夭折" // momus P2-4: toddlers are not "chronically depressed"
-	case s.STR <= 0.01:
-		status = "身体耗竭"
-	case sprLowYears >= 5:
-		if res.Age < 18 {
-			status = "未成年早逝"
-		} else {
-			status = "长期抑郁"
-		}
-	}
-	if res.Pathological {
-		status += "（终生生处于创伤病理态）"
-	}
-	fmt.Fprintf(w, "\n──── 人生结束：%d 岁 · 职业：%s · %s ────\n", res.Age, res.Career, status)
-
-	if !isNoop(cfg.LLM) {
-		if cfg.Hints {
-			fmt.Fprint(w, hintPending)
-		}
-		clearHint(w, cfg.Hints)
-		fmt.Fprintln(w, "墓志铭："+cfg.LLM.Epitaph(stateSummary(res.Age, s, trauma, careerName, params)))
-	}
-	return res, nil
+	return sess.Result(), nil
 }
 
 func findCareer(cs []*Career, id string) *Career {

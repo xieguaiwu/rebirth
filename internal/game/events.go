@@ -12,7 +12,7 @@ import (
 	"sort"
 )
 
-//go:embed data/*.json
+//go:embed data/*.json data_en/*.json
 var eventsFS embed.FS
 
 // Stats are the five player attributes, each clamped to [0,10].
@@ -35,7 +35,11 @@ func (s *Stats) Clamp() {
 
 // Effects is a sparse attribute delta.
 type Effects struct {
-	CHR, INT, STR, MNY, SPR float64
+	CHR float64 `json:"chr"`
+	INT float64 `json:"int"`
+	STR float64 `json:"str"`
+	MNY float64 `json:"mny"`
+	SPR float64 `json:"spr"`
 }
 
 // Cond gates event eligibility by attribute ranges (inclusive).
@@ -113,10 +117,19 @@ func inRange(v, lo, hi float64) bool {
 	return true
 }
 
-// LoadEvents parses every embedded data/events_*.json shard and concatenates
-// them. Shards keep the growing dataset reviewable file by file.
-func LoadEvents() ([]Event, error) {
-	matches, err := fs.Glob(eventsFS, "data/events_*.json")
+// dataDir maps a content language to its embedded data directory.
+// zh is the primary dataset; en is the English translation of the same
+// content (same IDs and numeric fields, translated display text).
+func dataDir(lang string) string {
+	if lang == "en" {
+		return "data_en"
+	}
+	return "data"
+}
+
+// LoadEventsLang parses the event shards of one content language.
+func LoadEventsLang(lang string) ([]Event, error) {
+	matches, err := fs.Glob(eventsFS, dataDir(lang)+"/events_*.json")
 	if err != nil {
 		return nil, fmt.Errorf("glob events: %w", err)
 	}
@@ -142,6 +155,11 @@ func LoadEvents() ([]Event, error) {
 		return nil, fmt.Errorf("event shards contain no events")
 	}
 	return evs, nil
+}
+
+// LoadEvents parses every embedded data/events_*.json shard (Chinese).
+func LoadEvents() ([]Event, error) {
+	return LoadEventsLang("zh")
 }
 
 // Fortune is an AR(1) luck process: luck_t = rho*luck_{t-1} + eps_t,
@@ -328,9 +346,9 @@ func removeFrom(pool []Talent, name string) []Talent {
 
 func isRareOrBetter(t Talent) bool { return t.Rarity != "" && t.Rarity != "common" }
 
-// LoadTalents reads talents.json from the same embedded directory.
-func LoadTalents() ([]Talent, error) {
-	raw, err := eventsFS.ReadFile("data/talents.json")
+// LoadTalentsLang reads talents.json of one content language.
+func LoadTalentsLang(lang string) ([]Talent, error) {
+	raw, err := eventsFS.ReadFile(dataDir(lang) + "/talents.json")
 	if err != nil {
 		return nil, fmt.Errorf("read embedded talents: %w", err)
 	}
@@ -339,6 +357,11 @@ func LoadTalents() ([]Talent, error) {
 		return nil, fmt.Errorf("parse talents.json: %w", err)
 	}
 	return ts, nil
+}
+
+// LoadTalents reads the Chinese talents.json.
+func LoadTalents() ([]Talent, error) {
+	return LoadTalentsLang("zh")
 }
 
 // DrawTalents samples n distinct talents with rarity-weighted odds and one

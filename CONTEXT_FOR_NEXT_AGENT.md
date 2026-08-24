@@ -8,7 +8,7 @@ rebirth v0.8.0 —— Go 终端人生重开模拟器，**可玩、已部署、�
 
 - 二进制: `~/.local/bin/rebirth`（每次改动后重新构建部署）
 - 仓库: https://github.com/xieguiawu/rebirth（public，master）
-- 数据: 26 职业 / 13 出身 / 63 天赋（四档稀有度+保底）/ **336 事件（9 分片）**
+- 数据: 26 职业 / 13 出身 / 63 天赋（四档稀有度+保底）/ **339 事件（9 分片）**
 - 存档: `~/.config/rebirth/bloodline.json`（已清除重开）；配置: `~/.config/rebirth/config.json`（可选，flags > config > 默认）
 
 ## 架构

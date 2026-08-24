@@ -1,3 +1,25 @@
+## [0.8.1] - 2026-08-24
+
+### Fixed (ages 1–2 always blank — "二岁的内容总是不出来")
+
+Early childhood pool used to hold exactly two events: `loved_child`
+(0–5) and `abandoned` (0–2, requires 家境≤3). Once `loved_child` fired
+at 0/1 — which it almost always did — age 2 (and sometimes 1) had zero
+eligible events for any player with 家境>3, so the year produced no line.
+
+- Added three unconditional toddler events in `events_01_core.json`:
+  `first_words` (1–2, int+0.5/spr+1), `first_steps` (1–2, str+1),
+  `picture_book` (2–3, int+1/spr+0.5). Light, no trauma, matches the
+  tone of the existing 0–1 events; ages 1–3 now always have ≥3
+  unconditional candidates regardless of consumption order. Event
+  count 336 → 339.
+- **Regression test** `TestEarlyChildhoodNeverSilent`: for every birth
+  background × 40 seeds (520 lives), ages 1–3 must produce a line.
+  (The first version of the test forgot `WithPoints` and instantly
+  killed every run — stats base is 0 without the 20-point allocation;
+  caught in one debug pass, not a game bug.)
+- Balance gate `TestPathologicalRateBand` still green.
+
 ## [0.8.0] - 2026-08-24
 
 ### Fixed (44-minute "命运编织中 stuck" report)

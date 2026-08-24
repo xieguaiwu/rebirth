@@ -53,6 +53,40 @@
   "sets": "loving_home"
  },
  {
+  "id": "first_words",
+  "text": "你喊出了人生第一个完整的词，全家愣了一秒后笑作一团。",
+  "min_age": 1,
+  "max_age": 2,
+  "weight": 8,
+  "good": true,
+  "delta": {
+   "int": 0.5,
+   "spr": 1
+  }
+ },
+ {
+  "id": "first_steps",
+  "text": "你扶着茶几站起来，摇摇晃晃迈出第一步，摔倒了又自己爬起来。",
+  "min_age": 1,
+  "max_age": 2,
+  "weight": 8,
+  "delta": {
+   "str": 1
+  }
+ },
+ {
+  "id": "picture_book",
+  "text": "你指着绘本上的月亮说“亮”，大人发现你认得比他们想象得多。",
+  "min_age": 2,
+  "max_age": 3,
+  "weight": 6,
+  "good": true,
+  "delta": {
+   "int": 1,
+   "spr": 0.5
+  }
+ },
+ {
   "id": "grandma_warmth",
   "text": "外婆家的灶台永远为你留着一碗热汤。那个夏天你重新变回了一个孩子。",
   "min_age": 3,

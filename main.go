@@ -21,7 +21,7 @@ import (
 	"rebirth/internal/tui"
 )
 
-var version = "0.8.0"
+var version = "0.8.1"
 
 const pointsTotal = 20
 

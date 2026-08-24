@@ -1,0 +1,303 @@
+[
+ {
+  "id": "cult_child_worldly_evil",
+  "text": "The first worldview you ever learned divided people into two kinds: family inside the faith, and outsiders headed for hell.",
+  "min_age": 3,
+  "max_age": 12,
+  "weight": 8,
+  "delta": {
+   "spr": -1,
+   "int": -0.3
+  },
+  "trauma_alpha": 0.2,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_no_birthday",
+  "text": "Birthdays, the Spring Festival, the Mid-Autumn Festival—all 'heathen filth.' While other kids unwrap gifts, you kneel in prayer.",
+  "min_age": 4,
+  "max_age": 14,
+  "weight": 7,
+  "delta": {
+   "spr": -1.5
+  },
+  "trauma_alpha": 0.25,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_donation",
+  "text": "Your parents 'consecrated' your tuition money to the church, and the whole family began fasting in prayer two days a week. Hunger proved more real than any miracle.",
+  "min_age": 6,
+  "max_age": 15,
+  "weight": 6,
+  "delta": {
+   "str": -1,
+   "int": -0.5,
+   "spr": -1
+  },
+  "trauma_alpha": 0.3,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_school",
+  "text": "The 'school' you attended was the basement of the cult compound, and the textbooks were photocopied transcripts of the master's sayings.",
+  "min_age": 6,
+  "max_age": 15,
+  "weight": 7,
+  "delta": {
+   "int": -1,
+   "chr": -0.3
+  },
+  "trauma_alpha": 0.25,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_confession",
+  "text": "At eight years old you stood before the mass confession meeting and publicly admitted to 'harboring irreverence.' Two hundred people below the stage lamented your soul in unison.",
+  "min_age": 5,
+  "max_age": 13,
+  "weight": 6,
+  "delta": {
+   "spr": -2
+  },
+  "trauma_alpha": 0.45,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_denounce_kin",
+  "text": "Your parents reported your unbelieving uncle to the church. His name was never spoken at home again—nor was it ever mentioned that he taught you to ride a bike.",
+  "min_age": 6,
+  "max_age": 16,
+  "weight": 5,
+  "delta": {
+   "spr": -2
+  },
+  "trauma_alpha": 0.5,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_prayer_medicine",
+  "text": "Running a forty-degree fever, you lay there while your parents sang hymns over you all night. Medicine is the devil's snare. You survived—but your ears never fully recovered.",
+  "min_age": 2,
+  "max_age": 12,
+  "weight": 5,
+  "delta": {
+   "str": -1.5,
+   "spr": -1.5
+  },
+  "trauma_alpha": 0.5,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_betrothal",
+  "text": "For your birthday you received a betrothal contract: the elder's son, 'arranged by the Lord.'",
+  "min_age": 13,
+  "max_age": 17,
+  "weight": 4,
+  "delta": {
+   "spr": -2.5
+  },
+  "trauma_alpha": 0.55,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_forbidden_book",
+  "text": "You secretly finished a 'book of sorcery'—actually a middle-school physics textbook. So clouds are not the breath of God. A crack opened in the world.",
+  "min_age": 10,
+  "max_age": 17,
+  "weight": 4,
+  "good": true,
+  "delta": {
+   "int": 1.5,
+   "spr": 0.5
+  },
+  "therapy_q": 0.15,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_public_shame",
+  "text": "Dragged back after skipping school, you were called out by name before the entire assembly. Three hundred pairs of eyes, three hundred needles.",
+  "min_age": 8,
+  "max_age": 16,
+  "weight": 4,
+  "delta": {
+   "spr": -2
+  },
+  "trauma_alpha": 0.4,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_leader_portrait",
+  "text": "The leader's portrait hung above your bed, and the last line of your bedtime prayer was always his name. Only years later did you learn this is called a cult of personality.",
+  "min_age": 4,
+  "max_age": 14,
+  "weight": 6,
+  "delta": {
+   "spr": -1,
+   "int": -0.2
+  },
+  "trauma_alpha": 0.2,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_shunning_sibling",
+  "text": "Your older sister was expelled from the church for 'abandoning the true way.' The whole family walked out of her life together—including you, eight years old.",
+  "min_age": 5,
+  "max_age": 17,
+  "weight": 5,
+  "delta": {
+   "spr": -2.5
+  },
+  "trauma_alpha": 0.5,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_police_rescue",
+  "text": "The night police lights flooded the compound, you tasted chocolate for the first time at the shelter. A worker knelt down and asked your name—no one had ever asked you that before.",
+  "min_age": 6,
+  "max_age": 16,
+  "weight": 3,
+  "good": true,
+  "therapy_q": 0.35,
+  "delta": {
+   "spr": 1
+  },
+  "trauma_alpha": 0.3,
+  "requires": [
+   "cult"
+  ],
+  "sets": "!cult"
+ },
+ {
+  "id": "cult_child_back_to_school",
+  "text": "After the rescue you were placed mid-year into a public school. Seated in a classroom of younger kids, you stared at a math exam covered in symbols you couldn't read.",
+  "min_age": 8,
+  "max_age": 17,
+  "weight": 4,
+  "delta": {
+   "int": 0.3,
+   "spr": -1
+  },
+  "therapy_q": 0.1,
+  "trauma_alpha": 0.15,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_deprogramming",
+  "text": "Anti-cult volunteers spent two years walking you through deprogramming. The first time you said the leader's name aloud, you waited a long while—and no lightning fell.",
+  "min_age": 8,
+  "max_age": 18,
+  "weight": 4,
+  "good": true,
+  "therapy_q": 0.5,
+  "delta": {
+   "spr": 2,
+   "int": 0.5
+  },
+  "requires": [
+   "cult"
+  ],
+  "sets": "!cult"
+ },
+ {
+  "id": "cult_child_normal_friend",
+  "text": "Your deskmate shared one earbud with you. The pop song's lyrics meant nothing—but it was the freest three minutes you had ever heard.",
+  "min_age": 8,
+  "max_age": 17,
+  "weight": 5,
+  "good": true,
+  "therapy_q": 0.3,
+  "delta": {
+   "spr": 1.5
+  },
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_child_birthday_first",
+  "text": "At eighteen, friends threw you the first birthday cake of your life. When the candles were lit, you cried without knowing why.",
+  "min_age": 17,
+  "max_age": 19,
+  "weight": 2,
+  "good": true,
+  "therapy_q": 0.4,
+  "delta": {
+   "spr": 2.5
+  },
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_adult_address",
+  "text": "Applying for your ID card, you discovered that the 'home address' on your birth certificate was a room number in the compound.",
+  "min_age": 18,
+  "max_age": 30,
+  "weight": 3,
+  "delta": {
+   "spr": -1,
+   "int": 0.2
+  },
+  "trauma_alpha": 0.2,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_adult_hypervigilance",
+  "text": "Even as an adult, your heart still skips whenever people speak in unison. The counselor says it's a conditioned fear response, not weakness.",
+  "min_age": 18,
+  "max_age": 60,
+  "weight": 4,
+  "delta": {
+   "spr": -1.5
+  },
+  "trauma_alpha": 0.3,
+  "therapy_q": 0.25,
+  "requires": [
+   "cult"
+  ]
+ },
+ {
+  "id": "cult_adult_reunite_sibling",
+  "text": "You found your exiled sister. The first thing she said when she opened the door was: 'They let you go?' You held each other and cried until dawn.",
+  "min_age": 20,
+  "max_age": 50,
+  "weight": 3,
+  "good": true,
+  "therapy_q": 0.45,
+  "delta": {
+   "spr": 2.5
+  },
+  "requires": [
+   "cult"
+  ]
+ }
+]
